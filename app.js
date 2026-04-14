@@ -14,11 +14,16 @@ if (navbar) {
 const navToggle = document.getElementById('navToggle');
 const navLinks  = document.getElementById('navLinks');
 if (navToggle && navLinks) {
-  navToggle.addEventListener('click', () => {
+  function toggleNav(e) {
+    e.preventDefault();
+    e.stopPropagation();
     const open = navLinks.classList.toggle('open');
     navToggle.classList.toggle('open', open);
     document.body.style.overflow = open ? 'hidden' : '';
-  });
+  }
+  navToggle.addEventListener('click', toggleNav);
+  navToggle.addEventListener('touchend', toggleNav, { passive: false });
+
   navLinks.querySelectorAll('a').forEach(a => {
     a.addEventListener('click', () => {
       navLinks.classList.remove('open');
@@ -203,10 +208,8 @@ if (cookieBanner) {
   }
 
   function dismissCookie() {
-    cookieBanner.style.opacity = '0';
-    cookieBanner.style.transform = 'translateY(20px)';
-    cookieBanner.style.pointerEvents = 'none';
-    setTimeout(() => { cookieBanner.style.display = 'none'; }, 320);
+    cookieBanner.classList.add('hide');
+    setTimeout(() => { cookieBanner.style.display = 'none'; }, 350);
   }
 
   document.getElementById('cookieAccept')?.addEventListener('click', () => {
