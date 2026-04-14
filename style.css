@@ -55,6 +55,11 @@ input, select, button, textarea { font-family: var(--font); }
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
 .reveal.visible { opacity: 1; transform: none; }
 
+/* On mobile, disable reveal animation entirely — show all content immediately */
+@media (max-width: 880px) {
+  .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
 /* ============================================================
    SECTION HEADER
    ============================================================ */
@@ -835,6 +840,9 @@ input, select, button, textarea { font-family: var(--font); }
 .reveal-left  { opacity:0; transform: translateX(-32px); transition: opacity .65s ease, transform .65s ease; }
 .reveal-right { opacity:0; transform: translateX( 32px); transition: opacity .65s ease, transform .65s ease; }
 .reveal-left.visible, .reveal-right.visible { opacity:1; transform:none; }
+@media (max-width: 880px) {
+  .reveal-left, .reveal-right { opacity:1 !important; transform:none !important; transition:none !important; }
+}
 
 .stagger > * { opacity:0; transform: translateY(24px); transition: opacity .5s ease, transform .5s ease; }
 .stagger.visible > *:nth-child(1) { opacity:1; transform:none; transition-delay:.0s; }
@@ -843,6 +851,9 @@ input, select, button, textarea { font-family: var(--font); }
 .stagger.visible > *:nth-child(4) { opacity:1; transform:none; transition-delay:.3s; }
 .stagger.visible > *:nth-child(5) { opacity:1; transform:none; transition-delay:.4s; }
 .stagger.visible > *:nth-child(6) { opacity:1; transform:none; transition-delay:.5s; }
+@media (max-width: 880px) {
+  .stagger > * { opacity:1 !important; transform:none !important; transition:none !important; }
+}
 
 @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
 .hero-badge-float { animation: float 3.5s ease-in-out infinite; }
