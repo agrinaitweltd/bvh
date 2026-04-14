@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Our Fleet — Breezyee Vans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><span class="logo-text">Breezyee<strong>Vans</strong></span>
+      </a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="fleet.html" class="nav-active">Our Fleet</a></li>
+        <li><a href="booking.html">Book Now</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <a href="booking.html" class="btn btn-nav">Get a Quote</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <section class="page-hero bg-purple">
+    <div class="container">
+      <span class="page-eyebrow txt-white-60">All Automatic</span>
+      <h1 class="txt-white">Our Fleet</h1>
+      <p class="txt-white-60">Every van is automatic, clean, maintained, and ready when you are.</p>
+    </div>
+  </section>
+
+  <div class="wave-wrap wave-from-purple"><svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0,30 C360,0 1080,60 1440,30 L1440,60 L0,60 Z" fill="#fff"/></svg></div>
+
+  <!-- QUICK SEARCH BAR -->
+  <section class="booking-widget-bar bg-lavender">
+    <div class="container">
+      <div class="bwb-inner reveal">
+        <div class="bwb-tabs">
+          <button class="bwb-tab active" data-tab="van-hire">Van Hire</button>
+          <button class="bwb-tab" data-tab="man-van">Man &amp; Van</button>
+        </div>
+        <div class="bwb-form">
+          <div class="bwb-field">
+            <label>Pick-up location</label>
+            <input type="text" placeholder="City or postcode" />
+          </div>
+          <div class="bwb-field">
+            <label>Pick-up date</label>
+            <input type="date" id="bwbDate" />
+          </div>
+          <div class="bwb-field">
+            <label>Time</label>
+            <input type="time" value="10:00" />
+          </div>
+          <div class="bwb-field">
+            <label>Return date</label>
+            <input type="date" id="bwbReturn" />
+          </div>
+          <a href="booking.html" class="btn btn-primary bwb-btn">Show Vans →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VAN CARDS -->
+  <section class="section bg-white" id="vans">
+    <div class="container">
+      <div class="sec-hdr reveal">
+        <span class="sec-tag">Choose Your Van</span>
+        <h2>Three Sizes. All Automatic.</h2>
+        <p>Pick the right size for your move. Every van is insured and fully maintained.</p>
+      </div>
+      <div class="van-cards-grid">
+
+        <div class="van-card reveal">
+          <div class="van-card-body">
+            <div class="van-name-row">
+              <span class="van-badge-tag">Small Van</span>
+            </div>
+            <h3>Citroen Berlingo</h3>
+            <p>Best for light moves and deliveries. Compact, nimble, and easy to park in the city.</p>
+            <div class="van-specs-row">
+              <span class="vspec">Automatic</span>
+              <span class="vspec">2–3 m³</span>
+              <span class="vspec">750 kg payload</span>
+            </div>
+            <div class="van-price-row">
+              <div><span class="price-from">From</span><strong class="price-big">£35</strong><span class="price-unit">/day</span></div>
+              <a href="booking.html?van=small" class="btn btn-primary">Book Now</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="van-card van-featured reveal">
+          <div class="van-card-body">
+            <div class="van-name-row">
+              <span class="van-badge-tag van-badge-purple">Best Seller</span>
+            </div>
+            <h3>Mercedes Sprinter</h3>
+            <p>Ideal for house moves and business relocations. Spacious, powerful, and built to perform.</p>
+            <div class="van-specs-row">
+              <span class="vspec">Automatic</span>
+              <span class="vspec">10–12 m³</span>
+              <span class="vspec">1,500 kg payload</span>
+            </div>
+            <div class="van-price-row">
+              <div><span class="price-from">From</span><strong class="price-big">£75</strong><span class="price-unit">/day</span></div>
+              <a href="booking.html?van=medium" class="btn btn-primary">Book Now</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="van-card reveal">
+          <div class="van-card-body">
+            <div class="van-name-row">
+              <span class="van-badge-tag">XL Van</span>
+            </div>
+            <h3>Luton Van</h3>
+            <p>Maximum capacity for the biggest jobs. Full house moves, large furniture, zero compromises.</p>
+            <div class="van-specs-row">
+              <span class="vspec">Automatic</span>
+              <span class="vspec">18–20 m³</span>
+              <span class="vspec">2,000 kg payload</span>
+            </div>
+            <div class="van-price-row">
+              <div><span class="price-from">From</span><strong class="price-big">£95</strong><span class="price-unit">/day</span></div>
+              <a href="booking.html?van=xl" class="btn btn-primary">Book Now</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING TABLE -->
+  <section class="section bg-lavender">
+    <div class="container pricing-layout">
+      <div class="pricing-tbl-wrap reveal">
+        <div class="pricing-tbl">
+          <div class="pt-hdr-row"><div></div><div>Van Hire</div><div>Man &amp; Van</div></div>
+          <div class="pt-row"><div class="pt-lbl">Per hour</div><div class="pt-val">from £9.90</div><div class="pt-val">from £25.00</div></div>
+          <div class="pt-row"><div class="pt-lbl">Per day</div><div class="pt-val">from £35.00</div><div class="pt-val">POA</div></div>
+          <div class="pt-row"><div class="pt-lbl">Per mile</div><div class="pt-val">£0.27</div><div class="pt-val">included</div></div>
+          <div class="pt-row"><div class="pt-lbl">Insurance</div><div class="pt-val">included</div><div class="pt-val">included</div></div>
+        </div>
+      </div>
+      <div class="pricing-copy reveal">
+        <h2>Pricing</h2>
+        <p>Transparent rates with no hidden fees. Insurance is always included. Man &amp; van rates include the driver — helpers are available at an additional hourly rate.</p>
+        <a href="booking.html" class="btn btn-primary">Get an Instant Quote</a>
+        <a href="services.html" class="link-more">About our services →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BAND -->
+  <section class="cta-band bg-purple-grad">
+    <div class="container cta-band-inner reveal">
+      <div><h2>Ready to Book?</h2><p>Get your instant price and confirm your van in minutes.</p></div>
+      <a href="booking.html" class="btn btn-white-outline">BOOK NOW →</a>
+    </div>
+  </section>
+
+  <footer class="footer" id="contact">
+    <div class="footer-main">
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo footer-logo"><div class="logo-mark light"><span>B</span><span>V</span></div><span class="logo-text txt-white">Breezyee<strong>Vans</strong></span></a>
+          <p>Moving Made Effortless. Premium van hire and man &amp; van services across the UK.</p>
+        </div>
+        <div class="footer-col"><h5>Quick Links</h5><ul><li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li><li><a href="fleet.html">Our Fleet</a></li><li><a href="booking.html">Book Now</a></li></ul></div>
+        <div class="footer-col"><h5>Services</h5><ul><li><a href="services.html#van-hire">Self-Drive Van Hire</a></li><li><a href="services.html#man-van">Man &amp; Van</a></li></ul></div>
+        <div class="footer-col"><h5>Contact</h5><ul class="footer-contact"><li><a href="tel:+441234567890">+44 1234 567 890</a></li><li><a href="mailto:hello@breezyeevans.co.uk">hello@breezyeevans.co.uk</a></li><li>United Kingdom</li></ul></div>
+      </div>
+    </div>
+    <div class="footer-mid">
+      <div class="container footer-mid-row">
+        <div class="footer-links-list"><a href="#">About Us</a><a href="#">Blog</a><a href="#">Our Partners</a></div>
+        <div class="footer-socials">
+          <a href="#" class="soc-btn" aria-label="Facebook"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+          <a href="#" class="soc-btn" aria-label="Instagram"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></a>
+          <a href="#" class="soc-btn" aria-label="TikTok"><svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.76a4.85 4.85 0 01-1.01-.07z"/></svg></a>
+        </div>
+        <div class="footer-payments">
+          <div class="pay-badge"><svg viewBox="0 0 60 38" width="60" height="38" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="38" rx="5" fill="#1A1F71"/><text x="30" y="26" font-family="Arial,sans-serif" font-size="15" font-weight="bold" font-style="italic" fill="white" text-anchor="middle" letter-spacing="1">VISA</text></svg></div>
+          <div class="pay-badge"><svg viewBox="0 0 60 38" width="60" height="38" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="38" rx="5" fill="#252525"/><circle cx="23" cy="19" r="10" fill="#EB001B"/><circle cx="37" cy="19" r="10" fill="#F79E1B" fill-opacity="0.9"/></svg></div>
+          <div class="pay-badge"><svg viewBox="0 0 60 38" width="60" height="38" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="38" rx="5" fill="#FFB3C7"/><text x="30" y="24" font-family="Arial,sans-serif" font-size="11" font-weight="bold" fill="#1A1A1A" text-anchor="middle">klarna</text></svg></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom"><div class="container footer-bottom-inner"><p>© 2026 Breezyee Vans Ltd. All rights reserved.</p><div class="footer-legal"><a href="#">Terms &amp; Conditions</a><a href="#">Privacy Policy</a><a href="#">Cookie Policy</a></div></div></div>
+  </footer>
+
+  <div class="cookie-banner" id="cookieBanner"><div class="cookie-inner"><div class="cookie-txt"><p>This website uses cookies to ensure you get the best experience on our website. Please let us know your preferences.</p><p>Please read our <a href="#">Cookie policy</a>.</p></div><div class="cookie-btns"><button class="btn btn-outline btn-sm" id="cookieManage">Manage</button><button class="btn btn-primary btn-sm" id="cookieAccept">Accept</button></div></div></div>
+  <button class="chat-fab" id="chatBubble" aria-label="Call us"><svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.01 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="chat-dot"></span></button>
+  <script src="app.js"></script>
+</body>
+</html>
