@@ -55,9 +55,55 @@ input, select, button, textarea { font-family: var(--font); }
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
 .reveal.visible { opacity: 1; transform: none; }
 
-/* On mobile, disable reveal animation entirely — show all content immediately */
+/* On mobile: disable JS reveal, use CSS entrance animations instead */
 @media (max-width: 880px) {
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+}
+
+/* ── Mobile entrance animations ─────────────────────────────── */
+@keyframes mob-fade-up   { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
+@keyframes mob-fade-in   { from { opacity:0; } to { opacity:1; } }
+@keyframes mob-scale-in  { from { opacity:0; transform:scale(.92); } to { opacity:1; transform:none; } }
+@keyframes mob-slide-left { from { opacity:0; transform:translateX(-20px); } to { opacity:1; transform:none; } }
+
+@media (max-width: 880px) {
+  /* Hero */
+  .hero-eyebrow  { animation: mob-fade-up  .5s .05s both; }
+  .hero-text h1  { animation: mob-fade-up  .55s .15s both; }
+  .hero-text p   { animation: mob-fade-up  .5s .25s both; }
+  .hero-ctas     { animation: mob-fade-up  .5s .35s both; }
+  .hero-stats    { animation: mob-fade-in  .6s .5s  both; }
+
+  /* Section headers */
+  .sec-hdr       { animation: mob-fade-up  .55s .1s both; }
+
+  /* Cards stagger */
+  .step-card:nth-child(1), .van-card:nth-child(1), .why-item:nth-child(1),
+  .svc-home-card:nth-child(1), .svc-van-card:nth-child(1), .svc-price-col:nth-child(1),
+  .testi-card:nth-child(1), .fleet-cat-card:nth-child(1) { animation: mob-fade-up .5s .05s both; }
+
+  .step-card:nth-child(2), .van-card:nth-child(2), .why-item:nth-child(2),
+  .svc-home-card:nth-child(2), .svc-van-card:nth-child(2), .svc-price-col:nth-child(2),
+  .testi-card:nth-child(2), .fleet-cat-card:nth-child(2) { animation: mob-fade-up .5s .15s both; }
+
+  .step-card:nth-child(3), .van-card:nth-child(3), .why-item:nth-child(3),
+  .svc-van-card:nth-child(3), .svc-price-col:nth-child(3),
+  .testi-card:nth-child(3), .fleet-cat-card:nth-child(3) { animation: mob-fade-up .5s .25s both; }
+
+  /* Full service cards */
+  .svc-full-card { animation: mob-scale-in .5s .1s both; }
+
+  /* Booking card */
+  .booking-card  { animation: mob-fade-up .5s .1s both; }
+
+  /* Sidebar cards */
+  .bk-sidebar-card { animation: mob-slide-left .45s .2s both; }
+
+  /* CTA band */
+  .cta-band-inner { animation: mob-fade-up .5s .1s both; }
+
+  /* Footer brand */
+  .footer-brand  { animation: mob-fade-in .6s .1s both; }
 }
 
 /* ============================================================
@@ -172,6 +218,11 @@ input, select, button, textarea { font-family: var(--font); }
     gap: 36px; z-index: 1000;
   }
   .nav-links.open a { font-size: 1.4rem; font-weight: 700; color: var(--text); }
+  /* Keep toggle on top of the overlay */
+  .nav-toggle.open {
+    position: fixed; top: 18px; right: 16px; z-index: 1002;
+  }
+  .nav-toggle.open span { background: var(--text); }
   .nav-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
   .nav-toggle.open span:nth-child(2) { opacity: 0; }
   .nav-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
@@ -442,6 +493,7 @@ input, select, button, textarea { font-family: var(--font); }
   box-shadow: 0 20px 60px rgba(0,0,0,.18);
   border: none;
   animation: cookieSlide .6s 1s both;
+  transition: opacity .3s ease, transform .3s ease;
 }
 @keyframes cookieSlide { from { transform: translateY(120%); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (max-width: 480px) { .cookie-banner { left: 12px; right: 12px; max-width: none; } }

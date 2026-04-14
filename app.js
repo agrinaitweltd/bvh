@@ -201,15 +201,19 @@ if (cookieBanner) {
   if (localStorage.getItem('bv_cookies')) {
     cookieBanner.style.display = 'none';
   }
+
+  function dismissCookie() {
+    cookieBanner.style.opacity = '0';
+    cookieBanner.style.transform = 'translateY(20px)';
+    cookieBanner.style.pointerEvents = 'none';
+    setTimeout(() => { cookieBanner.style.display = 'none'; }, 320);
+  }
+
   document.getElementById('cookieAccept')?.addEventListener('click', () => {
     localStorage.setItem('bv_cookies', '1');
-    cookieBanner.style.animation = 'cookieSlide .4s reverse forwards';
-    setTimeout(() => { cookieBanner.style.display = 'none'; }, 400);
+    dismissCookie();
   });
-  document.getElementById('cookieManage')?.addEventListener('click', () => {
-    cookieBanner.style.animation = 'cookieSlide .4s reverse forwards';
-    setTimeout(() => { cookieBanner.style.display = 'none'; }, 400);
-  });
+  document.getElementById('cookieManage')?.addEventListener('click', dismissCookie);
 }
 
 // ── CHAT BUBBLE ──
