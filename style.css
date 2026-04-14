@@ -30,8 +30,8 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; font-size: 16px; }
-body { font-family: var(--font); color: var(--text); background: var(--white); overflow-x: hidden; line-height: 1.6; }
+html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
+body { font-family: var(--font); color: var(--text); background: var(--white); line-height: 1.6; }
 img { display: block; max-width: 100%; }
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
@@ -154,7 +154,7 @@ input, select, button, textarea { font-family: var(--font); }
 .nav-links a:hover, .nav-links a.nav-active { color: var(--purple); font-weight: 600; }
 .nav-links a.nav-active { border-bottom: 2px solid var(--purple); padding-bottom: 1px; }
 
-.nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; margin-left: auto; }
+.nav-toggle { display: none; flex-direction: column; gap: 5px; background: none; border: none; cursor: pointer; padding: 4px; margin-left: auto; position: relative; z-index: 1001; }
 .nav-toggle span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all .3s; }
 
 @media (max-width: 880px) {
@@ -164,9 +164,9 @@ input, select, button, textarea { font-family: var(--font); }
     display: flex; flex-direction: column; position: fixed;
     top: 0; left: 0; right: 0; bottom: 0;
     background: var(--white); align-items: center; justify-content: center;
-    gap: 36px; z-index: 999;
+    gap: 36px; z-index: 1000;
   }
-  .nav-links.open a { font-size: 1.4rem; font-weight: 700; }
+  .nav-links.open a { font-size: 1.4rem; font-weight: 700; color: var(--text); }
   .nav-toggle.open span:nth-child(1) { transform: rotate(45deg) translate(5px,5px); }
   .nav-toggle.open span:nth-child(2) { opacity: 0; }
   .nav-toggle.open span:nth-child(3) { transform: rotate(-45deg) translate(5px,-5px); }
@@ -433,7 +433,7 @@ input, select, button, textarea { font-family: var(--font); }
   position: fixed; bottom: 24px; left: 24px;
   max-width: 440px;
   background: #ebebeb; border-radius: 16px;
-  padding: 28px 28px 24px; z-index: 800;
+  padding: 28px 28px 24px; z-index: 950;
   box-shadow: 0 20px 60px rgba(0,0,0,.18);
   border: none;
   animation: cookieSlide .6s 1s both;

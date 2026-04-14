@@ -30,10 +30,23 @@ if (navToggle && navLinks) {
 
 // ── REVEAL ON SCROLL ──
 const revealEls = document.querySelectorAll('.reveal');
+
+function revealCheck() {
+  revealEls.forEach(el => {
+    if (el.classList.contains('visible')) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 20) {
+      const siblings = [...el.parentElement.querySelectorAll('.reveal:not(.visible)')];
+      const idx = siblings.indexOf(el);
+      el.style.transitionDelay = `${idx * 80}ms`;
+      el.classList.add('visible');
+    }
+  });
+}
+
 const ro = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      // stagger siblings
       const siblings = [...entry.target.parentElement.querySelectorAll('.reveal:not(.visible)')];
       const idx = siblings.indexOf(entry.target);
       entry.target.style.transitionDelay = `${idx * 80}ms`;
@@ -41,8 +54,14 @@ const ro = new IntersectionObserver((entries) => {
       ro.unobserve(entry.target);
     }
   });
-}, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+}, { threshold: 0, rootMargin: '0px 0px 0px 0px' });
 revealEls.forEach(el => ro.observe(el));
+
+// Scroll fallback (fixes iOS Safari overflow-x issue with IntersectionObserver)
+window.addEventListener('scroll', revealCheck, { passive: true });
+window.addEventListener('resize', revealCheck, { passive: true });
+// Run once on load to show elements already in view
+revealCheck();
 
 // ── BOOKING TABS (booking page) ──
 const bkTabs = document.querySelectorAll('.bk-tab');
