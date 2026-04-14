@@ -227,7 +227,10 @@ document.getElementById('chatBubble')?.addEventListener('click', () => {
 // ── SMOOTH SCROLL ──
 document.querySelectorAll('a[href^="#"]').forEach(a => {
   a.addEventListener('click', e => {
-    const t = document.querySelector(a.getAttribute('href'));
+    const targetSel = a.getAttribute('href');
+    // Ignore placeholder links like href="#" to avoid invalid selector errors.
+    if (!targetSel || targetSel === '#') return;
+    const t = document.querySelector(targetSel);
     if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
