@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard — Breezyee Vans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body id="dashboardPage" class="dashboard-page">
+  <nav class="navbar dashboard-navbar" id="navbar">
+    <div class="nav-container dashboard-nav-container">
+      <a href="index.html" class="nav-logo"><span class="logo-text">Breezyee<strong>Vans</strong></span></a>
+      <div class="dashboard-top-actions">
+        <span class="nav-user-name"></span>
+        <a href="booking.html" class="btn btn-nav btn-sm">New Booking</a>
+        <a href="#" class="btn btn-outline-dark btn-sm" id="signOutLink">Sign out</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="dashboard-shell">
+    <aside class="dashboard-sidebar reveal">
+      <div class="dashboard-sidebar-brand">
+        <div class="logo-mark light"><span>B</span><span>V</span></div>
+        <div>
+          <strong>Breezyee Vans</strong>
+          <p>Member dashboard</p>
+        </div>
+      </div>
+      <nav class="dashboard-menu">
+        <a href="dashboard.html" class="dashboard-menu-link active">Overview</a>
+        <a href="booking.html" class="dashboard-menu-link">My Bookings</a>
+        <a href="fleet.html" class="dashboard-menu-link">Fleet</a>
+        <a href="services.html" class="dashboard-menu-link">Services</a>
+      </nav>
+      <div class="dashboard-admin-panel admin-only">
+        <span class="dashboard-admin-label">Admin</span>
+        <a href="#adminStats" class="dashboard-menu-link">Booking Stats</a>
+        <a href="#adminUsers" class="dashboard-menu-link">User Activity</a>
+      </div>
+    </aside>
+
+    <main class="dashboard-main">
+      <div class="dashboard-hero reveal">
+        <div>
+          <span class="sec-tag">Welcome back</span>
+          <h1 id="dashboardGreeting">Hello, valued member</h1>
+          <p>Manage your bookings, check activity, and access admin tools.</p>
+        </div>
+      </div>
+
+      <div class="dashboard-stats-grid reveal">
+        <div class="dashboard-card">
+          <p>Total bookings</p>
+          <h2 id="dashboardBookingsCount">0</h2>
+        </div>
+        <div class="dashboard-card">
+          <p>Upcoming bookings</p>
+          <h2 id="dashboardUpcomingCount">0</h2>
+        </div>
+        <div class="dashboard-card admin-only">
+          <p>Active users</p>
+          <h2 id="dashboardUsersCount">0</h2>
+        </div>
+        <div class="dashboard-card admin-only">
+          <p>New bookings this week</p>
+          <h2 id="dashboardWeeklyCount">0</h2>
+        </div>
+      </div>
+
+      <section class="dashboard-section reveal">
+        <div class="dashboard-section-header">
+          <div>
+            <span class="sec-tag">Recent bookings</span>
+            <h2>Latest activity</h2>
+          </div>
+          <a href="booking.html" class="btn btn-primary btn-sm">Create booking</a>
+        </div>
+        <div class="dashboard-table-card">
+          <table class="dashboard-table">
+            <thead>
+              <tr><th>Service</th><th>Date</th><th>Van</th><th>Status</th><th>Price</th></tr>
+            </thead>
+            <tbody id="bookingsTableBody">
+              <tr><td colspan="5" class="txt-dim">Loading booking data…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="dashboard-section admin-only reveal" id="adminStats">
+        <div class="dashboard-section-header">
+          <div>
+            <span class="sec-tag">Admin insights</span>
+            <h2>Team overview</h2>
+          </div>
+        </div>
+        <div class="dashboard-grid-dashboard">
+          <div class="dashboard-card small-card">
+            <p>Total revenue</p>
+            <h2 id="dashboardRevenue">£0</h2>
+          </div>
+          <div class="dashboard-card small-card">
+            <p>Pending bookings</p>
+            <h2 id="dashboardPendingCount">0</h2>
+          </div>
+          <div class="dashboard-card small-card">
+            <p>Recent customers</p>
+            <h2 id="dashboardCustomersCount">0</h2>
+          </div>
+        </div>
+      </section>
+    </main>
+  </section>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

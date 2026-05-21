@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login — Breezyee Vans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body id="loginPage" class="page-auth">
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><span class="logo-text">Breezyee<strong>Vans</strong></span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="fleet.html">Our Fleet</a></li>
+        <li><a href="booking.html">Book Now</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li class="nav-auth nav-auth-signed-out"><a href="login.html">Login</a></li>
+        <li class="nav-auth nav-auth-signed-in" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
+        <li class="nav-auth nav-auth-signed-in" style="display:none;"><a href="#" id="signOutLink">Sign out</a></li>
+      </ul>
+      <a href="booking.html" class="btn btn-nav">Get a Quote</a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation"><span></span><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <section class="page-hero bg-purple">
+    <div class="container">
+      <span class="page-eyebrow txt-white-60">Secure Account</span>
+      <h1 class="txt-white">Member Login &amp; Sign Up</h1>
+      <p class="txt-white-60">Create your account and manage bookings from a personalised dashboard.</p>
+    </div>
+  </section>
+
+  <div class="wave-wrap wave-from-purple"><svg viewBox="0 0 1440 60" preserveAspectRatio="none"><path d="M0,30 C360,0 1080,60 1440,30 L1440,60 L0,60 Z" fill="#f5f0ff"/></svg></div>
+
+  <section class="section bg-white">
+    <div class="container auth-page-grid">
+      <div class="auth-panel reveal">
+        <div class="auth-copy">
+          <span class="sec-tag">Member Area</span>
+          <h2>Fast sign in, easy booking management.</h2>
+          <p>Use your account to view past bookings, save your details, and access the admin dashboard if you are an operator.</p>
+          <div class="auth-features">
+            <div><strong>✓</strong> Save your booking history</div>
+            <div><strong>✓</strong> One-click rebook</div>
+            <div><strong>✓</strong> Admin dashboard access</div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-card reveal">
+        <div class="auth-card-header">
+          <div>
+            <span class="sec-tag">Member Login</span>
+            <h3 id="authHeading">Sign in to your account</h3>
+          </div>
+          <div class="auth-toggle-wrap">
+            <span id="authModeHint">New here?</span>
+            <button type="button" class="btn btn-outline btn-sm" id="authToggle">Create an account</button>
+          </div>
+        </div>
+        <div class="auth-status" id="authStatus">The first step to your dashboard.</div>
+        <form id="authForm" class="auth-form">
+          <div class="bk-field">
+            <label>Email address</label>
+            <input type="email" id="authEmail" required placeholder="you@example.com" />
+          </div>
+          <div class="bk-field">
+            <label>Password</label>
+            <input type="password" id="authPassword" required placeholder="Enter a secure password" />
+          </div>
+          <div class="auth-actions">
+            <button type="submit" class="btn btn-primary" id="authSubmit">Sign in</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer footer-minimal" id="contact">
+    <div class="container footer-bottom-inner" style="padding: 28px 0;">
+      <p class="txt-white-60">Need help? Call us on <a href="tel:+441234567890">+44 1234 567 890</a> or email <a href="mailto:hello@breezyeevans.co.uk">hello@breezyeevans.co.uk</a>.</p>
+    </div>
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

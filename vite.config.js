@@ -9,6 +9,8 @@ export default defineConfig({
         services: resolve(__dirname, 'services.html'),
         fleet: resolve(__dirname, 'fleet.html'),
         booking: resolve(__dirname, 'booking.html'),
+        login: resolve(__dirname, 'login.html'),
+        dashboard: resolve(__dirname, 'dashboard.html'),
       },
     },
   },

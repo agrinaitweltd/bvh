@@ -1,6 +1,49 @@
 /* ============================================================
    BREEZYEE VANS — App JS
    ============================================================ */
+import { supabase, ADMIN_EMAIL } from './supabase.js';
+
+function isAdminUser(user) {
+  return user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+}
+
+async function refreshAuthState() {
+  const { data } = await supabase.auth.getSession();
+  const user = data.session?.user ?? null;
+  updateAuthNav(user);
+  if (user) {
+    const custEmailEl = document.getElementById('custEmail');
+    const custNameEl = document.getElementById('custName');
+    if (custEmailEl) custEmailEl.value = user.email || '';
+    if (custNameEl) custNameEl.value = user.user_metadata?.full_name || '';
+  }
+  return user;
+}
+
+function updateAuthNav(user) {
+  document.querySelectorAll('.nav-auth-signed-out').forEach(el => {
+    el.style.display = user ? 'none' : '';
+  });
+  document.querySelectorAll('.nav-auth-signed-in').forEach(el => {
+    el.style.display = user ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-user-name').forEach(el => {
+    el.textContent = user ? user.email : '';
+  });
+}
+
+async function signOut() {
+  await supabase.auth.signOut();
+  await refreshAuthState();
+  if (window.location.pathname.endsWith('dashboard.html')) {
+    window.location.href = 'login.html';
+  }
+}
+
+document.getElementById('signOutLink')?.addEventListener('click', async (e) => {
+  e.preventDefault();
+  await signOut();
+});
 
 // ── NAVBAR SCROLL ──
 const navbar = document.getElementById('navbar');
@@ -175,15 +218,46 @@ const bookingForm    = document.getElementById('bookingForm');
 const bookingConfirm = document.getElementById('bookingConfirm');
 const newBookingBtn  = document.getElementById('newBookingBtn');
 
-bookingForm?.addEventListener('submit', e => {
+bookingForm?.addEventListener('submit', async e => {
   e.preventDefault();
   const btn = bookingForm.querySelector('.bk-submit');
   if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
-  setTimeout(() => {
-    bookingForm.style.display    = 'none';
-    bookingConfirm.style.display = 'block';
-    bookingConfirm.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }, 1200);
+
+  const van      = document.getElementById('vanSize')?.value;
+  const pickup   = document.getElementById('pickup')?.value;
+  const dropoff  = document.getElementById('dropoff')?.value;
+  const bookDate = document.getElementById('bookDate')?.value;
+  const bookTime = document.getElementById('bookTime')?.value;
+  const duration = document.getElementById('duration')?.value;
+  const helpers  = document.getElementById('helpers')?.value || '0';
+  const name     = document.getElementById('custName')?.value;
+  const email    = document.getElementById('custEmail')?.value;
+  const phone    = document.getElementById('custPhone')?.value;
+  const price    = document.getElementById('estimatedPrice')?.textContent || '—';
+
+  await new Promise(resolve => setTimeout(resolve, 800));
+
+  if (supabase) {
+    await supabase.from('bookings').insert([{
+      service: activeService,
+      van_size: van,
+      pickup,
+      dropoff,
+      date: bookDate,
+      time: bookTime,
+      duration,
+      helpers,
+      name,
+      email,
+      phone,
+      price,
+      status: 'Pending',
+    }]);
+  }
+
+  bookingForm.style.display    = 'none';
+  bookingConfirm.style.display = 'block';
+  bookingConfirm.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
 newBookingBtn?.addEventListener('click', () => {
@@ -235,6 +309,138 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-window.addEventListener('load', () => {
+window.addEventListener('load', async () => {
   document.body.classList.add('is-ready');
+  const user = await refreshAuthState();
+  initLoginPage(user);
+  initDashboardPage(user);
 });
+
+function initLoginPage(user) {
+  const loginPage = document.getElementById('loginPage');
+  if (!loginPage) return;
+  if (user) {
+    document.getElementById('authStatus').textContent = 'Already signed in. Redirecting to your dashboard…';
+    setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
+    return;
+  }
+
+  const authForm = document.getElementById('authForm');
+  const authToggle = document.getElementById('authToggle');
+  const authHeading = document.getElementById('authHeading');
+  const authModeHint = document.getElementById('authModeHint');
+  const authSubmit = document.getElementById('authSubmit');
+  const authStatus = document.getElementById('authStatus');
+  let authMode = 'signIn';
+
+  function updateMode() {
+    if (authMode === 'signIn') {
+      authMode = 'signUp';
+      authHeading.textContent = 'Create your account';
+      authModeHint.textContent = 'Already registered?';
+      authToggle.textContent = 'Sign in';
+      authSubmit.textContent = 'Create account';
+    } else {
+      authMode = 'signIn';
+      authHeading.textContent = 'Sign in to your account';
+      authModeHint.textContent = 'New here?';
+      authToggle.textContent = 'Create an account';
+      authSubmit.textContent = 'Sign in';
+    }
+    authStatus.textContent = 'Enter your email and password to continue.';
+  }
+
+  authToggle.addEventListener('click', updateMode);
+  authForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const email = document.getElementById('authEmail')?.value.trim();
+    const password = document.getElementById('authPassword')?.value.trim();
+    if (!email || !password) return;
+
+    authSubmit.disabled = true;
+    authStatus.textContent = authMode === 'signIn' ? 'Signing in…' : 'Creating account…';
+
+    let result;
+    if (authMode === 'signIn') {
+      result = await supabase.auth.signInWithPassword({ email, password });
+    } else {
+      result = await supabase.auth.signUp({ email, password });
+    }
+
+    authSubmit.disabled = false;
+    if (result.error) {
+      authStatus.textContent = result.error.message;
+      return;
+    }
+
+    if (authMode === 'signIn') {
+      window.location.href = 'dashboard.html';
+    } else {
+      authStatus.textContent = 'Account created. Check your email to verify and then sign in.';
+    }
+  });
+}
+
+async function initDashboardPage(user) {
+  const dashboardPage = document.getElementById('dashboardPage');
+  if (!dashboardPage) return;
+  if (!user) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const isAdmin = isAdminUser(user);
+  document.querySelectorAll('.admin-only').forEach(el => {
+    el.style.display = isAdmin ? '' : 'none';
+  });
+
+  document.getElementById('dashboardGreeting').textContent = `Welcome back, ${user.user_metadata?.full_name || user.email}`;
+
+  const { data: bookings, error } = isAdmin
+    ? await supabase.from('bookings').select('*').order('created_at', { ascending: false })
+    : await supabase.from('bookings').select('*').eq('email', user.email).order('created_at', { ascending: false });
+
+  const tableBody = document.getElementById('bookingsTableBody');
+  if (error || !Array.isArray(bookings)) {
+    tableBody.innerHTML = '<tr><td colspan="5" class="txt-dim">Unable to load booking data. Please check your Supabase setup.</td></tr>';
+    return;
+  }
+
+  tableBody.innerHTML = bookings.length === 0
+    ? '<tr><td colspan="5" class="txt-dim">No bookings found yet.</td></tr>'
+    : bookings.map(booking => {
+      const status = booking.status || 'Pending';
+      return `<tr><td>${booking.service || '--'}</td><td>${booking.date || '--'}</td><td>${booking.van_size || '--'}</td><td>${status}</td><td>${booking.price || '—'}</td></tr>`;
+    }).join('');
+
+  document.getElementById('dashboardBookingsCount').textContent = bookings.length;
+  const now = new Date();
+  document.getElementById('dashboardUpcomingCount').textContent = bookings.filter(b => b.date && new Date(b.date) >= now).length;
+
+  const uniqueUsers = new Set(bookings.filter(b => b.email).map(b => b.email));
+  const usersCountEl = document.getElementById('dashboardUsersCount');
+  if (usersCountEl) usersCountEl.textContent = uniqueUsers.size;
+
+  const weeklyCountEl = document.getElementById('dashboardWeeklyCount');
+  if (weeklyCountEl) {
+    weeklyCountEl.textContent = bookings.filter(b => {
+      const created = b.created_at ? new Date(b.created_at) : null;
+      return created && (Date.now() - created.getTime()) <= 7 * 24 * 60 * 60 * 1000;
+    }).length;
+  }
+
+  const totalRevenue = bookings.reduce((sum, booking) => {
+    const price = typeof booking.price === 'string'
+      ? Number(booking.price.replace(/[^\d.]/g, ''))
+      : Number(booking.price || 0);
+    return sum + (Number.isFinite(price) ? price : 0);
+  }, 0);
+  const revenueEl = document.getElementById('dashboardRevenue');
+  if (revenueEl) revenueEl.textContent = `£${totalRevenue.toLocaleString()}`;
+
+  const pendingEl = document.getElementById('dashboardPendingCount');
+  if (pendingEl) pendingEl.textContent = bookings.filter(b => (b.status || '').toLowerCase() === 'pending').length;
+
+  const customersEl = document.getElementById('dashboardCustomersCount');
+  if (customersEl) customersEl.textContent = uniqueUsers.size;
+}
