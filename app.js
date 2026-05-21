@@ -234,3 +234,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
   });
 });
+
+window.addEventListener('load', () => {
+  document.body.classList.add('is-ready');
+});

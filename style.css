@@ -1038,6 +1038,58 @@ input, select, button, textarea { font-family: var(--font); }
   transition: transform .3s, background .3s;
 }
 .svc-van-card:hover { transform: translateY(-6px); background: rgba(255,255,255,.18); }
+
+/* ============================================================
+   NEW PAGE ANIMATIONS
+   ============================================================ */
+@keyframes bv-float-in { from { opacity: 0; transform: translateY(24px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes bv-glow { from { box-shadow: 0 0 0 rgba(255,255,255,0); } to { box-shadow: 0 0 28px rgba(255,255,255,0.12); } }
+@keyframes bv-wave { 0% { transform: translateX(0); } 50% { transform: translateX(4px); } 100% { transform: translateX(0); } }
+
+body.is-ready .hero-eyebrow,
+body.is-ready .hero-text h1,
+body.is-ready .hero-text p,
+body.is-ready .hero-ctas,
+body.is-ready .hero-stats { animation: bv-float-in .62s ease-out both; }
+body.is-ready .hero-text h1 { animation-delay: .1s; }
+body.is-ready .hero-text p { animation-delay: .2s; }
+body.is-ready .hero-ctas { animation-delay: .3s; }
+body.is-ready .hero-stats { animation-delay: .4s; }
+
+.hero { position: relative; overflow: hidden; }
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 18% 24%, rgba(91,34,176,.12), transparent 24%), radial-gradient(circle at 82% 18%, rgba(245,166,35,.12), transparent 20%);
+  pointer-events: none;
+}
+
+.hero-stats { transition: transform .3s ease; }
+.hero-stats:hover { transform: translateY(-2px); }
+.hero-stats-inner .hstat { transition: transform .35s ease, opacity .35s ease; }
+.hero-stats-inner .hstat:hover { transform: translateY(-3px); }
+
+.hero-ctas .btn { transition: transform .25s ease, box-shadow .25s ease, background .25s ease; }
+.hero-ctas .btn:hover { transform: translateY(-2px) scale(1.01); }
+
+.btn-primary { animation: bv-glow .9s ease-in-out infinite alternate 4s; }
+
+.wave-wrap svg { animation: bv-wave 8s ease-in-out infinite; }
+
+.step-card, .svc-home-card, .van-card, .pricing-tbl, .testi-card { will-change: transform, opacity; }
+.step-card:hover, .svc-home-card:hover, .van-card:hover, .testi-card:hover { transform: translateY(-5px) scale(1.002); }
+.svc-home-card { transition: transform .32s ease, box-shadow .32s ease, border-color .32s ease; }
+.svc-home-card:hover { box-shadow: var(--shadow-lg); border-color: rgba(91,34,176,.16); }
+
+.hero-stats-inner .hstat:nth-child(1) { animation: bv-float-in .5s ease-out both .2s; }
+.hero-stats-inner .hstat:nth-child(2) { animation: bv-float-in .5s ease-out both .3s; }
+.hero-stats-inner .hstat:nth-child(3) { animation: bv-float-in .5s ease-out both .4s; }
+.hero-stats-inner .hstat:nth-child(4) { animation: bv-float-in .5s ease-out both .5s; }
+
+@media (max-width: 880px) {
+  .hero::before { display: none; }
+}
 .svc-van-card-featured { background: rgba(255,255,255,.18); border-color: var(--yellow); }
 .svc-van-badge {
   position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
