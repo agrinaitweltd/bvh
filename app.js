@@ -284,20 +284,24 @@ newBookingBtn?.addEventListener('click', () => {
 });
 
 // ── COOKIE BANNER ──
+const COOKIE_BANNER_KEY = 'bv_cookies';
 const cookieBanner = document.getElementById('cookieBanner');
 if (cookieBanner) {
-  if (localStorage.getItem('bv_cookies')) {
+  if (localStorage.getItem(COOKIE_BANNER_KEY) === '1') {
+    cookieBanner.classList.add('hide');
     cookieBanner.style.display = 'none';
   }
 
-  function dismissCookie() {
+  function dismissCookie(accepted = false) {
+    if (accepted) {
+      localStorage.setItem(COOKIE_BANNER_KEY, '1');
+    }
     cookieBanner.classList.add('hide');
     setTimeout(() => { cookieBanner.style.display = 'none'; }, 350);
   }
 
   document.getElementById('cookieAccept')?.addEventListener('click', () => {
-    localStorage.setItem('bv_cookies', '1');
-    dismissCookie();
+    dismissCookie(true);
   });
   document.getElementById('cookieManage')?.addEventListener('click', dismissCookie);
 }
@@ -341,6 +345,7 @@ function initLoginPage(user) {
   const authModeHint = document.getElementById('authModeHint');
   const authSubmit = document.getElementById('authSubmit');
   const authStatus = document.getElementById('authStatus');
+  const signupFields = loginPage.querySelectorAll('.signup-only');
   let authMode = 'signIn';
 
   function updateMode() {
@@ -357,10 +362,14 @@ function initLoginPage(user) {
       authToggle.textContent = 'Create an account';
       authSubmit.textContent = 'Sign in';
     }
+    signupFields.forEach(field => {
+      field.style.display = authMode === 'signUp' ? 'block' : 'none';
+    });
     authStatus.textContent = 'Enter your email and password to continue.';
   }
 
   authToggle.addEventListener('click', updateMode);
+  signupFields.forEach(field => { field.style.display = 'none'; });
   authForm.addEventListener('submit', async e => {
     e.preventDefault();
     const email = document.getElementById('authEmail')?.value.trim();
@@ -371,10 +380,34 @@ function initLoginPage(user) {
     authStatus.textContent = authMode === 'signIn' ? 'Signing in…' : 'Creating account…';
 
     let result;
+    const fullName = document.getElementById('authFullName')?.value.trim();
+    const dob = document.getElementById('authDob')?.value;
+    const phone = document.getElementById('authPhone')?.value.trim();
+    const postcode = document.getElementById('authPostcode')?.value.trim();
+
+    if (authMode === 'signUp' && (!fullName || !dob || !phone || !postcode)) {
+      authStatus.textContent = 'Please complete all required signup fields.';
+      authSubmit.disabled = false;
+      return;
+    }
+
+    const authEmail = email === 'admin' ? ADMIN_EMAIL : email;
+
     if (authMode === 'signIn') {
-      result = await supabase.auth.signInWithPassword({ email, password });
+      result = await supabase.auth.signInWithPassword({ email: authEmail, password });
     } else {
-      result = await supabase.auth.signUp({ email, password });
+      result = await supabase.auth.signUp({
+        email: authEmail,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            phone,
+            postcode,
+            dob,
+          },
+        },
+      });
     }
 
     authSubmit.disabled = false;
@@ -385,8 +418,10 @@ function initLoginPage(user) {
 
     if (authMode === 'signIn') {
       window.location.href = 'dashboard.html';
+    } else if (result.data?.session) {
+      window.location.href = 'dashboard.html';
     } else {
-      authStatus.textContent = 'Account created. Check your email to verify and then sign in.';
+      authStatus.textContent = 'Account created. Please sign in to continue.';
     }
   });
 }
