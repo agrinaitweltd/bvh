@@ -3,6 +3,12 @@
    ============================================================ */
 import { supabase, ADMIN_EMAIL } from './supabase.js';
 
+let currentUser = null;
+const authListener = supabase.auth.onAuthStateChange((_event, session) => {
+  currentUser = session?.user ?? null;
+  updateAuthNav(currentUser);
+});
+
 function isAdminUser(user) {
   return user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 }
@@ -10,6 +16,7 @@ function isAdminUser(user) {
 async function refreshAuthState() {
   const { data } = await supabase.auth.getSession();
   const user = data.session?.user ?? null;
+  currentUser = user;
   updateAuthNav(user);
   if (user) {
     const custEmailEl = document.getElementById('custEmail');
@@ -231,14 +238,16 @@ bookingForm?.addEventListener('submit', async e => {
   const duration = document.getElementById('duration')?.value;
   const helpers  = document.getElementById('helpers')?.value || '0';
   const name     = document.getElementById('custName')?.value;
-  const email    = document.getElementById('custEmail')?.value;
+  const email    = currentUser?.email || document.getElementById('custEmail')?.value;
   const phone    = document.getElementById('custPhone')?.value;
   const price    = document.getElementById('estimatedPrice')?.textContent || '—';
+  const userId   = currentUser?.id || null;
 
   await new Promise(resolve => setTimeout(resolve, 800));
 
   if (supabase) {
     await supabase.from('bookings').insert([{
+      user_id: userId,
       service: activeService,
       van_size: van,
       pickup,
@@ -313,6 +322,7 @@ window.addEventListener('load', async () => {
   document.body.classList.add('is-ready');
   const user = await refreshAuthState();
   initLoginPage(user);
+  initBookingPage(user);
   initDashboardPage(user);
 });
 
@@ -381,6 +391,21 @@ function initLoginPage(user) {
   });
 }
 
+function initBookingPage(user) {
+  const bookingFormExists = document.getElementById('bookingForm');
+  if (!bookingFormExists) return;
+  if (!user) return;
+
+  const custEmailEl = document.getElementById('custEmail');
+  const custNameEl = document.getElementById('custName');
+  if (custEmailEl) {
+    custEmailEl.value = user.email || '';
+  }
+  if (custNameEl) {
+    custNameEl.value = user.user_metadata?.full_name || '';
+  }
+}
+
 async function initDashboardPage(user) {
   const dashboardPage = document.getElementById('dashboardPage');
   if (!dashboardPage) return;
@@ -398,7 +423,7 @@ async function initDashboardPage(user) {
 
   const { data: bookings, error } = isAdmin
     ? await supabase.from('bookings').select('*').order('created_at', { ascending: false })
-    : await supabase.from('bookings').select('*').eq('email', user.email).order('created_at', { ascending: false });
+    : await supabase.from('bookings').select('*').or(`user_id.eq.${user.id},email.eq.${user.email}`).order('created_at', { ascending: false });
 
   const tableBody = document.getElementById('bookingsTableBody');
   if (error || !Array.isArray(bookings)) {
