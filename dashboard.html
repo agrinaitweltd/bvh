@@ -45,10 +45,62 @@
 
     <main class="dashboard-main">
       <div class="dashboard-hero reveal">
-        <div>
+        <div class="dashboard-hero-summary">
           <span class="sec-tag">Welcome back</span>
           <h1 id="dashboardGreeting">Hello, valued member</h1>
-          <p>Manage your bookings, check activity, and access admin tools.</p>
+          <p>Manage bookings, review fleet performance, and access admin tools in one place.</p>
+        </div>
+        <div class="dashboard-hero-cards">
+          <div class="dashboard-card hero-card">
+            <p>Weekly revenue</p>
+            <h2 id="dashboardRevenue">£0</h2>
+            <span class="tag tag-success">+12.8%</span>
+          </div>
+          <div class="dashboard-card hero-card">
+            <p>Active users</p>
+            <h2 id="dashboardUsersCount">0</h2>
+            <span class="tag tag-neutral">Live customer activity</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="dashboard-overview-grid reveal">
+        <div class="dashboard-card overview-card">
+          <div class="overview-card-header">
+            <span class="sec-tag">Payment goal</span>
+            <strong>Target: £40,000</strong>
+          </div>
+          <div class="overview-card-body">
+            <h2>£32,678.90</h2>
+            <p>Current total balance across bookings and invoices.</p>
+          </div>
+        </div>
+        <div class="dashboard-card overview-card chart-card">
+          <div class="overview-card-header">
+            <span class="sec-tag">Engagement rate</span>
+            <button class="btn btn-sm btn-outline">Annually</button>
+          </div>
+          <div class="dashboard-chart">
+            <div class="dashboard-chart-bar" style="height: 35%;"></div>
+            <div class="dashboard-chart-bar active" style="height: 70%;"></div>
+            <div class="dashboard-chart-bar" style="height: 55%;"></div>
+            <div class="dashboard-chart-bar" style="height: 80%;"></div>
+            <div class="dashboard-chart-bar" style="height: 60%;"></div>
+          </div>
+          <div class="chart-axis">
+            <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span>
+          </div>
+        </div>
+        <div class="dashboard-card overview-card">
+          <div class="overview-card-header">
+            <span class="sec-tag">Booking insights</span>
+            <strong>Recent growth</strong>
+          </div>
+          <div class="overview-card-body">
+            <p>New bookings this week</p>
+            <h2 id="dashboardWeeklyCount">0</h2>
+            <p class="txt-dim">Pending approvals and active requests are displayed below.</p>
+          </div>
         </div>
       </div>
 

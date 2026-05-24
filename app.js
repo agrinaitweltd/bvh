@@ -391,7 +391,7 @@ function initLoginPage(user) {
       return;
     }
 
-    const authEmail = email === 'admin' ? ADMIN_EMAIL : email;
+    const authEmail = email.toLowerCase() === 'admin' ? ADMIN_EMAIL : email;
 
     if (authMode === 'signIn') {
       result = await supabase.auth.signInWithPassword({ email: authEmail, password });

@@ -1078,12 +1078,29 @@ input, select, button, textarea { font-family: var(--font); }
 .dashboard-admin-panel { border-top: 1px solid var(--gray-200); padding-top: 24px; }
 .dashboard-admin-label { display: block; margin-bottom: 12px; font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--purple); }
 .dashboard-main { display: flex; flex-direction: column; gap: 28px; }
-.dashboard-hero { background: linear-gradient(135deg, rgba(91,34,176,.15), rgba(245,240,255,.9)); border-radius: var(--radius-lg); padding: 32px 34px; }
+.dashboard-hero { background: linear-gradient(135deg, rgba(91,34,176,.15), rgba(245,240,255,.9)); border-radius: var(--radius-lg); padding: 32px 34px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 24px; align-items: center; }
 .dashboard-hero h1 { font-size: clamp(2rem, 3.5vw, 2.8rem); margin: 12px 0 12px; }
-.dashboard-stats-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
-.dashboard-card { background: var(--white); border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 24px; box-shadow: var(--shadow-sm); }
-.dashboard-card p { font-size: .95rem; color: var(--text-dim); margin-bottom: 12px; }
-.dashboard-card h2 { font-size: 2rem; margin: 0; }
+.dashboard-hero-summary p { max-width: 520px; margin-top: 14px; color: var(--text-mid); }
+.dashboard-hero-cards { display: grid; gap: 16px; }
+.hero-card { border: none; }
+.hero-card p { font-size: .9rem; color: var(--text-dim); margin-bottom: 10px; }
+.hero-card h2 { font-size: 2.25rem; margin-bottom: 10px; }
+.tag { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font-size: .82rem; font-weight: 700; }
+.tag-success { background: rgba(38, 198, 218, .12); color: #0793c7; }
+.tag-neutral { background: rgba(113, 128, 150, .14); color: #4f5b6a; }
+.dashboard-overview-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+.overview-card { border: none; }
+.overview-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 18px; }
+.overview-card-header strong { font-size: .95rem; display: block; }
+.overview-card-body h2 { font-size: 2rem; margin: .25rem 0 10px; }
+.dashboard-chart { display: flex; align-items: flex-end; gap: 12px; height: 130px; padding: 10px 0; }
+.dashboard-chart-bar { flex: 1; background: rgba(91,34,176,.12); border-radius: 999px 999px 0 0; transition: background .2s ease; }
+.dashboard-chart-bar.active { background: var(--purple); }
+.chart-axis { display: flex; justify-content: space-between; gap: 10px; font-size: .75rem; color: var(--text-dim); }
+@media (max-width: 960px) {
+  .dashboard-hero { grid-template-columns: 1fr; }
+  .dashboard-overview-grid { grid-template-columns: 1fr; }
+}
 .dashboard-section { display: grid; gap: 20px; }
 .dashboard-section-header { display: flex; justify-content: space-between; align-items: center; gap: 18px; }
 .dashboard-section-header h2 { margin: 6px 0 0; }
