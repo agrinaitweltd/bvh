@@ -1998,6 +1998,27 @@ body.is-ready .hero-stats { animation-delay: .4s; }
   font-size: 1.2rem;
   letter-spacing: 0;
 }
+.admin-owner-card {
+  display: grid;
+  gap: 4px;
+  border-radius: 14px;
+  background: var(--console-panel);
+  padding: 12px;
+}
+.admin-owner-card span,
+.admin-owner-card small {
+  color: var(--console-muted);
+  font-size: .72rem;
+}
+.admin-owner-card strong {
+  color: var(--console-ink);
+  font-size: .92rem;
+  line-height: 1.25;
+}
+.admin-owner-card small {
+  color: var(--console-green-dark);
+  font-weight: 800;
+}
 .admin-console-menu {
   display: grid;
   gap: 7px;
@@ -2149,6 +2170,27 @@ body.is-ready .hero-stats { animation-delay: .4s; }
   background: linear-gradient(135deg, #d7b995, #5d6470);
   color: #fff;
   font-weight: 900;
+}
+.admin-live-pill {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: #e4f5ec;
+  color: var(--console-green-dark);
+  padding: 0 12px;
+  font-size: .75rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.admin-live-pill::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  margin-right: 7px;
+  border-radius: 50%;
+  background: var(--console-green);
+  box-shadow: 0 0 0 4px rgba(17, 152, 97, .12);
 }
 .admin-console-hero {
   display: flex;

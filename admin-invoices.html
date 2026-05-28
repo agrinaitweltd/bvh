@@ -13,13 +13,14 @@
   <div class="admin-console-shell">
     <aside class="admin-console-sidebar">
       <a href="index.html" class="admin-console-brand"><span class="admin-console-brand-mark">BV</span><strong>Breezyee</strong></a>
+      <div class="admin-owner-card"><span>Admin account</span><strong class="admin-owner-name">Mr Olushola Fadipe</strong><small id="dashboardSyncStatus">Connecting to Supabase</small></div>
       <nav class="admin-console-menu"><span>Main Menu</span><a href="dashboard.html"><b>DB</b>Dashboard</a><a href="admin-analytics.html"><b>AN</b>Analytics <small>20</small></a><a href="admin-transactions.html"><b>TR</b>Transactions</a><a href="admin-invoices.html" class="active"><b>IN</b>Invoices</a></nav>
       <nav class="admin-console-menu"><span>Features</span><a href="admin-transactions.html#recurring"><b>RC</b>Recurring <small>16</small></a><a href="#subscriptions"><b>SB</b>Subscriptions</a><a href="admin-settings.html#feedback"><b>FB</b>Feedback</a></nav>
       <nav class="admin-console-menu"><span>General</span><a href="admin-settings.html"><b>ST</b>Settings</a><a href="admin-settings.html#help"><b>HP</b>Help Desk</a><a href="#" id="signOutLink"><b>LO</b>Log out</a></nav>
       <div class="admin-upgrade-card"><strong>Admin Pro</strong><p>Keep payment requests clean and visible.</p><a href="admin-settings.html">Upgrade</a></div>
     </aside>
     <main class="admin-console-main">
-      <header class="admin-console-topbar"><button class="admin-collapse" type="button">K</button><label class="admin-search"><span>Search</span><input type="search" placeholder="Search invoices" /><kbd>Ctrl K</kbd></label><div class="admin-console-actions"><button type="button">?</button><button type="button">M</button><button type="button">N</button><div class="admin-console-avatar" id="headerAvatar">A</div></div></header>
+      <header class="admin-console-topbar"><button class="admin-collapse" type="button">K</button><label class="admin-search"><span>Search</span><input type="search" placeholder="Search invoices" /><kbd>Ctrl K</kbd></label><div class="admin-console-actions"><button type="button">?</button><button type="button">M</button><button type="button">N</button><span class="admin-live-pill" id="dashboardLastSync">Syncing...</span><div class="admin-console-avatar" id="headerAvatar">A</div></div></header>
       <section class="admin-console-hero"><div><h1>Invoices</h1><p>Create, monitor, and reconcile customer invoices against booked moving jobs.</p></div><div class="admin-hero-actions"><span class="admin-date-chip">Billing</span><a class="admin-export-button" href="booking.html">New Invoice</a></div></section>
       <section class="admin-kpi-grid"><article class="admin-kpi-card"><h2>Invoice Value</h2><strong id="dashboardRevenue">GBP 0</strong><p>Total issued value</p></article><article class="admin-kpi-card"><h2>Customer Credit</h2><strong id="dashboardCreditAmount">GBP 0</strong><p>Deposit estimate</p></article><article class="admin-kpi-card"><h2>Customers</h2><strong id="dashboardCustomersCount">0</strong><p>Billing contacts</p></article></section>
       <section class="admin-console-grid">

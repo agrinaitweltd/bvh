@@ -4,6 +4,8 @@
 import { supabase, ADMIN_EMAIL } from './supabase.js';
 
 let currentUser = null;
+let bookingsRealtimeChannel = null;
+const ADMIN_OWNER_NAME = 'Mr Olushola Fadipe';
 const authListener = supabase.auth.onAuthStateChange((_event, session) => {
   currentUser = session?.user ?? null;
   updateAuthNav(currentUser);
@@ -455,8 +457,7 @@ async function initDashboardPage(user) {
     el.style.display = isAdmin ? '' : 'none';
   });
 
-  const displayName = user.user_metadata?.full_name || user.email || 'Admin';
-  const firstName = displayName.split('@')[0].split(' ')[0] || 'Admin';
+  const displayName = ADMIN_OWNER_NAME;
   const escapeHTML = value => String(value ?? '--')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -464,10 +465,26 @@ async function initDashboardPage(user) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
   const greetingEl = document.getElementById('dashboardGreeting');
-  if (greetingEl) greetingEl.textContent = `Welcome Back, ${firstName}`;
+  if (greetingEl) greetingEl.textContent = `Welcome back, ${displayName}`;
 
   const avatarEl = document.getElementById('headerAvatar');
-  if (avatarEl) avatarEl.textContent = firstName.charAt(0).toUpperCase();
+  if (avatarEl) avatarEl.textContent = 'OF';
+
+  document.querySelectorAll('.admin-owner-name').forEach(el => {
+    el.textContent = displayName;
+  });
+
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+
+  const formatMoney = value => `GBP ${Math.round(value).toLocaleString()}`;
+  const parseMoney = value => {
+    if (typeof value === 'number') return value;
+    const parsed = Number(String(value || '').replace(/[^\d.]/g, ''));
+    return Number.isFinite(parsed) ? parsed : 0;
+  };
 
   const { data: bookings, error } = isAdmin
     ? await supabase.from('bookings').select('*').order('created_at', { ascending: false })
@@ -477,6 +494,7 @@ async function initDashboardPage(user) {
   if (error || !Array.isArray(bookings)) {
     if (!tableBody) return;
     tableBody.innerHTML = '<tr><td colspan="5" class="txt-dim">Unable to load booking data. Please check your Supabase setup.</td></tr>';
+    setText('dashboardSyncStatus', 'Supabase connection issue');
     return;
   }
 
@@ -497,42 +515,78 @@ async function initDashboardPage(user) {
       : bookingRows;
   }
 
-  const bookingsCountEl = document.getElementById('dashboardBookingsCount');
-  if (bookingsCountEl) bookingsCountEl.textContent = bookings.length;
+  setText('dashboardBookingsCount', bookings.length);
   const now = new Date();
-  const upcomingCountEl = document.getElementById('dashboardUpcomingCount');
-  if (upcomingCountEl) upcomingCountEl.textContent = bookings.filter(b => b.date && new Date(b.date) >= now).length;
+  const upcomingBookings = bookings.filter(b => b.date && new Date(b.date) >= now);
+  setText('dashboardUpcomingCount', upcomingBookings.length);
 
   const uniqueUsers = new Set(bookings.filter(b => b.email).map(b => b.email));
-  const usersCountEl = document.getElementById('dashboardUsersCount');
-  if (usersCountEl) usersCountEl.textContent = uniqueUsers.size;
+  setText('dashboardUsersCount', uniqueUsers.size);
 
   const weeklyCountEl = document.getElementById('dashboardWeeklyCount');
-  if (weeklyCountEl) {
-    weeklyCountEl.textContent = bookings.filter(b => {
-      const created = b.created_at ? new Date(b.created_at) : null;
-      return created && (Date.now() - created.getTime()) <= 7 * 24 * 60 * 60 * 1000;
-    }).length;
-  }
+  const weeklyBookings = bookings.filter(b => {
+    const created = b.created_at ? new Date(b.created_at) : null;
+    return created && (Date.now() - created.getTime()) <= 7 * 24 * 60 * 60 * 1000;
+  });
+  if (weeklyCountEl) weeklyCountEl.textContent = weeklyBookings.length;
 
-  const totalRevenue = bookings.reduce((sum, booking) => {
-    const price = typeof booking.price === 'string'
-      ? Number(booking.price.replace(/[^\d.]/g, ''))
-      : Number(booking.price || 0);
-    return sum + (Number.isFinite(price) ? price : 0);
+  const totalRevenue = bookings.reduce((sum, booking) => sum + parseMoney(booking.price), 0);
+  const pendingBookings = bookings.filter(b => (b.status || '').toLowerCase() === 'pending');
+  const completedBookings = bookings.filter(b => {
+    const status = (b.status || '').toLowerCase();
+    return status.includes('success') || status.includes('complete') || status.includes('confirm');
+  });
+  const currentMonthRevenue = bookings.reduce((sum, booking) => {
+    const created = booking.created_at ? new Date(booking.created_at) : null;
+    if (!created || created.getMonth() !== now.getMonth() || created.getFullYear() !== now.getFullYear()) return sum;
+    return sum + parseMoney(booking.price);
   }, 0);
-  const revenueEl = document.getElementById('dashboardRevenue');
-  if (revenueEl) revenueEl.textContent = `GBP ${totalRevenue.toLocaleString()}`;
+  const revenueGoal = Math.max(25000, totalRevenue * 1.25);
+  const monthlyProgress = Math.min(100, Math.round((currentMonthRevenue / revenueGoal) * 100)) || 0;
+  const fleetUtilisation = bookings.length ? Math.min(96, Math.round((upcomingBookings.length / Math.max(bookings.length, 1)) * 100) + 28) : 0;
+  const followUpRate = bookings.length ? Math.round((pendingBookings.length / bookings.length) * 100) : 0;
 
-  const balanceEl = document.getElementById('dashboardBalance');
-  if (balanceEl) balanceEl.textContent = `GBP ${totalRevenue.toLocaleString()}`;
+  setText('dashboardRevenue', formatMoney(totalRevenue));
+  setText('dashboardBalance', formatMoney(totalRevenue));
+  setText('dashboardCreditAmount', formatMoney(totalRevenue * 0.27));
+  setText('dashboardPendingCount', pendingBookings.length);
+  setText('dashboardCustomersCount', uniqueUsers.size);
+  setText('dashboardCompletedCount', completedBookings.length);
+  setText('dashboardMonthlyRevenue', formatMoney(currentMonthRevenue));
+  setText('dashboardRevenueGoal', `${monthlyProgress}%`);
+  setText('dashboardFleetUtilisation', `${fleetUtilisation}%`);
+  setText('dashboardFollowUps', `${followUpRate}%`);
+  setText('dashboardSyncStatus', 'Synced with Supabase');
+  setText('dashboardLastSync', `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
 
-  const creditEl = document.getElementById('dashboardCreditAmount');
-  if (creditEl) creditEl.textContent = `GBP ${Math.round(totalRevenue * 0.27).toLocaleString()}`;
+  const revenueGoalBar = document.getElementById('dashboardRevenueGoalBar');
+  if (revenueGoalBar) revenueGoalBar.style.width = `${monthlyProgress}%`;
+  const fleetBar = document.getElementById('dashboardFleetUtilisationBar');
+  if (fleetBar) fleetBar.style.width = `${fleetUtilisation}%`;
+  const followUpsBar = document.getElementById('dashboardFollowUpsBar');
+  if (followUpsBar) followUpsBar.style.width = `${followUpRate}%`;
 
-  const pendingEl = document.getElementById('dashboardPendingCount');
-  if (pendingEl) pendingEl.textContent = bookings.filter(b => (b.status || '').toLowerCase() === 'pending').length;
+  const monthlyTotals = Array.from({ length: 12 }, () => 0);
+  bookings.forEach(booking => {
+    const created = booking.created_at ? new Date(booking.created_at) : booking.date ? new Date(booking.date) : null;
+    if (!created || created.getFullYear() !== now.getFullYear()) return;
+    monthlyTotals[created.getMonth()] += parseMoney(booking.price) || 1;
+  });
+  const maxMonth = Math.max(...monthlyTotals, 1);
+  document.querySelectorAll('[data-month-bar]').forEach((bar, index) => {
+    const height = Math.max(14, Math.round((monthlyTotals[index] / maxMonth) * 100));
+    bar.style.height = `${height}%`;
+    bar.classList.toggle('active', index === now.getMonth());
+  });
 
-  const customersEl = document.getElementById('dashboardCustomersCount');
-  if (customersEl) customersEl.textContent = uniqueUsers.size;
+  if (!bookingsRealtimeChannel) {
+    bookingsRealtimeChannel = supabase
+      .channel('admin-bookings-sync')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
+        initDashboardPage(user);
+      })
+      .subscribe(status => {
+        if (status === 'SUBSCRIBED') setText('dashboardSyncStatus', 'Live Supabase sync on');
+      });
+  }
 }

@@ -16,6 +16,11 @@
         <span class="admin-console-brand-mark">BV</span>
         <strong>Breezyee</strong>
       </a>
+      <div class="admin-owner-card">
+        <span>Admin account</span>
+        <strong class="admin-owner-name">Mr Olushola Fadipe</strong>
+        <small id="dashboardSyncStatus">Connecting to Supabase</small>
+      </div>
       <nav class="admin-console-menu">
         <span>Main Menu</span>
         <a href="dashboard.html" class="active"><b>DB</b>Dashboard</a>
@@ -54,6 +59,7 @@
           <button type="button" aria-label="Help">?</button>
           <button type="button" aria-label="Messages">M</button>
           <button type="button" aria-label="Notifications">N</button>
+          <span class="admin-live-pill" id="dashboardLastSync">Syncing...</span>
           <div class="admin-console-avatar" id="headerAvatar">A</div>
         </div>
       </header>
@@ -61,7 +67,7 @@
       <section class="admin-console-hero">
         <div>
           <h1 id="dashboardGreeting">Welcome back</h1>
-          <p>Monitor and control every Breezyee Vans booking, payment, and customer request from one admin workspace.</p>
+          <p>Monitor and control every Breezyee Vans booking, payment, and customer request from one admin workspace owned by <span class="admin-owner-name">Mr Olushola Fadipe</span>.</p>
         </div>
         <div class="admin-hero-actions">
           <span class="admin-date-chip">Thu, 28 May 2026</span>
@@ -116,6 +122,8 @@
             <div><span>Upcoming</span><strong id="dashboardUpcomingCount">0</strong><small>Active</small></div>
             <div><span>Pending</span><strong id="dashboardPendingCount">0</strong><small>Needs review</small></div>
             <div><span>Customers</span><strong id="dashboardCustomersCount">0</strong><small>Unique</small></div>
+            <div><span>Completed</span><strong id="dashboardCompletedCount">0</strong><small>Confirmed</small></div>
+            <div><span>This Month</span><strong id="dashboardMonthlyRevenue">GBP 0</strong><small>Synced value</small></div>
           </div>
         </article>
 
@@ -125,9 +133,9 @@
             <div class="admin-panel-tools"><span>Earnings</span><button type="button">This Year</button></div>
           </div>
           <div class="admin-year-chart" aria-hidden="true">
-            <span style="height:42%"></span><span style="height:62%"></span><span style="height:72%"></span><span style="height:44%"></span>
-            <span style="height:58%"></span><span style="height:20%"></span><span style="height:44%"></span><span class="active" style="height:82%"></span>
-            <span style="height:54%"></span><span style="height:34%"></span><span style="height:30%"></span><span style="height:54%"></span>
+            <span data-month-bar style="height:42%"></span><span data-month-bar style="height:62%"></span><span data-month-bar style="height:72%"></span><span data-month-bar style="height:44%"></span>
+            <span data-month-bar style="height:58%"></span><span data-month-bar style="height:20%"></span><span data-month-bar style="height:44%"></span><span data-month-bar class="active" style="height:82%"></span>
+            <span data-month-bar style="height:54%"></span><span data-month-bar style="height:34%"></span><span data-month-bar style="height:30%"></span><span data-month-bar style="height:54%"></span>
           </div>
           <div class="admin-month-row"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span></div>
         </article>
@@ -138,9 +146,9 @@
             <button type="button">...</button>
           </div>
           <div class="admin-plan-list">
-            <div><span>Fleet utilisation</span><strong>62%</strong><em><i style="width:62%"></i></em></div>
-            <div><span>Monthly revenue goal</span><strong>74%</strong><em><i style="width:74%"></i></em></div>
-            <div><span>Customer follow-ups</span><strong>48%</strong><em><i style="width:48%"></i></em></div>
+            <div><span>Fleet utilisation</span><strong id="dashboardFleetUtilisation">0%</strong><em><i id="dashboardFleetUtilisationBar" style="width:0%"></i></em></div>
+            <div><span>Monthly revenue goal</span><strong id="dashboardRevenueGoal">0%</strong><em><i id="dashboardRevenueGoalBar" style="width:0%"></i></em></div>
+            <div><span>Customer follow-ups</span><strong id="dashboardFollowUps">0%</strong><em><i id="dashboardFollowUpsBar" style="width:0%"></i></em></div>
           </div>
         </article>
 
