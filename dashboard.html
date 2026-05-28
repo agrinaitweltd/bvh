@@ -3,171 +3,166 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard — Breezyee Vans</title>
+  <title>Admin Dashboard - Breezyee Vans</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body id="dashboardPage" class="dashboard-page">
-  <nav class="navbar dashboard-navbar" id="navbar">
-    <div class="nav-container dashboard-nav-container">
-      <a href="index.html" class="nav-logo"><span class="logo-text">Breezyee<strong>Vans</strong></span></a>
-      <div class="dashboard-top-actions">
-        <span class="nav-user-name"></span>
-        <a href="booking.html" class="btn btn-nav btn-sm">New Booking</a>
-        <a href="#" class="btn btn-outline-dark btn-sm" id="signOutLink">Sign out</a>
-      </div>
-    </div>
-  </nav>
-
-  <section class="dashboard-shell">
-    <aside class="dashboard-sidebar reveal">
-      <div class="dashboard-sidebar-brand">
-        <div class="logo-mark light"><span>B</span><span>V</span></div>
-        <div>
-          <strong>Breezyee Vans</strong>
-          <p>Member dashboard</p>
-        </div>
-      </div>
-      <nav class="dashboard-menu">
-        <a href="dashboard.html" class="dashboard-menu-link active">Overview</a>
-        <a href="booking.html" class="dashboard-menu-link">My Bookings</a>
-        <a href="fleet.html" class="dashboard-menu-link">Fleet</a>
-        <a href="services.html" class="dashboard-menu-link">Services</a>
+<body id="dashboardPage" class="admin-console-page">
+  <div class="admin-console-shell">
+    <aside class="admin-console-sidebar">
+      <a href="index.html" class="admin-console-brand">
+        <span class="admin-console-brand-mark">BV</span>
+        <strong>Breezyee</strong>
+      </a>
+      <nav class="admin-console-menu">
+        <span>Main Menu</span>
+        <a href="dashboard.html" class="active"><b>DB</b>Dashboard</a>
+        <a href="admin-analytics.html"><b>AN</b>Analytics <small>20</small></a>
+        <a href="admin-transactions.html"><b>TR</b>Transactions</a>
+        <a href="admin-invoices.html"><b>IN</b>Invoices</a>
       </nav>
-      <div class="dashboard-admin-panel admin-only">
-        <span class="dashboard-admin-label">Admin</span>
-        <a href="#adminStats" class="dashboard-menu-link">Booking Stats</a>
-        <a href="#adminUsers" class="dashboard-menu-link">User Activity</a>
+      <nav class="admin-console-menu">
+        <span>Features</span>
+        <a href="admin-transactions.html#recurring"><b>RC</b>Recurring <small>16</small></a>
+        <a href="admin-invoices.html#subscriptions"><b>SB</b>Subscriptions</a>
+        <a href="admin-settings.html#feedback"><b>FB</b>Feedback</a>
+      </nav>
+      <nav class="admin-console-menu">
+        <span>General</span>
+        <a href="admin-settings.html"><b>ST</b>Settings</a>
+        <a href="admin-settings.html#help"><b>HP</b>Help Desk</a>
+        <a href="#" id="signOutLink"><b>LO</b>Log out</a>
+      </nav>
+      <div class="admin-upgrade-card">
+        <strong>Admin Pro</strong>
+        <p>Faster control for bookings, customers, and fleet activity.</p>
+        <a href="admin-settings.html">Upgrade</a>
       </div>
     </aside>
 
-    <main class="dashboard-main">
-      <div class="dashboard-hero reveal">
-        <div class="dashboard-hero-summary">
-          <span class="sec-tag">Welcome back</span>
-          <h1 id="dashboardGreeting">Hello, valued member</h1>
-          <p>Manage bookings, review fleet performance, and access admin tools in one place.</p>
+    <main class="admin-console-main">
+      <header class="admin-console-topbar">
+        <button class="admin-collapse" type="button" aria-label="Collapse sidebar">K</button>
+        <label class="admin-search">
+          <span>Search</span>
+          <input type="search" placeholder="Search" />
+          <kbd>Ctrl K</kbd>
+        </label>
+        <div class="admin-console-actions">
+          <button type="button" aria-label="Help">?</button>
+          <button type="button" aria-label="Messages">M</button>
+          <button type="button" aria-label="Notifications">N</button>
+          <div class="admin-console-avatar" id="headerAvatar">A</div>
         </div>
-        <div class="dashboard-hero-cards">
-          <div class="dashboard-card hero-card">
-            <p>Weekly revenue</p>
-            <h2 id="dashboardRevenue">£0</h2>
-            <span class="tag tag-success">+12.8%</span>
-          </div>
-          <div class="dashboard-card hero-card">
-            <p>Active users</p>
-            <h2 id="dashboardUsersCount">0</h2>
-            <span class="tag tag-neutral">Live customer activity</span>
-          </div>
-        </div>
-      </div>
+      </header>
 
-      <div class="dashboard-overview-grid reveal">
-        <div class="dashboard-card overview-card">
-          <div class="overview-card-header">
-            <span class="sec-tag">Payment goal</span>
-            <strong>Target: £40,000</strong>
-          </div>
-          <div class="overview-card-body">
-            <h2>£32,678.90</h2>
-            <p>Current total balance across bookings and invoices.</p>
-          </div>
+      <section class="admin-console-hero">
+        <div>
+          <h1 id="dashboardGreeting">Welcome back</h1>
+          <p>Monitor and control every Breezyee Vans booking, payment, and customer request from one admin workspace.</p>
         </div>
-        <div class="dashboard-card overview-card chart-card">
-          <div class="overview-card-header">
-            <span class="sec-tag">Engagement rate</span>
-            <button class="btn btn-sm btn-outline">Annually</button>
-          </div>
-          <div class="dashboard-chart">
-            <div class="dashboard-chart-bar" style="height: 35%;"></div>
-            <div class="dashboard-chart-bar active" style="height: 70%;"></div>
-            <div class="dashboard-chart-bar" style="height: 55%;"></div>
-            <div class="dashboard-chart-bar" style="height: 80%;"></div>
-            <div class="dashboard-chart-bar" style="height: 60%;"></div>
-          </div>
-          <div class="chart-axis">
-            <span>JAN</span><span>FEB</span><span>MAR</span><span>APR</span><span>MAY</span>
-          </div>
-        </div>
-        <div class="dashboard-card overview-card">
-          <div class="overview-card-header">
-            <span class="sec-tag">Booking insights</span>
-            <strong>Recent growth</strong>
-          </div>
-          <div class="overview-card-body">
-            <p>New bookings this week</p>
-            <h2 id="dashboardWeeklyCount">0</h2>
-            <p class="txt-dim">Pending approvals and active requests are displayed below.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="dashboard-stats-grid reveal">
-        <div class="dashboard-card">
-          <p>Total bookings</p>
-          <h2 id="dashboardBookingsCount">0</h2>
-        </div>
-        <div class="dashboard-card">
-          <p>Upcoming bookings</p>
-          <h2 id="dashboardUpcomingCount">0</h2>
-        </div>
-        <div class="dashboard-card admin-only">
-          <p>Active users</p>
-          <h2 id="dashboardUsersCount">0</h2>
-        </div>
-        <div class="dashboard-card admin-only">
-          <p>New bookings this week</p>
-          <h2 id="dashboardWeeklyCount">0</h2>
-        </div>
-      </div>
-
-      <section class="dashboard-section reveal">
-        <div class="dashboard-section-header">
-          <div>
-            <span class="sec-tag">Recent bookings</span>
-            <h2>Latest activity</h2>
-          </div>
-          <a href="booking.html" class="btn btn-primary btn-sm">Create booking</a>
-        </div>
-        <div class="dashboard-table-card">
-          <table class="dashboard-table">
-            <thead>
-              <tr><th>Service</th><th>Date</th><th>Van</th><th>Status</th><th>Price</th></tr>
-            </thead>
-            <tbody id="bookingsTableBody">
-              <tr><td colspan="5" class="txt-dim">Loading booking data…</td></tr>
-            </tbody>
-          </table>
+        <div class="admin-hero-actions">
+          <span class="admin-date-chip">Thu, 28 May 2026</span>
+          <a class="admin-export-button" href="booking.html">New Booking</a>
         </div>
       </section>
 
-      <section class="dashboard-section admin-only reveal" id="adminStats">
-        <div class="dashboard-section-header">
-          <div>
-            <span class="sec-tag">Admin insights</span>
-            <h2>Team overview</h2>
+      <section class="admin-kpi-grid">
+        <article class="admin-kpi-card admin-balance-card">
+          <div class="admin-kpi-top">
+            <span class="admin-kpi-icon">GBP</span>
+            <button type="button">USD</button>
           </div>
-        </div>
-        <div class="dashboard-grid-dashboard">
-          <div class="dashboard-card small-card">
-            <p>Total revenue</p>
-            <h2 id="dashboardRevenue">£0</h2>
+          <h2>Account Balance</h2>
+          <strong id="dashboardBalance">GBP 0</strong>
+          <p><span class="positive">+3.2%</span> from last month</p>
+          <div class="admin-money-actions">
+            <a href="admin-invoices.html">Send Invoice</a>
+            <a href="admin-transactions.html">Request Money</a>
           </div>
-          <div class="dashboard-card small-card">
-            <p>Pending bookings</p>
-            <h2 id="dashboardPendingCount">0</h2>
+        </article>
+
+        <article class="admin-kpi-card">
+          <div class="admin-kpi-top">
+            <span class="admin-kpi-icon">EX</span>
+            <button type="button">...</button>
           </div>
-          <div class="dashboard-card small-card">
-            <p>Recent customers</p>
-            <h2 id="dashboardCustomersCount">0</h2>
+          <h2>Total Expenses</h2>
+          <strong id="dashboardCreditAmount">GBP 0</strong>
+          <p><span class="negative">-2.1%</span> from last month</p>
+        </article>
+
+        <article class="admin-kpi-card">
+          <div class="admin-kpi-top">
+            <span class="admin-kpi-icon">SV</span>
+            <button type="button">...</button>
           </div>
-        </div>
+          <h2>Total Savings</h2>
+          <strong id="dashboardRevenue">GBP 0</strong>
+          <p><span class="positive">+4.5%</span> from last month</p>
+        </article>
+      </section>
+
+      <section class="admin-console-grid">
+        <article class="admin-panel admin-wallet-panel">
+          <div class="admin-panel-header">
+            <h2>My Wallet</h2>
+            <a href="admin-invoices.html">+ Add New</a>
+          </div>
+          <div class="admin-wallet-grid">
+            <div><span>GBP</span><strong id="dashboardBookingsCount">0</strong><small>Bookings</small></div>
+            <div><span>Upcoming</span><strong id="dashboardUpcomingCount">0</strong><small>Active</small></div>
+            <div><span>Pending</span><strong id="dashboardPendingCount">0</strong><small>Needs review</small></div>
+            <div><span>Customers</span><strong id="dashboardCustomersCount">0</strong><small>Unique</small></div>
+          </div>
+        </article>
+
+        <article class="admin-panel admin-overview-panel">
+          <div class="admin-panel-header">
+            <h2>Overview</h2>
+            <div class="admin-panel-tools"><span>Earnings</span><button type="button">This Year</button></div>
+          </div>
+          <div class="admin-year-chart" aria-hidden="true">
+            <span style="height:42%"></span><span style="height:62%"></span><span style="height:72%"></span><span style="height:44%"></span>
+            <span style="height:58%"></span><span style="height:20%"></span><span style="height:44%"></span><span class="active" style="height:82%"></span>
+            <span style="height:54%"></span><span style="height:34%"></span><span style="height:30%"></span><span style="height:54%"></span>
+          </div>
+          <div class="admin-month-row"><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span></div>
+        </article>
+
+        <article class="admin-panel admin-savings-panel">
+          <div class="admin-panel-header">
+            <h2>Operations Plan</h2>
+            <button type="button">...</button>
+          </div>
+          <div class="admin-plan-list">
+            <div><span>Fleet utilisation</span><strong>62%</strong><em><i style="width:62%"></i></em></div>
+            <div><span>Monthly revenue goal</span><strong>74%</strong><em><i style="width:74%"></i></em></div>
+            <div><span>Customer follow-ups</span><strong>48%</strong><em><i style="width:48%"></i></em></div>
+          </div>
+        </article>
+
+        <article class="admin-panel admin-table-panel">
+          <div class="admin-panel-header">
+            <h2>Recent Transactions</h2>
+            <a href="admin-transactions.html">Filter</a>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-history-table">
+              <thead>
+                <tr><th>Activity</th><th>Date</th><th>Van</th><th>Status</th><th>Price</th></tr>
+              </thead>
+              <tbody id="bookingsTableBody">
+                <tr><td colspan="5" class="txt-dim">Loading booking history...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
       </section>
     </main>
-  </section>
-
+  </div>
   <script type="module" src="app.js"></script>
 </body>
 </html>

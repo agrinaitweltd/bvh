@@ -42,7 +42,8 @@ function updateAuthNav(user) {
 async function signOut() {
   await supabase.auth.signOut();
   await refreshAuthState();
-  if (window.location.pathname.endsWith('dashboard.html')) {
+  const path = window.location.pathname;
+  if (path.endsWith('dashboard.html') || path.includes('admin-')) {
     window.location.href = 'login.html';
   }
 }
@@ -454,7 +455,19 @@ async function initDashboardPage(user) {
     el.style.display = isAdmin ? '' : 'none';
   });
 
-  document.getElementById('dashboardGreeting').textContent = `Welcome back, ${user.user_metadata?.full_name || user.email}`;
+  const displayName = user.user_metadata?.full_name || user.email || 'Admin';
+  const firstName = displayName.split('@')[0].split(' ')[0] || 'Admin';
+  const escapeHTML = value => String(value ?? '--')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+  const greetingEl = document.getElementById('dashboardGreeting');
+  if (greetingEl) greetingEl.textContent = `Welcome Back, ${firstName}`;
+
+  const avatarEl = document.getElementById('headerAvatar');
+  if (avatarEl) avatarEl.textContent = firstName.charAt(0).toUpperCase();
 
   const { data: bookings, error } = isAdmin
     ? await supabase.from('bookings').select('*').order('created_at', { ascending: false })
@@ -462,20 +475,33 @@ async function initDashboardPage(user) {
 
   const tableBody = document.getElementById('bookingsTableBody');
   if (error || !Array.isArray(bookings)) {
+    if (!tableBody) return;
     tableBody.innerHTML = '<tr><td colspan="5" class="txt-dim">Unable to load booking data. Please check your Supabase setup.</td></tr>';
     return;
   }
 
-  tableBody.innerHTML = bookings.length === 0
-    ? '<tr><td colspan="5" class="txt-dim">No bookings found yet.</td></tr>'
-    : bookings.map(booking => {
-      const status = booking.status || 'Pending';
-      return `<tr><td>${booking.service || '--'}</td><td>${booking.date || '--'}</td><td>${booking.van_size || '--'}</td><td>${status}</td><td>${booking.price || '—'}</td></tr>`;
-    }).join('');
+  const bookingRows = bookings.slice(0, 10).map(booking => {
+    const status = booking.status || 'Pending';
+    const loweredStatus = status.toLowerCase();
+    const statusClass = loweredStatus.includes('cancel')
+      ? 'cancelled'
+      : loweredStatus.includes('pending')
+        ? 'pending'
+        : 'successful';
+    return `<tr><td>${escapeHTML(booking.service)}</td><td>${escapeHTML(booking.date)}</td><td>${escapeHTML(booking.van_size)}</td><td><span class="admin-status ${statusClass}">${escapeHTML(status)}</span></td><td>${escapeHTML(booking.price || 'GBP 0')}</td></tr>`;
+  }).join('');
 
-  document.getElementById('dashboardBookingsCount').textContent = bookings.length;
+  if (tableBody) {
+    tableBody.innerHTML = bookings.length === 0
+      ? '<tr><td colspan="5" class="txt-dim">No bookings found yet.</td></tr>'
+      : bookingRows;
+  }
+
+  const bookingsCountEl = document.getElementById('dashboardBookingsCount');
+  if (bookingsCountEl) bookingsCountEl.textContent = bookings.length;
   const now = new Date();
-  document.getElementById('dashboardUpcomingCount').textContent = bookings.filter(b => b.date && new Date(b.date) >= now).length;
+  const upcomingCountEl = document.getElementById('dashboardUpcomingCount');
+  if (upcomingCountEl) upcomingCountEl.textContent = bookings.filter(b => b.date && new Date(b.date) >= now).length;
 
   const uniqueUsers = new Set(bookings.filter(b => b.email).map(b => b.email));
   const usersCountEl = document.getElementById('dashboardUsersCount');
@@ -496,7 +522,13 @@ async function initDashboardPage(user) {
     return sum + (Number.isFinite(price) ? price : 0);
   }, 0);
   const revenueEl = document.getElementById('dashboardRevenue');
-  if (revenueEl) revenueEl.textContent = `£${totalRevenue.toLocaleString()}`;
+  if (revenueEl) revenueEl.textContent = `GBP ${totalRevenue.toLocaleString()}`;
+
+  const balanceEl = document.getElementById('dashboardBalance');
+  if (balanceEl) balanceEl.textContent = `GBP ${totalRevenue.toLocaleString()}`;
+
+  const creditEl = document.getElementById('dashboardCreditAmount');
+  if (creditEl) creditEl.textContent = `GBP ${Math.round(totalRevenue * 0.27).toLocaleString()}`;
 
   const pendingEl = document.getElementById('dashboardPendingCount');
   if (pendingEl) pendingEl.textContent = bookings.filter(b => (b.status || '').toLowerCase() === 'pending').length;

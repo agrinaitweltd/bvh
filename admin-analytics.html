@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics - Breezyee Vans Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body id="dashboardPage" class="admin-console-page">
+  <div class="admin-console-shell">
+    <aside class="admin-console-sidebar">
+      <a href="index.html" class="admin-console-brand"><span class="admin-console-brand-mark">BV</span><strong>Breezyee</strong></a>
+      <nav class="admin-console-menu">
+        <span>Main Menu</span>
+        <a href="dashboard.html"><b>DB</b>Dashboard</a>
+        <a href="admin-analytics.html" class="active"><b>AN</b>Analytics <small>20</small></a>
+        <a href="admin-transactions.html"><b>TR</b>Transactions</a>
+        <a href="admin-invoices.html"><b>IN</b>Invoices</a>
+      </nav>
+      <nav class="admin-console-menu">
+        <span>Features</span>
+        <a href="admin-transactions.html#recurring"><b>RC</b>Recurring <small>16</small></a>
+        <a href="admin-invoices.html#subscriptions"><b>SB</b>Subscriptions</a>
+        <a href="admin-settings.html#feedback"><b>FB</b>Feedback</a>
+      </nav>
+      <nav class="admin-console-menu">
+        <span>General</span>
+        <a href="admin-settings.html"><b>ST</b>Settings</a>
+        <a href="admin-settings.html#help"><b>HP</b>Help Desk</a>
+        <a href="#" id="signOutLink"><b>LO</b>Log out</a>
+      </nav>
+      <div class="admin-upgrade-card"><strong>Admin Pro</strong><p>Performance reports for faster operations.</p><a href="admin-settings.html">Upgrade</a></div>
+    </aside>
+    <main class="admin-console-main">
+      <header class="admin-console-topbar">
+        <button class="admin-collapse" type="button">K</button>
+        <label class="admin-search"><span>Search</span><input type="search" placeholder="Search analytics" /><kbd>Ctrl K</kbd></label>
+        <div class="admin-console-actions"><button type="button">?</button><button type="button">M</button><button type="button">N</button><div class="admin-console-avatar" id="headerAvatar">A</div></div>
+      </header>
+      <section class="admin-console-hero">
+        <div><h1>Analytics</h1><p>Track revenue momentum, booking demand, fleet utilisation, and customer growth.</p></div>
+        <div class="admin-hero-actions"><span class="admin-date-chip">This year</span><a class="admin-export-button" href="dashboard.html">Export</a></div>
+      </section>
+      <section class="admin-kpi-grid">
+        <article class="admin-kpi-card"><div class="admin-kpi-top"><span class="admin-kpi-icon">BK</span></div><h2>Total Bookings</h2><strong id="dashboardBookingsCount">0</strong><p><span class="positive">+8.4%</span> demand growth</p></article>
+        <article class="admin-kpi-card"><div class="admin-kpi-top"><span class="admin-kpi-icon">UP</span></div><h2>Upcoming Jobs</h2><strong id="dashboardUpcomingCount">0</strong><p>Future-dated work</p></article>
+        <article class="admin-kpi-card"><div class="admin-kpi-top"><span class="admin-kpi-icon">CU</span></div><h2>Customers</h2><strong id="dashboardCustomersCount">0</strong><p>Unique booking emails</p></article>
+      </section>
+      <section class="admin-analytics-grid">
+        <article class="admin-panel admin-wide-panel">
+          <div class="admin-panel-header"><h2>Revenue Forecast</h2><div class="admin-panel-tools"><span>Earnings</span><button type="button">Monthly</button></div></div>
+          <div class="admin-year-chart tall" aria-hidden="true"><span style="height:35%"></span><span style="height:52%"></span><span style="height:47%"></span><span style="height:68%"></span><span style="height:62%"></span><span style="height:74%"></span><span class="active" style="height:90%"></span><span style="height:70%"></span><span style="height:57%"></span><span style="height:66%"></span><span style="height:48%"></span><span style="height:78%"></span></div>
+        </article>
+        <article class="admin-panel">
+          <div class="admin-panel-header"><h2>Fleet Mix</h2><button type="button">...</button></div>
+          <div class="admin-donut"><span>74%</span></div>
+          <div class="admin-plan-list compact"><div><span>Small vans</span><strong>34%</strong></div><div><span>Luton vans</span><strong>41%</strong></div><div><span>Man and van</span><strong>25%</strong></div></div>
+        </article>
+        <article class="admin-panel admin-wide-panel">
+          <div class="admin-panel-header"><h2>Service Performance</h2><a href="admin-transactions.html">View jobs</a></div>
+          <div class="admin-service-grid">
+            <div><strong>House Moves</strong><span>Fastest growing</span><em><i style="width:82%"></i></em></div>
+            <div><strong>Office Moves</strong><span>High value</span><em><i style="width:68%"></i></em></div>
+            <div><strong>Student Moves</strong><span>Seasonal</span><em><i style="width:54%"></i></em></div>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Settings - Breezyee Vans Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body id="dashboardPage" class="admin-console-page">
+  <div class="admin-console-shell">
+    <aside class="admin-console-sidebar">
+      <a href="index.html" class="admin-console-brand"><span class="admin-console-brand-mark">BV</span><strong>Breezyee</strong></a>
+      <nav class="admin-console-menu"><span>Main Menu</span><a href="dashboard.html"><b>DB</b>Dashboard</a><a href="admin-analytics.html"><b>AN</b>Analytics <small>20</small></a><a href="admin-transactions.html"><b>TR</b>Transactions</a><a href="admin-invoices.html"><b>IN</b>Invoices</a></nav>
+      <nav class="admin-console-menu"><span>Features</span><a href="admin-transactions.html#recurring"><b>RC</b>Recurring <small>16</small></a><a href="admin-invoices.html#subscriptions"><b>SB</b>Subscriptions</a><a href="#feedback"><b>FB</b>Feedback</a></nav>
+      <nav class="admin-console-menu"><span>General</span><a href="admin-settings.html" class="active"><b>ST</b>Settings</a><a href="#help"><b>HP</b>Help Desk</a><a href="#" id="signOutLink"><b>LO</b>Log out</a></nav>
+      <div class="admin-upgrade-card"><strong>Admin Pro</strong><p>Configure the workspace for your team.</p><a href="dashboard.html">Back home</a></div>
+    </aside>
+    <main class="admin-console-main">
+      <header class="admin-console-topbar"><button class="admin-collapse" type="button">K</button><label class="admin-search"><span>Search</span><input type="search" placeholder="Search settings" /><kbd>Ctrl K</kbd></label><div class="admin-console-actions"><button type="button">?</button><button type="button">M</button><button type="button">N</button><div class="admin-console-avatar" id="headerAvatar">A</div></div></header>
+      <section class="admin-console-hero"><div><h1>Settings</h1><p>Manage admin preferences, service rules, support requests, and workspace controls.</p></div><div class="admin-hero-actions"><span class="admin-date-chip">Workspace</span><a class="admin-export-button" href="dashboard.html">Save Changes</a></div></section>
+      <section class="admin-settings-grid">
+        <article class="admin-panel"><div class="admin-panel-header"><h2>Profile</h2><button type="button">Edit</button></div><div class="admin-settings-list"><label>Company name<input value="Breezyee Vans" /></label><label>Default currency<input value="GBP" /></label><label>Admin region<input value="United Kingdom" /></label></div></article>
+        <article class="admin-panel"><div class="admin-panel-header"><h2>Booking Rules</h2><button type="button">Update</button></div><div class="admin-toggle-list"><label><input type="checkbox" checked /> Require deposit before confirmation</label><label><input type="checkbox" checked /> Notify admin on new booking</label><label><input type="checkbox" /> Auto-assign vans by size</label></div></article>
+        <article class="admin-panel" id="feedback"><div class="admin-panel-header"><h2>Feedback</h2><button type="button">Open</button></div><div class="admin-plan-list"><div><span>Customer rating</span><strong>4.8</strong><em><i style="width:96%"></i></em></div><div><span>Open feedback</span><strong>3</strong><em><i style="width:30%"></i></em></div></div></article>
+        <article class="admin-panel" id="help"><div class="admin-panel-header"><h2>Help Desk</h2><button type="button">New ticket</button></div><div class="admin-service-grid"><div><strong>Payment issue</strong><span>2 open tickets</span></div><div><strong>Booking change</strong><span>5 open tickets</span></div><div><strong>Driver support</strong><span>1 open ticket</span></div></div></article>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

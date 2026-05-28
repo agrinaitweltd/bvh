@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Invoices - Breezyee Vans Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body id="dashboardPage" class="admin-console-page">
+  <div class="admin-console-shell">
+    <aside class="admin-console-sidebar">
+      <a href="index.html" class="admin-console-brand"><span class="admin-console-brand-mark">BV</span><strong>Breezyee</strong></a>
+      <nav class="admin-console-menu"><span>Main Menu</span><a href="dashboard.html"><b>DB</b>Dashboard</a><a href="admin-analytics.html"><b>AN</b>Analytics <small>20</small></a><a href="admin-transactions.html"><b>TR</b>Transactions</a><a href="admin-invoices.html" class="active"><b>IN</b>Invoices</a></nav>
+      <nav class="admin-console-menu"><span>Features</span><a href="admin-transactions.html#recurring"><b>RC</b>Recurring <small>16</small></a><a href="#subscriptions"><b>SB</b>Subscriptions</a><a href="admin-settings.html#feedback"><b>FB</b>Feedback</a></nav>
+      <nav class="admin-console-menu"><span>General</span><a href="admin-settings.html"><b>ST</b>Settings</a><a href="admin-settings.html#help"><b>HP</b>Help Desk</a><a href="#" id="signOutLink"><b>LO</b>Log out</a></nav>
+      <div class="admin-upgrade-card"><strong>Admin Pro</strong><p>Keep payment requests clean and visible.</p><a href="admin-settings.html">Upgrade</a></div>
+    </aside>
+    <main class="admin-console-main">
+      <header class="admin-console-topbar"><button class="admin-collapse" type="button">K</button><label class="admin-search"><span>Search</span><input type="search" placeholder="Search invoices" /><kbd>Ctrl K</kbd></label><div class="admin-console-actions"><button type="button">?</button><button type="button">M</button><button type="button">N</button><div class="admin-console-avatar" id="headerAvatar">A</div></div></header>
+      <section class="admin-console-hero"><div><h1>Invoices</h1><p>Create, monitor, and reconcile customer invoices against booked moving jobs.</p></div><div class="admin-hero-actions"><span class="admin-date-chip">Billing</span><a class="admin-export-button" href="booking.html">New Invoice</a></div></section>
+      <section class="admin-kpi-grid"><article class="admin-kpi-card"><h2>Invoice Value</h2><strong id="dashboardRevenue">GBP 0</strong><p>Total issued value</p></article><article class="admin-kpi-card"><h2>Customer Credit</h2><strong id="dashboardCreditAmount">GBP 0</strong><p>Deposit estimate</p></article><article class="admin-kpi-card"><h2>Customers</h2><strong id="dashboardCustomersCount">0</strong><p>Billing contacts</p></article></section>
+      <section class="admin-console-grid">
+        <article class="admin-panel admin-table-panel"><div class="admin-panel-header"><h2>Invoice Activity</h2><a href="admin-transactions.html">Transactions</a></div><div class="admin-table-wrap"><table class="admin-history-table"><thead><tr><th>Service</th><th>Date</th><th>Van</th><th>Status</th><th>Amount</th></tr></thead><tbody id="bookingsTableBody"><tr><td colspan="5" class="txt-dim">Loading invoices...</td></tr></tbody></table></div></article>
+        <article class="admin-panel" id="subscriptions"><div class="admin-panel-header"><h2>Subscriptions</h2><button type="button">...</button></div><div class="admin-plan-list"><div><span>Business retainers</span><strong>4</strong><em><i style="width:40%"></i></em></div><div><span>Monthly moves</span><strong>7</strong><em><i style="width:70%"></i></em></div><div><span>Priority support</span><strong>12</strong><em><i style="width:86%"></i></em></div></div></article>
+        <article class="admin-panel"><div class="admin-panel-header"><h2>Payment Methods</h2><button type="button">Add</button></div><div class="admin-wallet-grid"><div><span>Card</span><strong>42%</strong><small>Fastest</small></div><div><span>Bank</span><strong>36%</strong><small>Manual</small></div><div><span>Cash</span><strong>22%</strong><small>On site</small></div></div></article>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
