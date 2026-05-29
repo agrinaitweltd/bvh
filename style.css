@@ -2657,3 +2657,275 @@ body.is-ready .hero-stats { animation-delay: .4s; }
     display: none;
   }
 }
+
+/* Dashboard polish */
+.admin-console-page .admin-console-shell {
+  border: 1px solid rgba(255,255,255,.68);
+}
+.admin-console-page .admin-console-sidebar {
+  border-right: 1px solid #ececea;
+}
+.admin-console-page .admin-console-main {
+  background:
+    linear-gradient(135deg, rgba(17, 152, 97, .08), transparent 34%),
+    linear-gradient(315deg, rgba(255,255,255,.78), transparent 36%),
+    var(--console-panel);
+}
+.admin-console-page .admin-console-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-radius: 18px;
+  background: rgba(245,245,244,.82);
+  backdrop-filter: blur(16px);
+  padding: 6px;
+}
+.admin-console-page .admin-search,
+.admin-console-page .admin-collapse,
+.admin-console-page .admin-console-actions button,
+.admin-console-page .admin-console-avatar {
+  box-shadow: 0 10px 24px rgba(18, 22, 30, .04);
+}
+.admin-console-page .admin-console-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  background: #11161d;
+  color: #fff;
+  padding: 28px;
+  min-height: 174px;
+  align-items: center;
+}
+.admin-console-page .admin-console-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -55% 48%;
+  height: 230px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(17,152,97,.55), transparent 67%);
+  pointer-events: none;
+}
+.admin-console-page .admin-console-hero h1,
+.admin-console-page .admin-console-hero p,
+.admin-console-page .admin-hero-actions {
+  position: relative;
+  z-index: 1;
+}
+.admin-console-page .admin-console-hero h1 {
+  color: #fff;
+  font-size: clamp(2rem, 3.5vw, 3.15rem);
+  max-width: 780px;
+}
+.admin-console-page .admin-console-hero p {
+  color: rgba(255,255,255,.72);
+  max-width: 720px;
+}
+.admin-console-page .admin-console-hero .admin-owner-name {
+  color: #fff;
+  font-weight: 800;
+}
+.admin-console-page .admin-date-chip {
+  background: rgba(255,255,255,.12);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.14);
+}
+.admin-console-page .admin-export-button {
+  background: #fff;
+  color: var(--console-ink);
+}
+.admin-console-page .admin-kpi-grid {
+  grid-template-columns: minmax(300px, 1.35fr) repeat(2, minmax(220px, 1fr));
+}
+.admin-console-page .admin-kpi-card,
+.admin-console-page .admin-panel {
+  border: 1px solid rgba(225,226,224,.75);
+  box-shadow: 0 18px 42px rgba(20, 24, 32, .045);
+}
+.admin-console-page .admin-kpi-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 210px;
+}
+.admin-console-page .admin-kpi-card::after {
+  content: "";
+  position: absolute;
+  inset: auto -30px -40px auto;
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  background: #ecf8f2;
+  pointer-events: none;
+}
+.admin-console-page .admin-balance-card {
+  color: #fff;
+  background:
+    linear-gradient(135deg, var(--console-green), var(--console-green-dark));
+  border-color: transparent;
+}
+.admin-console-page .admin-balance-card h2,
+.admin-console-page .admin-balance-card strong,
+.admin-console-page .admin-balance-card p {
+  color: #fff;
+}
+.admin-console-page .admin-balance-card .admin-kpi-icon,
+.admin-console-page .admin-balance-card button {
+  background: rgba(255,255,255,.16);
+  color: #fff;
+}
+.admin-card-spark {
+  position: absolute;
+  right: 20px;
+  bottom: 74px;
+  width: 132px;
+  height: 52px;
+  display: flex;
+  align-items: end;
+  gap: 7px;
+  opacity: .38;
+}
+.admin-card-spark span {
+  flex: 1;
+  border-radius: 999px 999px 5px 5px;
+  background: #fff;
+}
+.admin-card-spark span:nth-child(1) { height: 38%; }
+.admin-card-spark span:nth-child(2) { height: 72%; }
+.admin-card-spark span:nth-child(3) { height: 54%; }
+.admin-card-spark span:nth-child(4) { height: 92%; }
+.admin-kpi-foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 14px;
+  border-top: 1px solid #eeeeec;
+  color: var(--console-muted);
+  font-size: .78rem;
+}
+.admin-kpi-foot b {
+  color: var(--console-green-dark);
+}
+.admin-console-page .admin-money-actions {
+  position: relative;
+  z-index: 1;
+}
+.admin-console-page .admin-money-actions a:first-child {
+  background: #fff;
+  color: var(--console-green-dark);
+}
+.admin-console-page .admin-money-actions a:last-child {
+  background: rgba(255,255,255,.16);
+  color: #fff;
+}
+.admin-console-page .admin-console-grid {
+  grid-template-columns: minmax(320px, .82fr) minmax(0, 1.18fr);
+  align-items: start;
+}
+.admin-console-page .admin-wallet-panel {
+  grid-row: span 2;
+}
+.admin-console-page .admin-wallet-grid {
+  grid-template-columns: 1fr;
+}
+.admin-console-page .admin-wallet-grid div {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 12px;
+  min-height: 78px;
+  background: linear-gradient(135deg, #f7f8f7, #eeeeec);
+  border: 1px solid #e7e8e6;
+}
+.admin-console-page .admin-wallet-grid div b {
+  grid-row: 1 / span 2;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: #e4f5ec;
+  color: var(--console-green-dark);
+  font-size: .72rem;
+}
+.admin-console-page .admin-wallet-grid div strong {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  text-align: right;
+  font-size: 1.35rem;
+}
+.admin-console-page .admin-wallet-grid div span,
+.admin-console-page .admin-wallet-grid div small {
+  grid-column: 2;
+}
+.admin-console-page .admin-overview-panel {
+  min-height: 342px;
+}
+.admin-console-page .admin-year-chart {
+  height: 238px;
+  border-radius: 16px;
+  background-color: #fbfbfa;
+  padding: 18px 18px 0;
+}
+.admin-console-page .admin-year-chart span {
+  min-height: 12px;
+  transition: height .35s ease;
+}
+.admin-console-page .admin-year-chart span.active {
+  position: relative;
+}
+.admin-console-page .admin-year-chart span.active::before {
+  content: "Current";
+  position: absolute;
+  left: 50%;
+  top: -28px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #11161d;
+  color: #fff;
+  padding: 5px 9px;
+  font-size: .66rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.admin-console-page .admin-savings-panel .admin-plan-list div {
+  background: #fbfbfa;
+  border: 1px solid #eeeeec;
+}
+.admin-console-page .admin-table-panel {
+  grid-column: 2;
+}
+.admin-console-page .admin-history-table td {
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+}
+.admin-console-page .admin-history-table tbody tr:hover td {
+  background: #f8fbf9;
+  border-color: #e3f2eb;
+}
+
+@media (max-width: 1080px) {
+  .admin-console-page .admin-kpi-grid,
+  .admin-console-page .admin-console-grid {
+    grid-template-columns: 1fr;
+  }
+  .admin-console-page .admin-table-panel {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-console-page .admin-console-hero {
+    padding: 22px;
+  }
+  .admin-console-page .admin-wallet-grid div {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+  .admin-console-page .admin-wallet-grid div strong {
+    grid-column: 2;
+    grid-row: auto;
+    text-align: left;
+  }
+}

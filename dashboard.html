@@ -84,6 +84,7 @@
           <h2>Account Balance</h2>
           <strong id="dashboardBalance">GBP 0</strong>
           <p><span class="positive">+3.2%</span> from last month</p>
+          <div class="admin-card-spark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
           <div class="admin-money-actions">
             <a href="admin-invoices.html">Send Invoice</a>
             <a href="admin-transactions.html">Request Money</a>
@@ -98,6 +99,7 @@
           <h2>Total Expenses</h2>
           <strong id="dashboardCreditAmount">GBP 0</strong>
           <p><span class="negative">-2.1%</span> from last month</p>
+          <div class="admin-kpi-foot"><span>Deposits and refunds</span><b>Live</b></div>
         </article>
 
         <article class="admin-kpi-card">
@@ -108,22 +110,23 @@
           <h2>Total Savings</h2>
           <strong id="dashboardRevenue">GBP 0</strong>
           <p><span class="positive">+4.5%</span> from last month</p>
+          <div class="admin-kpi-foot"><span>Gross booking value</span><b>Synced</b></div>
         </article>
       </section>
 
       <section class="admin-console-grid">
         <article class="admin-panel admin-wallet-panel">
           <div class="admin-panel-header">
-            <h2>My Wallet</h2>
+            <h2>Operations Snapshot</h2>
             <a href="admin-invoices.html">+ Add New</a>
           </div>
           <div class="admin-wallet-grid">
-            <div><span>GBP</span><strong id="dashboardBookingsCount">0</strong><small>Bookings</small></div>
-            <div><span>Upcoming</span><strong id="dashboardUpcomingCount">0</strong><small>Active</small></div>
-            <div><span>Pending</span><strong id="dashboardPendingCount">0</strong><small>Needs review</small></div>
-            <div><span>Customers</span><strong id="dashboardCustomersCount">0</strong><small>Unique</small></div>
-            <div><span>Completed</span><strong id="dashboardCompletedCount">0</strong><small>Confirmed</small></div>
-            <div><span>This Month</span><strong id="dashboardMonthlyRevenue">GBP 0</strong><small>Synced value</small></div>
+            <div><b>BK</b><span>Total bookings</span><strong id="dashboardBookingsCount">0</strong><small>All captured requests</small></div>
+            <div><b>UP</b><span>Upcoming</span><strong id="dashboardUpcomingCount">0</strong><small>Active jobs</small></div>
+            <div><b>PN</b><span>Pending</span><strong id="dashboardPendingCount">0</strong><small>Needs review</small></div>
+            <div><b>CU</b><span>Customers</span><strong id="dashboardCustomersCount">0</strong><small>Unique contacts</small></div>
+            <div><b>CO</b><span>Completed</span><strong id="dashboardCompletedCount">0</strong><small>Confirmed jobs</small></div>
+            <div><b>MO</b><span>This month</span><strong id="dashboardMonthlyRevenue">GBP 0</strong><small>Synced value</small></div>
           </div>
         </article>
 
