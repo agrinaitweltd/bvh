@@ -2978,3 +2978,305 @@ body.is-ready .hero-stats { animation-delay: .4s; }
     padding: 14px;
   }
 }
+
+/* ============================================================
+   CUSTOMER DASHBOARD
+   ============================================================ */
+.user-dashboard-page {
+  --user-green: #119861;
+  --user-green-dark: #08794b;
+  --user-ink: #17191f;
+  --user-muted: #6d7078;
+  --user-bg: #edf2ef;
+  --user-panel: #ffffff;
+  --user-soft: #f4f6f4;
+  min-height: 100vh;
+  background:
+    linear-gradient(135deg, rgba(17, 152, 97, .11), transparent 32%),
+    var(--user-bg);
+  color: var(--user-ink);
+}
+.user-dashboard-shell {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 264px minmax(0, 1fr);
+}
+.user-dashboard-sidebar {
+  position: sticky;
+  top: 0;
+  align-self: start;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 26px 18px;
+  background: #fff;
+  border-right: 1px solid #e3e8e4;
+}
+.user-dashboard-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--user-ink);
+  font-weight: 900;
+}
+.user-dashboard-brand span,
+.user-profile-avatar {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--user-green), var(--user-green-dark));
+  color: #fff;
+  font-size: .76rem;
+  font-weight: 900;
+}
+.user-dashboard-nav {
+  display: grid;
+  gap: 8px;
+}
+.user-dashboard-nav a {
+  min-height: 46px;
+  display: flex;
+  align-items: center;
+  border-radius: 14px;
+  padding: 0 14px;
+  color: var(--user-muted);
+  font-weight: 700;
+}
+.user-dashboard-nav a.active,
+.user-dashboard-nav a:hover {
+  background: #e5f4ec;
+  color: var(--user-green-dark);
+}
+.user-profile-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: auto;
+  border-radius: 18px;
+  background: var(--user-soft);
+  padding: 14px;
+}
+.user-profile-card strong,
+.user-profile-card span {
+  display: block;
+}
+.user-profile-card strong {
+  color: var(--user-ink);
+  font-size: .9rem;
+  line-height: 1.25;
+}
+.user-profile-card span {
+  color: var(--user-muted);
+  font-size: .75rem;
+  overflow-wrap: anywhere;
+}
+.user-signout-link {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--user-ink);
+  color: #fff;
+  font-weight: 800;
+}
+.user-dashboard-main {
+  min-width: 0;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.user-dashboard-hero {
+  min-height: 260px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  border-radius: 30px;
+  padding: 32px;
+  background:
+    linear-gradient(135deg, rgba(0,0,0,.36), rgba(0,0,0,.08)),
+    url('https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1600&q=80') center/cover;
+  color: #fff;
+  overflow: hidden;
+}
+.user-eyebrow {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  border-radius: 999px;
+  background: rgba(255,255,255,.16);
+  padding: 0 12px;
+  color: #fff;
+  font-size: .74rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 14px;
+}
+.user-dashboard-hero h1 {
+  max-width: 700px;
+  color: #fff;
+  font-size: clamp(2.4rem, 5vw, 4.4rem);
+  line-height: .98;
+  letter-spacing: 0;
+  margin-bottom: 14px;
+}
+.user-dashboard-hero p {
+  max-width: 620px;
+  color: rgba(255,255,255,.82);
+  font-size: 1rem;
+}
+.user-primary-action {
+  flex: 0 0 auto;
+  min-height: 52px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #fff;
+  color: var(--user-green-dark);
+  padding: 0 24px;
+  font-weight: 900;
+}
+.user-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+.user-stat-card,
+.user-panel {
+  border: 1px solid #e2e8e4;
+  border-radius: 22px;
+  background: var(--user-panel);
+  padding: 20px;
+  box-shadow: 0 18px 42px rgba(17, 25, 31, .045);
+}
+.user-stat-card span {
+  color: var(--user-muted);
+  font-size: .82rem;
+  font-weight: 800;
+}
+.user-stat-card strong {
+  display: block;
+  color: var(--user-ink);
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  line-height: 1;
+  margin: 12px 0 10px;
+}
+.user-stat-card p,
+.user-panel-note {
+  color: var(--user-muted);
+  font-size: .86rem;
+}
+.user-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(300px, .85fr) minmax(300px, 1.15fr);
+  gap: 16px;
+}
+.user-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.user-panel-header span {
+  display: block;
+  color: var(--user-green-dark);
+  font-size: .78rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  margin-bottom: 4px;
+}
+.user-panel-header h2 {
+  color: var(--user-ink);
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+.user-panel-header a {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: #e5f4ec;
+  color: var(--user-green-dark);
+  padding: 0 14px;
+  font-weight: 900;
+}
+.user-next-card,
+.user-detail-list {
+  display: grid;
+  gap: 12px;
+}
+.user-next-card div,
+.user-detail-list div {
+  border-radius: 16px;
+  background: var(--user-soft);
+  padding: 16px;
+}
+.user-next-card span,
+.user-detail-list span {
+  display: block;
+  color: var(--user-muted);
+  font-size: .78rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+.user-next-card strong,
+.user-detail-list strong {
+  color: var(--user-ink);
+  font-size: 1rem;
+  overflow-wrap: anywhere;
+}
+.user-panel-note {
+  margin-top: 16px;
+}
+.user-history-panel {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 1050px) {
+  .user-dashboard-shell {
+    grid-template-columns: 1fr;
+  }
+  .user-dashboard-sidebar {
+    position: static;
+    min-height: auto;
+  }
+  .user-stats-grid,
+  .user-dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .user-history-panel {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .user-dashboard-main,
+  .user-dashboard-sidebar {
+    padding: 16px;
+  }
+  .user-dashboard-hero {
+    min-height: 360px;
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-end;
+    border-radius: 22px;
+    padding: 22px;
+  }
+  .user-stats-grid,
+  .user-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+  .user-dashboard-hero h1 {
+    font-size: 2.45rem;
+  }
+}

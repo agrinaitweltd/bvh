@@ -45,7 +45,7 @@ async function signOut() {
   await supabase.auth.signOut();
   await refreshAuthState();
   const path = window.location.pathname;
-  if (path.endsWith('dashboard.html') || path.includes('admin-')) {
+  if (path.endsWith('dashboard.html') || path.endsWith('user-dashboard.html') || path.includes('admin-')) {
     window.location.href = 'login.html';
   }
 }
@@ -338,7 +338,9 @@ function initLoginPage(user) {
   if (!loginPage) return;
   if (user) {
     document.getElementById('authStatus').textContent = 'Already signed in. Redirecting to your dashboard…';
-    setTimeout(() => { window.location.href = 'dashboard.html'; }, 900);
+    setTimeout(() => {
+      window.location.href = isAdminUser(user) ? 'dashboard.html' : 'user-dashboard.html';
+    }, 900);
     return;
   }
 
@@ -420,9 +422,11 @@ function initLoginPage(user) {
     }
 
     if (authMode === 'signIn') {
-      window.location.href = 'dashboard.html';
+      const signedInUser = result.data?.user;
+      window.location.href = isAdminUser(signedInUser) ? 'dashboard.html' : 'user-dashboard.html';
     } else if (result.data?.session) {
-      window.location.href = 'dashboard.html';
+      const signedInUser = result.data?.user;
+      window.location.href = isAdminUser(signedInUser) ? 'dashboard.html' : 'user-dashboard.html';
     } else {
       authStatus.textContent = 'Account created. Please sign in to continue.';
     }
@@ -453,11 +457,22 @@ async function initDashboardPage(user) {
   }
 
   const isAdmin = isAdminUser(user);
+  const isUserDashboard = dashboardPage.classList.contains('user-dashboard-page');
+  const isAdminDashboard = dashboardPage.classList.contains('admin-console-page');
+  if (isAdminDashboard && !isAdmin && window.location.pathname.endsWith('dashboard.html')) {
+    window.location.href = 'user-dashboard.html';
+    return;
+  }
+  if (isUserDashboard && isAdmin) {
+    window.location.href = 'dashboard.html';
+    return;
+  }
   document.querySelectorAll('.admin-only').forEach(el => {
     el.style.display = isAdmin ? '' : 'none';
   });
 
-  const displayName = ADMIN_OWNER_NAME;
+  const customerName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'there';
+  const displayName = isUserDashboard ? customerName : ADMIN_OWNER_NAME;
   const escapeHTML = value => String(value ?? '--')
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -465,10 +480,18 @@ async function initDashboardPage(user) {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;');
   const greetingEl = document.getElementById('dashboardGreeting');
-  if (greetingEl) greetingEl.textContent = `Welcome back, ${displayName}`;
+  if (greetingEl) {
+    greetingEl.textContent = isUserDashboard
+      ? `Welcome back, ${customerName}`
+      : `Welcome back, ${displayName}`;
+  }
 
   const avatarEl = document.getElementById('headerAvatar');
-  if (avatarEl) avatarEl.textContent = 'OF';
+  if (avatarEl) {
+    avatarEl.textContent = isUserDashboard
+      ? customerName.split(' ').map(part => part[0]).join('').slice(0, 2).toUpperCase()
+      : 'OF';
+  }
 
   document.querySelectorAll('.admin-owner-name').forEach(el => {
     el.textContent = displayName;
@@ -558,6 +581,18 @@ async function initDashboardPage(user) {
   setText('dashboardFollowUps', `${followUpRate}%`);
   setText('dashboardSyncStatus', 'Synced with Supabase');
   setText('dashboardLastSync', `Updated ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+
+  const nextBooking = upcomingBookings
+    .slice()
+    .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
+  setText('userNextService', nextBooking?.service || 'No upcoming booking');
+  setText('userNextDate', nextBooking?.date || 'Book your next move when ready');
+  setText('userNextVan', nextBooking?.van_size || 'Van size pending');
+  setText('userTotalSpend', formatMoney(totalRevenue));
+  setText('userEmail', user.email || '--');
+  setText('userEmailSidebar', user.email || '--');
+  setText('userPhone', user.user_metadata?.phone || 'Not added');
+  setText('userPostcode', user.user_metadata?.postcode || 'Not added');
 
   const revenueGoalBar = document.getElementById('dashboardRevenueGoalBar');
   if (revenueGoalBar) revenueGoalBar.style.width = `${monthlyProgress}%`;

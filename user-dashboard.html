@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard - Breezyee Vans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body id="dashboardPage" class="user-dashboard-page">
+  <div class="user-dashboard-shell">
+    <aside class="user-dashboard-sidebar">
+      <a href="index.html" class="user-dashboard-brand">
+        <span>BV</span>
+        <strong>Breezyee Vans</strong>
+      </a>
+      <nav class="user-dashboard-nav">
+        <a href="user-dashboard.html" class="active">Overview</a>
+        <a href="booking.html">New Booking</a>
+        <a href="services.html">Services</a>
+        <a href="fleet.html">Fleet</a>
+      </nav>
+      <div class="user-profile-card">
+        <div class="user-profile-avatar" id="headerAvatar">U</div>
+        <div>
+          <strong id="dashboardGreeting">Welcome back</strong>
+          <span id="userEmailSidebar">Loading account...</span>
+        </div>
+      </div>
+      <a href="#" class="user-signout-link" id="signOutLink">Sign out</a>
+    </aside>
+
+    <main class="user-dashboard-main">
+      <header class="user-dashboard-hero">
+        <div>
+          <span class="user-eyebrow">Customer Dashboard</span>
+          <h1>Your move, organised clearly.</h1>
+          <p>Track your Breezyee Vans bookings, see what is coming next, and start a new request in a few clicks.</p>
+        </div>
+        <a href="booking.html" class="user-primary-action">Book a Van</a>
+      </header>
+
+      <section class="user-stats-grid">
+        <article class="user-stat-card">
+          <span>Total bookings</span>
+          <strong id="dashboardBookingsCount">0</strong>
+          <p>All requests linked to your account.</p>
+        </article>
+        <article class="user-stat-card">
+          <span>Upcoming</span>
+          <strong id="dashboardUpcomingCount">0</strong>
+          <p>Moves currently scheduled.</p>
+        </article>
+        <article class="user-stat-card">
+          <span>Pending</span>
+          <strong id="dashboardPendingCount">0</strong>
+          <p>Requests awaiting confirmation.</p>
+        </article>
+        <article class="user-stat-card">
+          <span>Total spend</span>
+          <strong id="userTotalSpend">GBP 0</strong>
+          <p>Estimated value of your bookings.</p>
+        </article>
+      </section>
+
+      <section class="user-dashboard-grid">
+        <article class="user-panel user-next-panel">
+          <div class="user-panel-header">
+            <div>
+              <span>Next Booking</span>
+              <h2 id="userNextService">Loading...</h2>
+            </div>
+            <a href="booking.html">Update</a>
+          </div>
+          <div class="user-next-card">
+            <div>
+              <span>Date</span>
+              <strong id="userNextDate">--</strong>
+            </div>
+            <div>
+              <span>Van</span>
+              <strong id="userNextVan">--</strong>
+            </div>
+          </div>
+          <p class="user-panel-note">Need to change details? Create a new booking request and our team will confirm availability.</p>
+        </article>
+
+        <article class="user-panel">
+          <div class="user-panel-header">
+            <div>
+              <span>Account Details</span>
+              <h2>Your contact info</h2>
+            </div>
+          </div>
+          <div class="user-detail-list">
+            <div><span>Email</span><strong id="userEmail">--</strong></div>
+            <div><span>Phone</span><strong id="userPhone">--</strong></div>
+            <div><span>Postcode</span><strong id="userPostcode">--</strong></div>
+          </div>
+        </article>
+
+        <article class="user-panel user-history-panel">
+          <div class="user-panel-header">
+            <div>
+              <span>Booking History</span>
+              <h2>Your recent requests</h2>
+            </div>
+            <span id="dashboardLastSync">Syncing...</span>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-history-table">
+              <thead>
+                <tr><th>Service</th><th>Date</th><th>Van</th><th>Status</th><th>Price</th></tr>
+              </thead>
+              <tbody id="bookingsTableBody">
+                <tr><td colspan="5" class="txt-dim">Loading your bookings...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

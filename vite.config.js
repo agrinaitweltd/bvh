@@ -11,6 +11,7 @@ export default defineConfig({
         booking: resolve(__dirname, 'booking.html'),
         login: resolve(__dirname, 'login.html'),
         dashboard: resolve(__dirname, 'dashboard.html'),
+        userDashboard: resolve(__dirname, 'user-dashboard.html'),
         adminAnalytics: resolve(__dirname, 'admin-analytics.html'),
         adminTransactions: resolve(__dirname, 'admin-transactions.html'),
         adminInvoices: resolve(__dirname, 'admin-invoices.html'),
