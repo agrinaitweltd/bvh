@@ -565,6 +565,12 @@ async function initDashboardPage(user) {
     const status = (b.status || '').toLowerCase();
     return status.includes('success') || status.includes('complete') || status.includes('confirm');
   });
+  const todayISO = now.toISOString().split('T')[0];
+  const todayBookings = bookings.filter(b => b.date === todayISO);
+  const overdueBookings = pendingBookings.filter(b => {
+    const created = b.created_at ? new Date(b.created_at) : null;
+    return created && (Date.now() - created.getTime()) > 3 * 24 * 60 * 60 * 1000;
+  });
   const currentMonthRevenue = bookings.reduce((sum, booking) => {
     const created = booking.created_at ? new Date(booking.created_at) : null;
     if (!created || created.getMonth() !== now.getMonth() || created.getFullYear() !== now.getFullYear()) return sum;
@@ -582,6 +588,10 @@ async function initDashboardPage(user) {
   setText('dashboardCustomersCount', uniqueUsers.size);
   setText('dashboardCompletedCount', completedBookings.length);
   setText('dashboardMonthlyRevenue', formatMoney(currentMonthRevenue));
+  setText('dashboardTodayCount', todayBookings.length);
+  setText('dashboardOverdueCount', overdueBookings.length);
+  setText('dashboardAverageBooking', formatMoney(bookings.length ? totalRevenue / bookings.length : 0));
+  setText('dashboardConversionRate', `${bookings.length ? Math.round((completedBookings.length / bookings.length) * 100) : 0}%`);
   setText('dashboardRevenueGoal', `${monthlyProgress}%`);
   setText('dashboardFleetUtilisation', `${fleetUtilisation}%`);
   setText('dashboardFollowUps', `${followUpRate}%`);
