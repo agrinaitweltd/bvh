@@ -3930,3 +3930,375 @@ body.is-ready .hero-stats { animation-delay: .4s; }
     grid-template-columns: 1fr;
   }
 }
+
+/* ========== ADMIN CAR MANAGEMENT ========== */
+.admin-cars-section {
+  margin-bottom: 40px;
+}
+
+.car-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  color: white;
+}
+
+.car-badge {
+  display: inline-block;
+  font-size: .7rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(91, 34, 176, .1);
+  color: var(--purple);
+}
+
+.car-badge-small {
+  background: rgba(100, 150, 255, .1);
+  color: #6496ff;
+}
+
+.car-badge-medium {
+  background: rgba(91, 34, 176, .1);
+  color: var(--purple);
+}
+
+.car-badge-xl {
+  background: rgba(79, 172, 254, .1);
+  color: #4facfe;
+}
+
+.status-badge {
+  display: inline-block;
+  font-size: .75rem;
+  font-weight: 700;
+  padding: 6px 12px;
+  border-radius: 20px;
+  background: #f0f0f0;
+  color: #666;
+  text-transform: capitalize;
+}
+
+.status-active {
+  background: rgba(16, 185, 129, .1);
+  color: #10b981;
+}
+
+.status-inactive {
+  background: rgba(239, 68, 68, .1);
+  color: #ef4444;
+}
+
+.admin-btn-icon {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+  margin: 0 2px;
+}
+
+.admin-btn-icon:hover {
+  background: var(--gray-100);
+  transform: scale(1.1);
+}
+
+.admin-cars-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.admin-stat-card {
+  border: 1px solid var(--gray-200);
+  border-radius: 12px;
+  background: var(--white);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.admin-stat-card span {
+  display: block;
+  font-size: .8rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 8px;
+}
+
+.admin-stat-card strong {
+  display: block;
+  font-size: 2rem;
+  color: var(--text);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.admin-stat-card p {
+  font-size: .85rem;
+  color: var(--text-mid);
+}
+
+/* ========== ADMIN MODAL ========== */
+.admin-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, .5);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-modal-content {
+  background: var(--white);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+.admin-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px;
+  border-bottom: 1px solid var(--gray-200);
+  position: sticky;
+  top: 0;
+  background: var(--white);
+}
+
+.admin-modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: var(--text);
+}
+
+.admin-modal-close {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.admin-modal-close:hover {
+  color: var(--text);
+  transform: rotate(90deg);
+}
+
+.admin-modal-body {
+  padding: 24px;
+}
+
+.admin-modal-footer {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  padding: 24px;
+  border-top: 1px solid var(--gray-200);
+  background: var(--gray-50);
+}
+
+/* ========== FORMS ========== */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: .95rem;
+  color: var(--text);
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px rgba(91, 34, 176, .1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.form-check input[type="checkbox"] {
+  width: auto;
+}
+
+.form-check label {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+/* ========== FILE UPLOAD ========== */
+.file-upload-area {
+  border: 2px dashed var(--gray-300);
+  border-radius: 12px;
+  padding: 32px 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: var(--gray-50);
+}
+
+.file-upload-area:hover {
+  border-color: var(--purple);
+  background: rgba(91, 34, 176, .05);
+}
+
+.file-upload-icon {
+  font-size: 2.4rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.file-upload-content p {
+  font-size: .95rem;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 4px;
+}
+
+.file-upload-content small {
+  font-size: .8rem;
+  color: var(--text-dim);
+  display: block;
+}
+
+.btn-remove-img {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-remove-img:hover {
+  background: #dc2626;
+}
+
+/* ========== BUTTONS ========== */
+.btn {
+  display: inline-block;
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: none;
+  font-family: var(--font);
+  font-size: .95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--purple);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--purple-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(91, 34, 176, .3);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--gray-200);
+}
+
+.btn-outline:hover {
+  background: var(--gray-50);
+  border-color: var(--gray-300);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: .85rem;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 1024px) {
+  .admin-cars-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-cars-stats {
+    grid-template-columns: 1fr;
+  }
+  .admin-modal-content {
+    width: 95%;
+  }
+}
