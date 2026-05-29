@@ -2929,3 +2929,52 @@ body.is-ready .hero-stats { animation-delay: .4s; }
     text-align: left;
   }
 }
+
+/* Full-screen admin console */
+.admin-console-page {
+  padding: 0;
+  overflow-x: hidden;
+}
+.admin-console-page .admin-console-shell {
+  width: 100vw;
+  min-height: 100vh;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.admin-console-page .admin-console-sidebar {
+  min-height: 100vh;
+  position: sticky;
+  top: 0;
+  align-self: start;
+}
+.admin-console-page .admin-console-main {
+  min-height: 100vh;
+  padding: 24px;
+  overflow-x: hidden;
+}
+
+@media (max-width: 1080px) {
+  .admin-console-page .admin-console-shell {
+    width: 100vw;
+  }
+  .admin-console-page .admin-console-sidebar {
+    min-height: auto;
+    position: static;
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-console-page {
+    padding: 0;
+  }
+  .admin-console-page .admin-console-shell {
+    width: 100vw;
+    border-radius: 0;
+  }
+  .admin-console-page .admin-console-main,
+  .admin-console-page .admin-console-sidebar {
+    padding: 14px;
+  }
+}
