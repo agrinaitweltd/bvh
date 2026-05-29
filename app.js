@@ -459,6 +459,7 @@ async function initDashboardPage(user) {
   const isAdmin = isAdminUser(user);
   const isUserDashboard = dashboardPage.classList.contains('user-dashboard-page');
   const isAdminDashboard = dashboardPage.classList.contains('admin-console-page');
+  const isInvoicePage = dashboardPage.classList.contains('admin-invoices-page');
   if (isAdminDashboard && !isAdmin && window.location.pathname.endsWith('dashboard.html')) {
     window.location.href = 'user-dashboard.html';
     return;
@@ -521,6 +522,11 @@ async function initDashboardPage(user) {
     return;
   }
 
+  const invoiceRows = bookings.slice(0, 10).map((booking, index) => {
+    const customer = booking.name || booking.email || 'Customer';
+    return `<tr><td>${escapeHTML(customer)}</td><td>${escapeHTML(booking.email)}</td><td>${escapeHTML(booking.service)}</td><td>${escapeHTML(booking.price || 'GBP 0')}</td><td><button class="admin-email-action" type="button" data-email-action="invoice" data-booking-index="${index}">Invoice</button><button class="admin-email-action ghost" type="button" data-email-action="reminder" data-booking-index="${index}">Reminder</button></td></tr>`;
+  }).join('');
+
   const bookingRows = bookings.slice(0, 10).map(booking => {
     const status = booking.status || 'Pending';
     const loweredStatus = status.toLowerCase();
@@ -535,7 +541,7 @@ async function initDashboardPage(user) {
   if (tableBody) {
     tableBody.innerHTML = bookings.length === 0
       ? '<tr><td colspan="5" class="txt-dim">No bookings found yet.</td></tr>'
-      : bookingRows;
+      : isInvoicePage ? invoiceRows : bookingRows;
   }
 
   setText('dashboardBookingsCount', bookings.length);
@@ -593,6 +599,114 @@ async function initDashboardPage(user) {
   setText('userEmailSidebar', user.email || '--');
   setText('userPhone', user.user_metadata?.phone || 'Not added');
   setText('userPostcode', user.user_metadata?.postcode || 'Not added');
+
+  const composeAdminEmail = (booking, type = 'invoice') => {
+    const customer = booking?.name || 'Customer';
+    const service = booking?.service || 'your Breezyee Vans booking';
+    const amount = document.getElementById('invoiceAmount')?.value || booking?.price || 'GBP 0';
+    const dueDate = document.getElementById('invoiceDueDate')?.value || 'as soon as possible';
+    const customMessage = document.getElementById('invoiceMessage')?.value.trim();
+    const subjects = {
+      invoice: `Invoice for your Breezyee Vans booking`,
+      reminder: `Payment reminder for your Breezyee Vans booking`,
+      confirmation: `Booking confirmation from Breezyee Vans`,
+    };
+    const intros = {
+      invoice: `Please find the invoice details for your Breezyee Vans booking below.`,
+      reminder: `This is a friendly reminder that payment is due for your Breezyee Vans booking.`,
+      confirmation: `Your Breezyee Vans booking details are below.`,
+    };
+    const body = [
+      `Hello ${customer},`,
+      '',
+      customMessage || intros[type] || intros.invoice,
+      '',
+      `Service: ${service}`,
+      `Van: ${booking?.van_size || 'To be confirmed'}`,
+      `Booking date: ${booking?.date || 'To be confirmed'}`,
+      `Time: ${booking?.time || 'To be confirmed'}`,
+      `Pickup: ${booking?.pickup || 'To be confirmed'}`,
+      `Drop-off: ${booking?.dropoff || 'To be confirmed'}`,
+      `Amount: ${amount}`,
+      `Due date: ${dueDate}`,
+      '',
+      `Kind regards,`,
+      ADMIN_OWNER_NAME,
+      `Breezyee Vans`,
+    ].join('\n');
+    return { subject: subjects[type] || subjects.invoice, body, amount, dueDate };
+  };
+
+  const logAdminEmail = async (booking, type, email) => {
+    await supabase.from('admin_messages').insert([{
+      booking_id: booking?.id || null,
+      recipient_email: booking?.email || null,
+      message_type: type,
+      subject: email.subject,
+      body: email.body,
+      amount: email.amount,
+      due_date: email.dueDate,
+      created_by: user.email,
+    }]);
+  };
+
+  const openAdminEmail = async (booking, type = 'invoice') => {
+    if (!booking?.email) {
+      setText('invoiceEmailStatus', 'This booking has no customer email');
+      return;
+    }
+    const email = composeAdminEmail(booking, type);
+    setText('invoiceEmailStatus', `Opening ${type} email for ${booking.email}`);
+    const preview = document.getElementById('invoiceEmailPreview');
+    if (preview) preview.textContent = `Subject: ${email.subject}\n\n${email.body}`;
+    try {
+      await logAdminEmail(booking, type, email);
+    } catch (_error) {
+      setText('invoiceEmailStatus', 'Email opened. Add admin_messages table to log sends.');
+    }
+    window.location.href = `mailto:${encodeURIComponent(booking.email)}?subject=${encodeURIComponent(email.subject)}&body=${encodeURIComponent(email.body)}`;
+  };
+
+  if (isInvoicePage) {
+    const bookingSelect = document.getElementById('invoiceBookingSelect');
+    const amountInput = document.getElementById('invoiceAmount');
+    const dueInput = document.getElementById('invoiceDueDate');
+    const typeSelect = document.getElementById('invoiceEmailType');
+    const preview = document.getElementById('invoiceEmailPreview');
+    const form = document.getElementById('invoiceEmailForm');
+    const previewButton = document.getElementById('previewInvoiceEmail');
+    const selectableBookings = bookings.filter(booking => booking.email);
+    if (bookingSelect) {
+      bookingSelect.innerHTML = selectableBookings.length
+        ? selectableBookings.map((booking, index) => `<option value="${index}">${escapeHTML(booking.name || booking.email)} - ${escapeHTML(booking.service || 'Booking')} - ${escapeHTML(booking.price || 'GBP 0')}</option>`).join('')
+        : '<option value="">No bookings with customer emails</option>';
+    }
+    const selectedBooking = () => selectableBookings[Number(bookingSelect?.value || 0)];
+    const syncInvoiceForm = () => {
+      const booking = selectedBooking();
+      if (amountInput) amountInput.value = booking?.price || '';
+      if (dueInput && !dueInput.value) dueInput.value = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      const email = composeAdminEmail(booking, typeSelect?.value || 'invoice');
+      if (preview) preview.textContent = booking ? `Subject: ${email.subject}\n\n${email.body}` : 'Select a booking with an email address.';
+    };
+    bookingSelect?.addEventListener('change', syncInvoiceForm);
+    typeSelect?.addEventListener('change', syncInvoiceForm);
+    amountInput?.addEventListener('input', syncInvoiceForm);
+    dueInput?.addEventListener('change', syncInvoiceForm);
+    document.getElementById('invoiceMessage')?.addEventListener('input', syncInvoiceForm);
+    previewButton?.addEventListener('click', syncInvoiceForm);
+    form?.addEventListener('submit', async e => {
+      e.preventDefault();
+      await openAdminEmail(selectedBooking(), typeSelect?.value || 'invoice');
+    });
+    document.querySelectorAll('[data-email-action]').forEach(button => {
+      button.addEventListener('click', async () => {
+        const booking = bookings[Number(button.dataset.bookingIndex)];
+        await openAdminEmail(booking, button.dataset.emailAction);
+      });
+    });
+    syncInvoiceForm();
+  }
 
   const revenueGoalBar = document.getElementById('dashboardRevenueGoalBar');
   if (revenueGoalBar) revenueGoalBar.style.width = `${monthlyProgress}%`;

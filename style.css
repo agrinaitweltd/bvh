@@ -2588,6 +2588,89 @@ body.is-ready .hero-stats { animation-delay: .4s; }
   height: 18px;
   accent-color: var(--console-green);
 }
+.admin-invoice-composer {
+  min-width: 0;
+}
+.invoice-email-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 18px;
+}
+.invoice-email-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--console-muted);
+  font-size: .78rem;
+  font-weight: 800;
+}
+.invoice-email-form select,
+.invoice-email-form input,
+.invoice-email-form textarea {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+  background: var(--console-soft);
+  color: var(--console-ink);
+  padding: 0 14px;
+  font-weight: 700;
+  outline: none;
+}
+.invoice-email-form select,
+.invoice-email-form input {
+  min-height: 44px;
+}
+.invoice-email-form textarea {
+  resize: vertical;
+  min-height: 118px;
+  padding-top: 12px;
+  line-height: 1.5;
+}
+.invoice-message-field,
+.invoice-email-actions,
+.invoice-preview {
+  grid-column: 1 / -1;
+}
+.invoice-email-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+.invoice-email-actions button,
+.admin-email-action {
+  border: 0;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--console-green);
+  color: #fff;
+  padding: 0 14px;
+  font-size: .78rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+.invoice-email-actions button:first-child,
+.admin-email-action.ghost {
+  background: #e4f5ec;
+  color: var(--console-green-dark);
+}
+.invoice-preview {
+  margin-top: 14px;
+  border-radius: 14px;
+  background: #11161d;
+  color: rgba(255,255,255,.82);
+  padding: 16px;
+  white-space: pre-wrap;
+  font-size: .82rem;
+  line-height: 1.55;
+  max-height: 260px;
+  overflow: auto;
+}
+.admin-invoice-table .admin-email-action + .admin-email-action {
+  margin-left: 6px;
+}
 
 @media (max-width: 1080px) {
   .admin-console-shell {
@@ -2647,7 +2730,8 @@ body.is-ready .hero-stats { animation-delay: .4s; }
     grid-template-columns: 1fr;
   }
   .admin-wallet-grid,
-  .admin-service-grid {
+  .admin-service-grid,
+  .invoice-email-form {
     grid-template-columns: 1fr;
   }
   .admin-money-actions {
