@@ -16,6 +16,7 @@ export default defineConfig({
         adminTransactions: resolve(__dirname, 'admin-transactions.html'),
         adminInvoices: resolve(__dirname, 'admin-invoices.html'),
         adminSettings: resolve(__dirname, 'admin-settings.html'),
+        adminCars: resolve(__dirname, 'admin-cars.html'),
       },
     },
   },

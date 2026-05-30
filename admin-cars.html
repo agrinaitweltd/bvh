@@ -121,7 +121,7 @@
     <div class="admin-modal-content">
       <div class="admin-modal-header">
         <h2 id="modalTitle">Add New Car</h2>
-        <button class="admin-modal-close" onclick="document.getElementById('carModal').style.display='none';">×</button>
+        <button class="admin-modal-close" onclick="window.closeCarModal();">×</button>
       </div>
       <div class="admin-modal-body">
         <form id="carForm">
@@ -183,7 +183,7 @@
           </div>
 
           <div class="admin-modal-footer">
-            <button type="button" class="btn btn-outline" onclick="document.getElementById('carModal').style.display='none';">Cancel</button>
+            <button type="button" class="btn btn-outline" onclick="window.closeCarModal();">Cancel</button>
             <button type="submit" class="btn btn-primary">Save Car</button>
           </div>
         </form>
@@ -193,91 +193,120 @@
 
   <script type="module" src="app.js"></script>
   <script>
-    // Car Management UI
-    document.getElementById('addCarBtn').addEventListener('click', () => {
-      document.getElementById('carForm').reset();
-      document.getElementById('modalTitle').textContent = 'Add New Car';
-      document.getElementById('imagePreview').style.display = 'none';
+    // Make functions globally accessible for onclick handlers
+    window.removeImage = function() {
+      const carImage = document.getElementById('carImage');
+      const imagePreview = document.getElementById('imagePreview');
+      carImage.value = '';
+      imagePreview.style.display = 'none';
+    };
+
+    window.closeCarModal = function() {
+      document.getElementById('carModal').style.display = 'none';
+    };
+
+    window.handleCarFormSubmit = function(e) {
+      e.preventDefault();
+      alert('Car saved successfully! (This would sync to Supabase in production)');
+      document.getElementById('carModal').style.display = 'none';
+    };
+
+    window.editCar = function() {
+      document.getElementById('modalTitle').textContent = 'Edit Car';
+      document.getElementById('carModel').value = 'Mercedes Sprinter';
+      document.getElementById('carType').value = 'medium';
+      document.getElementById('carPrice').value = '75';
+      document.getElementById('carCapacity').value = '10–12';
+      document.getElementById('carPayload').value = '1500';
       document.getElementById('carModal').style.display = 'flex';
+    };
+
+    window.deleteCar = function() {
+      if (confirm('Are you sure you want to delete this car?')) {
+        alert('Car deleted! (This would sync to Supabase in production)');
+      }
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      // Car Management UI
+      const addCarBtn = document.getElementById('addCarBtn');
+      if (addCarBtn) {
+        addCarBtn.addEventListener('click', () => {
+          document.getElementById('carForm').reset();
+          document.getElementById('modalTitle').textContent = 'Add New Car';
+          document.getElementById('imagePreview').style.display = 'none';
+          document.getElementById('carModal').style.display = 'flex';
+        });
+      }
+
+      // File upload handling
+      const fileUploadArea = document.getElementById('fileUploadArea');
+      const carImage = document.getElementById('carImage');
+      const imagePreview = document.getElementById('imagePreview');
+      const previewImg = document.getElementById('previewImg');
+
+      if (fileUploadArea && carImage) {
+        fileUploadArea.addEventListener('click', () => carImage.click());
+        fileUploadArea.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          fileUploadArea.style.background = 'rgba(91, 34, 176, .1)';
+        });
+        fileUploadArea.addEventListener('dragleave', () => {
+          fileUploadArea.style.background = '';
+        });
+        fileUploadArea.addEventListener('drop', (e) => {
+          e.preventDefault();
+          fileUploadArea.style.background = '';
+          if (e.dataTransfer.files[0]) window.handleFileSelect(e.dataTransfer.files[0]);
+        });
+
+        carImage.addEventListener('change', (e) => {
+          if (e.target.files[0]) window.handleFileSelect(e.target.files[0]);
+        });
+      }
+
+      // Form submission
+      const carForm = document.getElementById('carForm');
+      if (carForm) {
+        carForm.addEventListener('submit', window.handleCarFormSubmit);
+      }
+
+      // Edit car button handlers
+      document.querySelectorAll('.edit-car-btn').forEach(btn => {
+        btn.addEventListener('click', window.editCar);
+      });
+
+      // Delete car handlers
+      document.querySelectorAll('.delete-car-btn').forEach(btn => {
+        btn.addEventListener('click', window.deleteCar);
+      });
+
+      // Close modal on background click
+      const carModal = document.getElementById('carModal');
+      if (carModal) {
+        carModal.addEventListener('click', (e) => {
+          if (e.target === carModal) {
+            carModal.style.display = 'none';
+          }
+        });
+      }
     });
 
-    // File upload handling
-    const fileUploadArea = document.getElementById('fileUploadArea');
-    const carImage = document.getElementById('carImage');
-    const imagePreview = document.getElementById('imagePreview');
-    const previewImg = document.getElementById('previewImg');
-
-    fileUploadArea.addEventListener('click', () => carImage.click());
-    fileUploadArea.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      fileUploadArea.style.background = 'rgba(91, 34, 176, .1)';
-    });
-    fileUploadArea.addEventListener('dragleave', () => {
-      fileUploadArea.style.background = '';
-    });
-    fileUploadArea.addEventListener('drop', (e) => {
-      e.preventDefault();
-      fileUploadArea.style.background = '';
-      if (e.dataTransfer.files[0]) handleFileSelect(e.dataTransfer.files[0]);
-    });
-
-    carImage.addEventListener('change', (e) => {
-      if (e.target.files[0]) handleFileSelect(e.target.files[0]);
-    });
-
-    function handleFileSelect(file) {
+    // File selection handler
+    window.handleFileSelect = function(file) {
       if (file.size > 5 * 1024 * 1024) {
         alert('File too large. Max 5MB.');
         return;
       }
       const reader = new FileReader();
+      const previewImg = document.getElementById('previewImg');
+      const imagePreview = document.getElementById('imagePreview');
       reader.onload = (e) => {
         previewImg.src = e.target.result;
         imagePreview.style.display = 'block';
       };
       reader.readAsDataURL(file);
-    }
-
-    function removeImage() {
-      carImage.value = '';
-      imagePreview.style.display = 'none';
-    }
-
-    // Form submission
-    document.getElementById('carForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      alert('Car saved successfully! (This would sync to Supabase in production)');
-      document.getElementById('carModal').style.display = 'none';
-    });
-
-    // Edit car button handlers
-    document.querySelectorAll('.edit-car-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.getElementById('modalTitle').textContent = 'Edit Car';
-        document.getElementById('carModel').value = 'Mercedes Sprinter';
-        document.getElementById('carType').value = 'medium';
-        document.getElementById('carPrice').value = '75';
-        document.getElementById('carCapacity').value = '10–12';
-        document.getElementById('carPayload').value = '1500';
-        document.getElementById('carModal').style.display = 'flex';
-      });
-    });
-
-    // Delete car handlers
-    document.querySelectorAll('.delete-car-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        if (confirm('Are you sure you want to delete this car?')) {
-          alert('Car deleted! (This would sync to Supabase in production)');
-        }
-      });
-    });
-
-    // Close modal on background click
-    document.getElementById('carModal').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('carModal')) {
-        document.getElementById('carModal').style.display = 'none';
-      }
-    });
+    };
   </script>
 </body>
 </html>
