@@ -198,6 +198,7 @@ input, select, button, textarea { font-family: var(--font); }
 .logo-mark.light span { color: var(--white); }
 .logo-text { font-size: 1.1rem; font-weight: 700; color: var(--text); }
 .logo-text strong { color: var(--purple); }
+.logo-image { height: 50px; width: auto; max-height: 100%; object-fit: contain; }
 .txt-white .logo-text { color: var(--white); }
 
 .nav-links { display: flex; align-items: center; gap: 24px; margin-left: auto; }
@@ -1989,6 +1990,7 @@ body.is-ready .hero-stats { animation-delay: .4s; }
   padding: 0 0 4px;
   color: var(--console-ink);
 }
+.admin-console-brand .logo-image { height: 42px; width: auto; }
 .admin-console-brand-mark {
   width: 34px;
   height: 34px;
@@ -3178,6 +3180,7 @@ body.is-ready .hero-stats { animation-delay: .4s; }
   color: var(--user-ink);
   font-weight: 900;
 }
+.user-dashboard-brand .logo-image { height: 50px; width: auto; }
 .user-dashboard-brand span,
 .user-profile-avatar {
   width: 42px;
