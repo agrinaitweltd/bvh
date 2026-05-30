@@ -613,10 +613,16 @@ input, select, button, textarea { font-family: var(--font); }
 .van-card {
   background: var(--white); border: 1px solid var(--gray-200);
   border-radius: var(--radius-lg); overflow: hidden;
-  transition: transform .3s, box-shadow .3s;
+  transition: transform .3s, box-shadow .3s; display: flex; flex-direction: column;
 }
 .van-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.van-card-image {
+  width: 100%; height: 200px; background-size: cover; background-position: center;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; color: white; text-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
 .van-featured { border-color: var(--purple); }
+.van-featured .van-card-image { box-shadow: inset 0 0 0 3px var(--purple); }
 .van-badge-tag {
   display: inline-block; font-size: .72rem; font-weight: 700; letter-spacing: .08em;
   text-transform: uppercase; padding: 4px 12px; border-radius: 50px;
@@ -624,12 +630,12 @@ input, select, button, textarea { font-family: var(--font); }
 }
 .van-badge-purple { background: var(--purple) !important; color: var(--white) !important; }
 .van-name-row { margin-bottom: 4px; }
-.van-card-body { padding: 24px; }
+.van-card-body { padding: 24px; flex: 1; display: flex; flex-direction: column; }
 .van-card-body h3 { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
 .van-card-body p  { font-size: .88rem; color: var(--text-mid); margin-bottom: 14px; line-height: 1.6; }
 .van-specs-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
 .vspec { font-size: .76rem; background: var(--purple-bg); color: var(--purple); border-radius: 50px; padding: 4px 10px; font-weight: 600; }
-.van-price-row { display: flex; align-items: center; justify-content: space-between; }
+.van-price-row { display: flex; align-items: center; justify-content: space-between; margin-top: auto; }
 .price-from { font-size: .8rem; color: var(--text-dim); margin-right: 4px; }
 .price-big  { font-size: 1.8rem; font-weight: 900; color: var(--text); letter-spacing: -.02em; }
 .price-unit { font-size: .82rem; color: var(--text-dim); margin-left: 2px; }
@@ -4300,5 +4306,95 @@ body.is-ready .hero-stats { animation-delay: .4s; }
   }
   .admin-modal-content {
     width: 95%;
+  }
+}
+
+/* ========== CAR PREVIEW CARDS ========== */
+.admin-cars-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.car-preview-card {
+  border: 1px solid var(--gray-200);
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+  transition: all 0.3s ease;
+}
+
+.car-preview-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow);
+}
+
+.car-preview-img {
+  width: 100%;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  background-size: cover;
+  background-position: center;
+}
+
+.car-preview-info {
+  padding: 20px;
+}
+
+.car-preview-info h4 {
+  font-size: 1.1rem;
+  color: var(--text);
+  margin-bottom: 4px;
+  font-weight: 700;
+}
+
+.car-type {
+  font-size: .8rem;
+  color: var(--purple);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  margin-bottom: 12px;
+}
+
+.car-specs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: .9rem;
+  color: var(--text-mid);
+  margin-bottom: 16px;
+}
+
+.car-preview-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.car-preview-price strong {
+  font-size: 1.8rem;
+  color: var(--purple);
+}
+
+.car-preview-price span {
+  font-size: .85rem;
+  color: var(--text-dim);
+}
+
+/* ========== RESPONSIVE PREVIEW ========== */
+@media (max-width: 1024px) {
+  .admin-cars-preview-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-cars-preview-grid {
+    grid-template-columns: 1fr;
   }
 }
