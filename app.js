@@ -173,9 +173,9 @@ if (bwbDate) {
 
 // ── PRICE CALCULATION ──
 const RATES = {
-  small:  { hourly: 12, daily: 35 },
-  medium: { hourly: 20, daily: 75 },
-  xl:     { hourly: 28, daily: 95 },
+  small:  { hourly: 12.5, daily: 100 },
+  medium: { hourly: 25, daily: 200 },
+  xl:     { hourly: 43.75, daily: 350 },
 };
 const HELPER_RATES = { '0': 0, '1': 30, '2': 55 };
 
@@ -189,7 +189,7 @@ function calcPrice() {
   const sumDur   = document.getElementById('sum-duration');
   const sumSvc   = document.getElementById('sum-service');
 
-  const vanLabels = { small: 'Small Van (Berlingo)', medium: 'Medium Van (Sprinter)', xl: 'XL Van (Luton)' };
+  const vanLabels = { small: 'Small / Medium Van (Citroen Berlingo)', medium: 'Medium / Large Van (Mercedes Sprinter)', xl: 'Large / XL Van (Iveco Daily Luton)' };
   const durLabels = { '2':'2 Hours','4':'4 Hours (Half Day)','8':'Full Day','24':'1 Day','48':'2 Days','72':'3 Days','custom':'Custom' };
 
   if (sumVan)  sumVan.textContent  = vanLabels[van]     || 'Not selected';

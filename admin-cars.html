@@ -52,8 +52,8 @@
               <tr>
                 <td><div class="car-thumb" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"><span>🚐</span></div></td>
                 <td><strong>Citroen Berlingo</strong></td>
-                <td><span class="car-badge car-badge-small">Small</span></td>
-                <td><strong>£35</strong>/day</td>
+                <td><span class="car-badge car-badge-small">Small / Medium</span></td>
+                <td><strong>£100</strong>/day</td>
                 <td>2–3 m³ • 750 kg</td>
                 <td><span class="status-badge status-active">Active</span></td>
                 <td>
@@ -64,8 +64,8 @@
               <tr>
                 <td><div class="car-thumb" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"><span>🚛</span></div></td>
                 <td><strong>Mercedes Sprinter</strong></td>
-                <td><span class="car-badge car-badge-medium">Medium</span></td>
-                <td><strong>£75</strong>/day</td>
+                <td><span class="car-badge car-badge-medium">Medium / Large</span></td>
+                <td><strong>£200</strong>/day</td>
                 <td>10–12 m³ • 1,500 kg</td>
                 <td><span class="status-badge status-active">Active</span></td>
                 <td>
@@ -75,9 +75,9 @@
               </tr>
               <tr>
                 <td><div class="car-thumb" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"><span>🚚</span></div></td>
-                <td><strong>Luton Van</strong></td>
-                <td><span class="car-badge car-badge-xl">XL</span></td>
-                <td><strong>£95</strong>/day</td>
+                <td><strong>Iveco Daily Luton</strong></td>
+                <td><span class="car-badge car-badge-xl">Large / XL</span></td>
+                <td><strong>£350</strong>/day</td>
                 <td>18–20 m³ • 2,000 kg</td>
                 <td><span class="status-badge status-active">Active</span></td>
                 <td>
@@ -100,14 +100,14 @@
             </div>
             <div class="car-preview-info">
               <h4>Citroen Berlingo</h4>
-              <p class="car-type">Small Van</p>
+              <p class="car-type">Small / Medium Van</p>
               <div class="car-specs">
                 <span>2–3 m³</span>
                 <span>•</span>
                 <span>750 kg</span>
               </div>
               <div class="car-preview-price">
-                <strong>£35</strong><span>/day</span>
+                <strong>£100</strong><span>/day</span>
               </div>
             </div>
           </div>
@@ -118,14 +118,14 @@
             </div>
             <div class="car-preview-info">
               <h4>Mercedes Sprinter</h4>
-              <p class="car-type">Medium Van</p>
+              <p class="car-type">Medium / Large Van</p>
               <div class="car-specs">
                 <span>10–12 m³</span>
                 <span>•</span>
                 <span>1,500 kg</span>
               </div>
               <div class="car-preview-price">
-                <strong>£75</strong><span>/day</span>
+                <strong>£200</strong><span>/day</span>
               </div>
             </div>
           </div>
@@ -135,15 +135,15 @@
               <span style="font-size: 3rem;">🚚</span>
             </div>
             <div class="car-preview-info">
-              <h4>Luton Van</h4>
-              <p class="car-type">XL Van</p>
+              <h4>Iveco Daily Luton</h4>
+              <p class="car-type">Large / XL Van</p>
               <div class="car-specs">
                 <span>18–20 m³</span>
                 <span>•</span>
                 <span>2,000 kg</span>
               </div>
               <div class="car-preview-price">
-                <strong>£95</strong><span>/day</span>
+                <strong>£350</strong><span>/day</span>
               </div>
             </div>
           </div>
@@ -159,7 +159,7 @@
         </article>
         <article class="admin-stat-card">
           <span>Average Daily Rate</span>
-          <strong id="avgPriceRate">£68.33</strong>
+          <strong id="avgPriceRate">£216.67</strong>
           <p>Across all van sizes</p>
         </article>
         <article class="admin-stat-card">
@@ -195,14 +195,14 @@
               <label>Type <span class="required">*</span></label>
               <select id="carType" required>
                 <option value="">Select type</option>
-                <option value="small">Small Van</option>
-                <option value="medium">Medium Van</option>
-                <option value="xl">XL Van</option>
+                <option value="small">Small / Medium Van</option>
+                <option value="medium">Medium / Large Van</option>
+                <option value="xl">Large / XL Van</option>
               </select>
             </div>
             <div class="form-group">
               <label>Price per Day (£) <span class="required">*</span></label>
-              <input type="number" id="carPrice" placeholder="e.g., 75" min="1" required />
+              <input type="number" id="carPrice" placeholder="e.g., 200" min="1" required />
             </div>
           </div>
 
@@ -275,7 +275,7 @@
       document.getElementById('modalTitle').textContent = 'Edit Car';
       document.getElementById('carModel').value = 'Mercedes Sprinter';
       document.getElementById('carType').value = 'medium';
-      document.getElementById('carPrice').value = '75';
+      document.getElementById('carPrice').value = '200';
       document.getElementById('carCapacity').value = '10–12';
       document.getElementById('carPayload').value = '1500';
       document.getElementById('carModal').style.display = 'flex';
