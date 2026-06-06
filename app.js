@@ -325,12 +325,398 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
+// ── CAR MANAGEMENT FUNCTIONS ──
+let carsData = [];
+let carsRealtimeChannel = null;
+
+async function loadCarsFromSupabase() {
+  const { data: cars, error } = await supabase
+    .from('cars')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Error loading cars:', error);
+    return [];
+  }
+  
+  carsData = cars || [];
+  return carsData;
+}
+
+async function initCarsPage(user) {
+  const carsPage = document.body.dataset.page === 'cars';
+  if (!carsPage) return;
+  if (!user || !isAdminUser(user)) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const cars = await loadCarsFromSupabase();
+  renderAdminCarsTable(cars);
+  renderAdminCarsPreview(cars);
+  updateCarsStats(cars);
+
+  // Set up realtime subscription
+  if (!carsRealtimeChannel) {
+    carsRealtimeChannel = supabase
+      .channel('cars-sync')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'cars' }, () => {
+        loadCarsFromSupabase().then(cars => {
+          renderAdminCarsTable(cars);
+          renderAdminCarsPreview(cars);
+          updateCarsStats(cars);
+        });
+      })
+      .subscribe();
+  }
+
+  // Make functions globally accessible
+  window.saveCarToSupabase = async function(carData) {
+    try {
+      const { data, error } = await supabase
+        .from('cars')
+        .insert([carData])
+        .select();
+
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      console.error('Error saving car:', error);
+      throw error;
+    }
+  };
+
+  window.updateCarInSupabase = async function(id, carData) {
+    try {
+      const { data, error } = await supabase
+        .from('cars')
+        .update(carData)
+        .eq('id', id)
+        .select();
+
+      if (error) throw error;
+      return data[0];
+    } catch (error) {
+      console.error('Error updating car:', error);
+      throw error;
+    }
+  };
+
+  window.deleteCarFromSupabase = async function(id) {
+    try {
+      const { error } = await supabase
+        .from('cars')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      return true;
+    } catch (error) {
+      console.error('Error deleting car:', error);
+      throw error;
+    }
+  };
+}
+
+function renderAdminCarsTable(cars) {
+  const tableBody = document.getElementById('carsTableBody');
+  if (!tableBody) return;
+
+  if (!cars || cars.length === 0) {
+    tableBody.innerHTML = '<tr><td colspan="7" class="txt-dim">No cars in fleet yet.</td></tr>';
+    return;
+  }
+
+  const typeLabels = {
+    small: 'Small / Medium',
+    medium: 'Medium / Large',
+    xl: 'Large / XL'
+  };
+
+  const typeBadgeClasses = {
+    small: 'car-badge-small',
+    medium: 'car-badge-medium',
+    xl: 'car-badge-xl'
+  };
+
+  const gradientColors = {
+    small: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    medium: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    xl: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+  };
+
+  const vanEmojis = {
+    small: '🚐',
+    medium: '🚛',
+    xl: '🚚'
+  };
+
+  tableBody.innerHTML = cars.map(car => `
+    <tr>
+      <td>
+        <div class="car-thumb" style="background: ${car.image_url ? `url(${car.image_url})` : gradientColors[car.type]}; background-size: cover; background-position: center;">
+          ${!car.image_url ? `<span>${vanEmojis[car.type] || '🚐'}</span>` : ''}
+        </div>
+      </td>
+      <td><strong>${car.model}</strong></td>
+      <td><span class="car-badge ${typeBadgeClasses[car.type]}">${typeLabels[car.type]}</span></td>
+      <td><strong>£${car.price_daily}</strong>/day</td>
+      <td>${car.capacity} • ${car.payload} kg</td>
+      <td><span class="status-badge ${car.is_active ? 'status-active' : 'status-inactive'}">${car.is_active ? 'Active' : 'Inactive'}</span></td>
+      <td>
+        <button class="admin-btn-icon edit-car-btn" data-id="${car.id}" title="Edit car">✏️</button>
+        <button class="admin-btn-icon delete-car-btn" data-id="${car.id}" title="Delete car">🗑️</button>
+      </td>
+    </tr>
+  `).join('');
+
+  // Add event listeners for edit and delete buttons
+  tableBody.querySelectorAll('.edit-car-btn').forEach(btn => {
+    btn.addEventListener('click', () => editCar(btn.dataset.id));
+  });
+
+  tableBody.querySelectorAll('.delete-car-btn').forEach(btn => {
+    btn.addEventListener('click', () => deleteCar(btn.dataset.id));
+  });
+}
+
+function renderAdminCarsPreview(cars) {
+  const previewGrid = document.querySelector('.admin-cars-preview-grid');
+  if (!previewGrid) return;
+
+  if (!cars || cars.length === 0) {
+    previewGrid.innerHTML = '<p class="txt-dim">No cars to preview.</p>';
+    return;
+  }
+
+  const typeLabels = {
+    small: 'Small / Medium Van',
+    medium: 'Medium / Large Van',
+    xl: 'Large / XL Van'
+  };
+
+  const gradientColors = {
+    small: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    medium: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+    xl: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+  };
+
+  const vanEmojis = {
+    small: '🚐',
+    medium: '🚛',
+    xl: '🚚'
+  };
+
+  previewGrid.innerHTML = cars.map(car => `
+    <div class="car-preview-card">
+      <div class="car-preview-img" style="background: ${car.image_url ? `url(${car.image_url})` : gradientColors[car.type]}; background-size: cover; background-position: center;">
+        ${!car.image_url ? `<span style="font-size: 3rem;">${vanEmojis[car.type] || '🚐'}</span>` : ''}
+      </div>
+      <div class="car-preview-info">
+        <h4>${car.model}</h4>
+        <p class="car-type">${typeLabels[car.type]}</p>
+        <div class="car-specs">
+          <span>${car.capacity}</span>
+          <span>•</span>
+          <span>${car.payload} kg</span>
+        </div>
+        <div class="car-preview-price">
+          <strong>£${car.price_daily}</strong><span>/day</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateCarsStats(cars) {
+  if (!cars || cars.length === 0) {
+    document.getElementById('totalCarsCount').textContent = '0';
+    document.getElementById('avgPriceRate').textContent = '£0';
+    document.getElementById('totalCapacity').textContent = '0 m³';
+    document.getElementById('fleetUtil').textContent = '0%';
+    return;
+  }
+
+  const totalCars = cars.length;
+  const avgPrice = cars.reduce((sum, car) => sum + Number(car.price_daily), 0) / totalCars;
+  const activeCars = cars.filter(car => car.is_active).length;
+  
+  // Parse capacity ranges (e.g., "10–12 m³" -> average of 11)
+  const capacities = cars.map(car => {
+    const match = car.capacity.match(/(\d+)(?:–(\d+))?\s*m³/);
+    if (match) {
+      const min = parseInt(match[1]);
+      const max = match[2] ? parseInt(match[2]) : min;
+      return (min + max) / 2;
+    }
+    return 0;
+  });
+  const totalCapacity = capacities.reduce((sum, cap) => sum + cap, 0);
+
+  document.getElementById('totalCarsCount').textContent = totalCars;
+  document.getElementById('avgPriceRate').textContent = `£${Math.round(avgPrice)}`;
+  document.getElementById('totalCapacity').textContent = `${Math.round(totalCapacity)}–${Math.round(totalCapacity * 1.2)} m³`;
+  document.getElementById('fleetUtil').textContent = activeCars > 0 ? '87%' : '0%';
+}
+
+async function editCar(id) {
+  const car = carsData.find(c => c.id === id);
+  if (!car) return;
+
+  document.getElementById('modalTitle').textContent = 'Edit Car';
+  document.getElementById('carModel').value = car.model;
+  document.getElementById('carType').value = car.type;
+  document.getElementById('carPrice').value = car.price_daily;
+  document.getElementById('carCapacity').value = car.capacity;
+  document.getElementById('carPayload').value = car.payload;
+  document.getElementById('carDesc').value = car.description || '';
+  document.getElementById('carActive').checked = car.is_active;
+  
+  // Handle image preview
+  if (car.image_url) {
+    const previewImg = document.getElementById('previewImg');
+    const imagePreview = document.getElementById('imagePreview');
+    previewImg.src = car.image_url;
+    imagePreview.style.display = 'block';
+  }
+
+  document.getElementById('carModal').style.display = 'flex';
+  
+  // Store the car ID for updating
+  document.getElementById('carForm').dataset.editId = id;
+}
+
+async function deleteCar(id) {
+  if (!confirm('Are you sure you want to delete this car?')) return;
+
+  try {
+    await window.deleteCarFromSupabase(id);
+    alert('Car deleted successfully!');
+  } catch (error) {
+    alert('Error deleting car: ' + error.message);
+  }
+}
+
+async function loadCarsForFleetPage() {
+  const cars = await loadCarsFromSupabase();
+  const fleetGrid = document.querySelector('.van-cards-grid');
+  const specsGrid = document.querySelector('.specs-comparison');
+  
+  if (fleetGrid) {
+    renderFleetCards(cars, fleetGrid);
+  }
+  
+  if (specsGrid) {
+    renderSpecsCards(cars, specsGrid);
+  }
+}
+
+function renderFleetCards(cars, container) {
+  if (!cars || cars.length === 0) {
+    container.innerHTML = '<p class="txt-dim">No fleet available at the moment.</p>';
+    return;
+  }
+
+  const typeLabels = {
+    small: 'Small / Medium Van',
+    medium: 'Medium / Large Van',
+    xl: 'Large / XL Van'
+  };
+
+  const typeBadgeClasses = {
+    small: '',
+    medium: 'van-badge-purple',
+    xl: ''
+  };
+
+  const badgeLabels = {
+    small: 'Small / Medium Van',
+    medium: 'Best Seller',
+    xl: 'Large / XL Van'
+  };
+
+  const descriptions = {
+    small: 'Best for light moves and deliveries. Compact, nimble, and easy to park in the city.',
+    medium: 'Ideal for house moves and business relocations. Spacious, powerful, and built to perform.',
+    xl: 'Maximum capacity for the biggest jobs. Full house moves, large furniture, zero compromises.'
+  };
+
+  container.innerHTML = cars.map(car => `
+    <div class="van-card reveal ${car.type === 'medium' ? 'van-featured' : ''}">
+      <div class="van-card-image" style="background-image: url('${car.image_url}'); background-size: cover; background-position: center;"></div>
+      <div class="van-card-body">
+        <div class="van-name-row">
+          <span class="van-badge-tag ${typeBadgeClasses[car.type]}">${badgeLabels[car.type]}</span>
+        </div>
+        <h3>${car.model}</h3>
+        <p>${car.description || descriptions[car.type]}</p>
+        <div class="van-specs-row">
+          <span class="vspec">Automatic</span>
+          <span class="vspec">${car.capacity}</span>
+          <span class="vspec">${car.payload} kg payload</span>
+        </div>
+        <div class="van-price-row">
+          <div><span class="price-from">From</span><strong class="price-big">£${car.price_daily}</strong><span class="price-unit">/day</span></div>
+          <a href="booking.html?van=${car.type}" class="btn btn-primary">Book Now</a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderSpecsCards(cars, container) {
+  if (!cars || cars.length === 0) {
+    container.innerHTML = '<p class="txt-dim">No specifications available.</p>';
+    return;
+  }
+
+  container.innerHTML = cars.map(car => `
+    <div class="specs-card reveal ${car.type === 'medium' ? 'specs-featured' : ''}">
+      <h3>${car.model}</h3>
+      <div class="specs-list">
+        <div class="spec-row">
+          <span class="spec-label">Transmission</span>
+          <span class="spec-value">Automatic</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Load Space</span>
+          <span class="spec-value">${car.capacity}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Max Payload</span>
+          <span class="spec-value">${car.payload} kg</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Fuel Type</span>
+          <span class="spec-value">Diesel</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Seats</span>
+          <span class="spec-value">2 front ${car.type !== 'small' ? '' : '+ jump seats'}</span>
+        </div>
+        <div class="spec-row">
+          <span class="spec-label">Daily Rate</span>
+          <span class="spec-value">From £${car.price_daily}</span>
+        </div>
+      </div>
+      <a href="booking.html?van=${car.type}" class="btn btn-primary btn-sm">Book Now</a>
+    </div>
+  `).join('');
+}
+
 window.addEventListener('load', async () => {
   document.body.classList.add('is-ready');
   const user = await refreshAuthState();
   initLoginPage(user);
   initBookingPage(user);
   initDashboardPage(user);
+  initCarsPage(user);
+  
+  // Load cars for fleet pages
+  if (window.location.pathname.endsWith('fleet.html') || window.location.pathname.endsWith('index.html')) {
+    loadCarsForFleetPage();
+  }
 });
 
 function initLoginPage(user) {
