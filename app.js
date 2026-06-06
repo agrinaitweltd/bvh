@@ -329,19 +329,72 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 let carsData = [];
 let carsRealtimeChannel = null;
 
-async function loadCarsFromSupabase() {
-  const { data: cars, error } = await supabase
-    .from('cars')
-    .select('*')
-    .order('created_at', { ascending: false });
-  
-  if (error) {
-    console.error('Error loading cars:', error);
-    return [];
+// Fallback fleet data in case Supabase isn't configured yet
+const FALLBACK_CARS = [
+  {
+    id: 'fallback-1',
+    model: 'Citroen Berlingo',
+    type: 'small',
+    price_daily: 100,
+    capacity: '2–3 m³',
+    payload: 750,
+    description: 'Best for light moves and deliveries. Compact, nimble, and easy to park in the city.',
+    image_url: '/van-small.jpg',
+    is_active: true
+  },
+  {
+    id: 'fallback-2',
+    model: 'Mercedes Sprinter',
+    type: 'medium',
+    price_daily: 200,
+    capacity: '10–12 m³',
+    payload: 1500,
+    description: 'Ideal for house moves and business relocations. Spacious, powerful, and built to perform.',
+    image_url: '/van-medium.jpg',
+    is_active: true
+  },
+  {
+    id: 'fallback-3',
+    model: 'Iveco Daily Luton',
+    type: 'xl',
+    price_daily: 350,
+    capacity: '18–20 m³',
+    payload: 2000,
+    description: 'Maximum capacity for the biggest jobs. Full house moves, large furniture, zero compromises.',
+    image_url: '/van-large.jpg',
+    is_active: true
   }
-  
-  carsData = cars || [];
-  return carsData;
+];
+
+async function loadCarsFromSupabase() {
+  try {
+    const { data: cars, error } = await supabase
+      .from('cars')
+      .select('*')
+      .order('created_at', { ascending: false });
+    
+    if (error) {
+      console.error('Error loading cars from Supabase:', error);
+      console.log('Using fallback fleet data instead');
+      carsData = FALLBACK_CARS;
+      return FALLBACK_CARS;
+    }
+    
+    if (!cars || cars.length === 0) {
+      console.log('No cars found in Supabase, using fallback data');
+      carsData = FALLBACK_CARS;
+      return FALLBACK_CARS;
+    }
+    
+    carsData = cars;
+    console.log(`Loaded ${cars.length} cars from Supabase`);
+    return cars;
+  } catch (error) {
+    console.error('Failed to load cars from Supabase:', error);
+    console.log('Using fallback fleet data instead');
+    carsData = FALLBACK_CARS;
+    return FALLBACK_CARS;
+  }
 }
 
 async function initCarsPage(user) {
@@ -357,8 +410,9 @@ async function initCarsPage(user) {
   renderAdminCarsPreview(cars);
   updateCarsStats(cars);
 
-  // Set up realtime subscription
-  if (!carsRealtimeChannel) {
+  // Only set up realtime subscription if we successfully loaded from Supabase
+  const usingFallback = cars === FALLBACK_CARS;
+  if (!usingFallback && !carsRealtimeChannel) {
     carsRealtimeChannel = supabase
       .channel('cars-sync')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'cars' }, () => {
@@ -382,8 +436,16 @@ async function initCarsPage(user) {
       if (error) throw error;
       return data[0];
     } catch (error) {
-      console.error('Error saving car:', error);
-      throw error;
+      console.error('Error saving car to Supabase:', error);
+      alert('Note: Could not save to Supabase. The car will be added locally for this session only. Please set up Supabase to enable persistent storage.');
+      // Add to fallback data temporarily
+      const newCar = { ...carData, id: `fallback-${Date.now()}` };
+      FALLBACK_CARS.push(newCar);
+      carsData = [...FALLBACK_CARS];
+      renderAdminCarsTable(carsData);
+      renderAdminCarsPreview(carsData);
+      updateCarsStats(carsData);
+      return newCar;
     }
   };
 
@@ -398,8 +460,18 @@ async function initCarsPage(user) {
       if (error) throw error;
       return data[0];
     } catch (error) {
-      console.error('Error updating car:', error);
-      throw error;
+      console.error('Error updating car in Supabase:', error);
+      alert('Note: Could not update in Supabase. Changes will be local only. Please set up Supabase to enable persistent storage.');
+      // Update fallback data temporarily
+      const index = FALLBACK_CARS.findIndex(c => c.id === id);
+      if (index !== -1) {
+        FALLBACK_CARS[index] = { ...FALLBACK_CARS[index], ...carData };
+        carsData = [...FALLBACK_CARS];
+        renderAdminCarsTable(carsData);
+        renderAdminCarsPreview(carsData);
+        updateCarsStats(carsData);
+      }
+      return carData;
     }
   };
 
@@ -413,8 +485,18 @@ async function initCarsPage(user) {
       if (error) throw error;
       return true;
     } catch (error) {
-      console.error('Error deleting car:', error);
-      throw error;
+      console.error('Error deleting car from Supabase:', error);
+      alert('Note: Could not delete from Supabase. Removal will be local only. Please set up Supabase to enable persistent storage.');
+      // Remove from fallback data temporarily
+      const index = FALLBACK_CARS.findIndex(c => c.id === id);
+      if (index !== -1) {
+        FALLBACK_CARS.splice(index, 1);
+        carsData = [...FALLBACK_CARS];
+        renderAdminCarsTable(carsData);
+        renderAdminCarsPreview(carsData);
+        updateCarsStats(carsData);
+      }
+      return true;
     }
   };
 }
@@ -609,6 +691,13 @@ async function loadCarsForFleetPage() {
   
   if (specsGrid) {
     renderSpecsCards(cars, specsGrid);
+  }
+  
+  // Log whether we're using fallback data
+  if (cars === FALLBACK_CARS) {
+    console.log('Fleet page: Using fallback data (Supabase not configured)');
+  } else {
+    console.log('Fleet page: Using live Supabase data');
   }
 }
 
