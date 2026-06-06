@@ -24,7 +24,7 @@
         <li class="nav-auth nav-auth-signed-in" style="display:none;"><a href="dashboard.html">Dashboard</a></li>
         <li class="nav-auth nav-auth-signed-in" style="display:none;"><a href="#" id="signOutLink">Sign out</a></li>
       </ul>
-      <a href="booking.html" class="btn btn-nav">Get a Quote</a>
+      <a href="booking.html" class="btn btn-nav">Book Now</a>
       <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
         <span></span><span></span><span></span>
       </button>
@@ -83,7 +83,7 @@
       <div class="van-cards-grid">
 
         <div class="van-card reveal">
-          <div class="van-card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);"><span style="font-size: 3rem;">🚐</span></div>
+          <div class="van-card-image" style="background-image: url('/van-small.jpg'); background-size: cover; background-position: center;"></div>
           <div class="van-card-body">
             <div class="van-name-row">
               <span class="van-badge-tag">Small / Medium Van</span>
@@ -103,7 +103,7 @@
         </div>
 
         <div class="van-card van-featured reveal">
-          <div class="van-card-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);"><span style="font-size: 3rem;">🚛</span></div>
+          <div class="van-card-image" style="background-image: url('/van-medium.jpg'); background-size: cover; background-position: center;"></div>
           <div class="van-card-body">
             <div class="van-name-row">
               <span class="van-badge-tag van-badge-purple">Best Seller</span>
@@ -123,7 +123,7 @@
         </div>
 
         <div class="van-card reveal">
-          <div class="van-card-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);"><span style="font-size: 3rem;">🚚</span></div>
+          <div class="van-card-image" style="background-image: url('/van-large.jpg'); background-size: cover; background-position: center;"></div>
           <div class="van-card-body">
             <div class="van-name-row">
               <span class="van-badge-tag">Large / XL Van</span>
@@ -146,8 +146,150 @@
     </div>
   </section>
 
-  <!-- PRICING TABLE -->
+  <!-- VEHICLE FEATURES SECTION -->
+  <section class="section bg-white">
+    <div class="container">
+      <div class="sec-hdr reveal">
+        <span class="sec-tag">Why Our Fleet</span>
+        <h2>Premium Fleet Standards</h2>
+        <p>Every van meets our exacting standards for safety, comfort, and reliability.</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card reveal">
+          <h4>100% Automatic Transmission</h4>
+          <p>All vans feature automatic transmission — no manual gear changes needed. Perfect for UK city driving.</p>
+        </div>
+        <div class="feature-card reveal">
+          <h4>Regular Servicing</h4>
+          <p>Every vehicle undergoes strict maintenance schedules. MOT certified and fully inspected before each hire.</p>
+        </div>
+        <div class="feature-card reveal">
+          <h4>Clean & Hygienic</h4>
+          <p>Professional deep-cleaning after every return. Interior sanitized and checked for your safety and comfort.</p>
+        </div>
+        <div class="feature-card reveal">
+          <h4>Modern Fleet</h4>
+          <p>Our vans average 5 years old or newer. Updated features, better fuel efficiency, and improved reliability.</p>
+        </div>
+        <div class="feature-card reveal">
+          <h4>Comprehensive Insurance</h4>
+          <p>Full coverage included in all hire rates. No additional insurance costs — just book and drive.</p>
+        </div>
+        <div class="feature-card reveal">
+          <h4>GPS & Tracking</h4>
+          <p>Modern GPS navigation in all vehicles. Real-time tracking for security and support during your journey.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAILED VAN SPECS SECTION -->
   <section class="section bg-lavender">
+    <div class="container">
+      <div class="sec-hdr reveal">
+        <span class="sec-tag">Detailed Specifications</span>
+        <h2>Know Your Van</h2>
+        <p>Complete specifications for each van in our fleet.</p>
+      </div>
+      <div class="specs-comparison">
+        <div class="specs-card reveal">
+          <h3>Citroen Berlingo</h3>
+          <div class="specs-list">
+            <div class="spec-row">
+              <span class="spec-label">Transmission</span>
+              <span class="spec-value">Automatic</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Load Space</span>
+              <span class="spec-value">2–3 m³</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Max Payload</span>
+              <span class="spec-value">750 kg</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Fuel Type</span>
+              <span class="spec-value">Diesel</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Seats</span>
+              <span class="spec-value">2 front + jump seats</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Daily Rate</span>
+              <span class="spec-value">From £100</span>
+            </div>
+          </div>
+          <a href="booking.html?van=small" class="btn btn-primary btn-sm">Book Now</a>
+        </div>
+
+        <div class="specs-card specs-featured reveal">
+          <h3>Mercedes Sprinter</h3>
+          <div class="specs-list">
+            <div class="spec-row">
+              <span class="spec-label">Transmission</span>
+              <span class="spec-value">Automatic</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Load Space</span>
+              <span class="spec-value">10–12 m³</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Max Payload</span>
+              <span class="spec-value">1,500 kg</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Fuel Type</span>
+              <span class="spec-value">Diesel</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Seats</span>
+              <span class="spec-value">2 front</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Daily Rate</span>
+              <span class="spec-value">From £200</span>
+            </div>
+          </div>
+          <a href="booking.html?van=medium" class="btn btn-primary btn-sm">Book Now</a>
+        </div>
+
+        <div class="specs-card reveal">
+          <h3>Iveco Daily Luton</h3>
+          <div class="specs-list">
+            <div class="spec-row">
+              <span class="spec-label">Transmission</span>
+              <span class="spec-value">Automatic</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Load Space</span>
+              <span class="spec-value">18–20 m³</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Max Payload</span>
+              <span class="spec-value">2,000 kg</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Fuel Type</span>
+              <span class="spec-value">Diesel</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Seats</span>
+              <span class="spec-value">2 front</span>
+            </div>
+            <div class="spec-row">
+              <span class="spec-label">Daily Rate</span>
+              <span class="spec-value">From £350</span>
+            </div>
+          </div>
+          <a href="booking.html?van=xl" class="btn btn-primary btn-sm">Book Now</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING TABLE -->
+  <section class="section bg-white">
     <div class="container pricing-layout">
       <div class="pricing-tbl-wrap reveal">
         <div class="pricing-tbl">
@@ -161,7 +303,7 @@
       <div class="pricing-copy reveal">
         <h2>Pricing</h2>
         <p>Transparent rates with no hidden fees. Insurance is always included. Man &amp; van rates include the driver — helpers are available at an additional hourly rate.</p>
-        <a href="booking.html" class="btn btn-primary">Get an Instant Quote</a>
+        <a href="booking.html" class="btn btn-primary">Book Now</a>
         <a href="services.html" class="link-more">About our services →</a>
       </div>
     </div>

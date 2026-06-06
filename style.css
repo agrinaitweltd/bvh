@@ -546,6 +546,53 @@ input, select, button, textarea { font-family: var(--font); }
   .btn-lg { width: 100%; }
 }
 
+
+/* ============================================================
+   FLEET PAGE - FEATURES SECTION
+   ============================================================ */
+.features-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; margin-top: 40px;
+}
+.feature-card {
+  background: var(--gray-50); border-radius: var(--radius-lg); padding: 28px;
+  border-left: 4px solid var(--purple); transition: all 0.3s ease;
+}
+.feature-card:hover { background: var(--white); box-shadow: var(--shadow); }
+.feature-card h4 { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+.feature-card p { font-size: .95rem; color: var(--text-mid); line-height: 1.6; margin: 0; }
+
+/* ============================================================
+   FLEET PAGE - SPECS SECTION
+   ============================================================ */
+.specs-comparison {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; margin-top: 40px;
+}
+.specs-card {
+  background: var(--white); border-radius: var(--radius-lg); padding: 32px;
+  box-shadow: var(--shadow); border: 2px solid transparent; transition: all 0.3s ease;
+}
+.specs-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+.specs-featured {
+  border-color: var(--purple); transform: scale(1.02);
+}
+.specs-featured:hover { transform: scale(1.02) translateY(-4px); }
+@media (max-width: 768px) { .specs-featured { transform: scale(1); } }
+
+.specs-card h3 { font-size: 1.4rem; font-weight: 700; color: var(--text); margin-bottom: 24px; }
+.specs-list {
+  display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;
+}
+.spec-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.spec-row:last-child { border-bottom: none; padding-bottom: 0; }
+.spec-label { font-size: .9rem; font-weight: 600; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.05em; }
+.spec-value { font-size: 1rem; font-weight: 600; color: var(--text); text-align: right; }
+
+.btn-sm { padding: 10px 20px; font-size: 0.95rem; display: inline-block; width: auto; }
+
 /* ============================================================
    IMG FEATURE SECTION (driver in van — co-wheels ref)
    ============================================================ */
