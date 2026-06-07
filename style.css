@@ -2069,6 +2069,31 @@ body.is-ready .hero-stats { animation-delay: .4s; }
 }
 .admin-status.pending::before { background: #f5a623; }
 .admin-status.cancelled::before { background: #e94e4e; }
+.admin-status.paid::before { background: #35d26f; }
+
+.admin-actions-header {
+  width: 80px;
+  text-align: center;
+}
+
+.admin-btn-icon {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.admin-btn-icon:hover {
+  background-color: #f0f0f0;
+}
+
+.admin-btn-icon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 @media (max-width: 1180px) {
   .admin-dashboard-shell {
@@ -2711,6 +2736,7 @@ body.is-ready .hero-stats { animation-delay: .4s; }
 }
 .admin-status.pending::before { background: #f5a623; }
 .admin-status.cancelled::before { background: #e5534b; }
+.admin-status.paid::before { background: #35d26f; }
 .admin-analytics-grid,
 .admin-settings-grid {
   display: grid;

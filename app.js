@@ -6,16 +6,20 @@ import { supabase, ADMIN_EMAIL } from './supabase.js';
 let currentUser = null;
 let bookingsRealtimeChannel = null;
 const ADMIN_OWNER_NAME = 'Mr Olushola Fadipe';
-const authListener = supabase.auth.onAuthStateChange((_event, session) => {
+const authListener = supabase ? supabase.auth.onAuthStateChange((_event, session) => {
   currentUser = session?.user ?? null;
   updateAuthNav(currentUser);
-});
+}) : null;
 
 function isAdminUser(user) {
   return user?.email?.toLowerCase() === ADMIN_EMAIL.toLowerCase();
 }
 
 async function refreshAuthState() {
+  if (!supabase) {
+    updateAuthNav(null);
+    return null;
+  }
   const { data } = await supabase.auth.getSession();
   const user = data.session?.user ?? null;
   currentUser = user;
@@ -27,6 +31,82 @@ async function refreshAuthState() {
     if (custNameEl) custNameEl.value = user.user_metadata?.full_name || '';
   }
   return user;
+}
+
+async function markBookingAsPaid(bookingId) {
+  if (!confirm('Are you sure you want to mark this booking as paid?')) return;
+
+  try {
+    if (supabase) {
+      const { error } = await supabase
+        .from('bookings')
+        .update({ status: 'Paid' })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+    }
+
+    // Refresh the dashboard to show updated data
+    const user = await refreshAuthState();
+    initDashboardPage(user);
+
+    alert('Booking marked as paid successfully!');
+  } catch (error) {
+    console.error('Error marking booking as paid:', error);
+    alert('Failed to mark booking as paid. Please try again.');
+  }
+}
+
+async function deleteBooking(bookingId) {
+  if (!confirm('Are you sure you want to delete this booking? This action cannot be undone.')) return;
+
+  try {
+    if (supabase) {
+      const { error } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('id', bookingId);
+
+      if (error) throw error;
+    }
+
+    // Refresh the dashboard to show updated data
+    const user = await refreshAuthState();
+    initDashboardPage(user);
+
+    alert('Booking deleted successfully!');
+  } catch (error) {
+    console.error('Error deleting booking:', error);
+    alert('Failed to delete booking. Please try again.');
+  }
+}
+
+async function deleteCustomer(customerEmail) {
+  if (!confirm(`Are you sure you want to delete all bookings and data for customer ${customerEmail}? This action cannot be undone.`)) return;
+
+  try {
+    if (supabase) {
+      // Delete all bookings for this customer
+      const { error: bookingError } = await supabase
+        .from('bookings')
+        .delete()
+        .eq('email', customerEmail);
+
+      if (bookingError) throw bookingError;
+
+      // Note: We don't delete the auth user as that would prevent them from logging in
+      // If you want to delete the auth user, you would need additional server-side logic
+    }
+
+    // Refresh the dashboard to show updated data
+    const user = await refreshAuthState();
+    initDashboardPage(user);
+
+    alert(`All data for customer ${customerEmail} has been deleted successfully!`);
+  } catch (error) {
+    console.error('Error deleting customer:', error);
+    alert('Failed to delete customer data. Please try again.');
+  }
 }
 
 function updateAuthNav(user) {
@@ -42,7 +122,7 @@ function updateAuthNav(user) {
 }
 
 async function signOut() {
-  await supabase.auth.signOut();
+  if (supabase) await supabase.auth.signOut();
   await refreshAuthState();
   const path = window.location.pathname;
   if (path.endsWith('dashboard.html') || path.endsWith('user-dashboard.html') || path.includes('admin-')) {
@@ -367,6 +447,13 @@ const FALLBACK_CARS = [
 ];
 
 async function loadCarsFromSupabase() {
+  // Check if Supabase is configured
+  if (!supabase) {
+    console.log('Supabase not configured, using fallback fleet data');
+    carsData = FALLBACK_CARS;
+    return FALLBACK_CARS;
+  }
+
   try {
     const { data: cars, error } = await supabase
       .from('cars')
@@ -410,9 +497,9 @@ async function initCarsPage(user) {
   renderAdminCarsPreview(cars);
   updateCarsStats(cars);
 
-  // Only set up realtime subscription if we successfully loaded from Supabase
+  // Only set up realtime subscription if we successfully loaded from Supabase and supabase is available
   const usingFallback = cars === FALLBACK_CARS;
-  if (!usingFallback && !carsRealtimeChannel) {
+  if (!usingFallback && !carsRealtimeChannel && supabase) {
     carsRealtimeChannel = supabase
       .channel('cars-sync')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'cars' }, () => {
@@ -427,6 +514,18 @@ async function initCarsPage(user) {
 
   // Make functions globally accessible
   window.saveCarToSupabase = async function(carData) {
+    if (!supabase) {
+      console.log('Supabase not configured, adding car locally only');
+      alert('Note: Supabase is not configured. The car will be added locally for this session only.');
+      const newCar = { ...carData, id: `fallback-${Date.now()}` };
+      FALLBACK_CARS.push(newCar);
+      carsData = [...FALLBACK_CARS];
+      renderAdminCarsTable(carsData);
+      renderAdminCarsPreview(carsData);
+      updateCarsStats(carsData);
+      return newCar;
+    }
+
     try {
       const { data, error } = await supabase
         .from('cars')
@@ -450,6 +549,20 @@ async function initCarsPage(user) {
   };
 
   window.updateCarInSupabase = async function(id, carData) {
+    if (!supabase) {
+      console.log('Supabase not configured, updating car locally only');
+      alert('Note: Supabase is not configured. Changes will be local only.');
+      const index = FALLBACK_CARS.findIndex(c => c.id === id);
+      if (index !== -1) {
+        FALLBACK_CARS[index] = { ...FALLBACK_CARS[index], ...carData };
+        carsData = [...FALLBACK_CARS];
+        renderAdminCarsTable(carsData);
+        renderAdminCarsPreview(carsData);
+        updateCarsStats(carsData);
+      }
+      return carData;
+    }
+
     try {
       const { data, error } = await supabase
         .from('cars')
@@ -476,6 +589,20 @@ async function initCarsPage(user) {
   };
 
   window.deleteCarFromSupabase = async function(id) {
+    if (!supabase) {
+      console.log('Supabase not configured, deleting car locally only');
+      alert('Note: Supabase is not configured. Removal will be local only.');
+      const index = FALLBACK_CARS.findIndex(c => c.id === id);
+      if (index !== -1) {
+        FALLBACK_CARS.splice(index, 1);
+        carsData = [...FALLBACK_CARS];
+        renderAdminCarsTable(carsData);
+        renderAdminCarsPreview(carsData);
+        updateCarsStats(carsData);
+      }
+      return true;
+    }
+
     try {
       const { error } = await supabase
         .from('cars')
@@ -681,27 +808,44 @@ async function deleteCar(id) {
 }
 
 async function loadCarsForFleetPage() {
-  const cars = await loadCarsFromSupabase();
-  const fleetGrid = document.querySelector('.van-cards-grid');
-  const specsGrid = document.querySelector('.specs-comparison');
-  
-  if (fleetGrid) {
-    renderFleetCards(cars, fleetGrid);
-  }
-  
-  if (specsGrid) {
-    renderSpecsCards(cars, specsGrid);
-  }
-  
-  // Log whether we're using fallback data
-  if (cars === FALLBACK_CARS) {
-    console.log('Fleet page: Using fallback data (Supabase not configured)');
-  } else {
-    console.log('Fleet page: Using live Supabase data');
+  console.log('loadCarsForFleetPage called');
+  try {
+    const cars = await loadCarsFromSupabase();
+    console.log('Cars loaded:', cars);
+    
+    const fleetGrid = document.querySelector('.van-cards-grid');
+    const specsGrid = document.querySelector('.specs-comparison');
+    
+    console.log('Fleet grid found:', !!fleetGrid);
+    console.log('Specs grid found:', !!specsGrid);
+    
+    if (fleetGrid) {
+      console.log('Rendering fleet cards...');
+      renderFleetCards(cars, fleetGrid);
+    }
+    
+    if (specsGrid) {
+      console.log('Rendering specs cards...');
+      renderSpecsCards(cars, specsGrid);
+    }
+    
+    // Log whether we're using fallback data
+    if (cars === FALLBACK_CARS) {
+      console.log('Fleet page: Using fallback data (Supabase not configured)');
+    } else {
+      console.log('Fleet page: Using live Supabase data');
+    }
+  } catch (error) {
+    console.error('Error in loadCarsForFleetPage:', error);
+    const fleetGrid = document.querySelector('.van-cards-grid');
+    if (fleetGrid) {
+      fleetGrid.innerHTML = '<p class="txt-dim">Error loading fleet. Please refresh the page.</p>';
+    }
   }
 }
 
 function renderFleetCards(cars, container) {
+  console.log('renderFleetCards called with', cars?.length, 'cars');
   if (!cars || cars.length === 0) {
     container.innerHTML = '<p class="txt-dim">No fleet available at the moment.</p>';
     return;
@@ -802,8 +946,11 @@ window.addEventListener('load', async () => {
   initDashboardPage(user);
   initCarsPage(user);
   
-  // Load cars for fleet pages
-  if (window.location.pathname.endsWith('fleet.html') || window.location.pathname.endsWith('index.html')) {
+  // Load cars for fleet pages - check for actual page elements instead of pathname
+  const hasFleetGrid = document.querySelector('.van-cards-grid');
+  const hasSpecsGrid = document.querySelector('.specs-comparison');
+  if (hasFleetGrid || hasSpecsGrid) {
+    console.log('Detected fleet page elements, loading cars...');
     loadCarsForFleetPage();
   }
 });
@@ -872,6 +1019,12 @@ function initLoginPage(user) {
     }
 
     const authEmail = email.toLowerCase() === 'admin' ? ADMIN_EMAIL : email;
+
+    if (!supabase) {
+      authStatus.textContent = 'Authentication is not configured. Please contact support.';
+      authSubmit.disabled = false;
+      return;
+    }
 
     if (authMode === 'signIn') {
       result = await supabase.auth.signInWithPassword({ email: authEmail, password });
@@ -985,9 +1138,16 @@ async function initDashboardPage(user) {
     return Number.isFinite(parsed) ? parsed : 0;
   };
 
-  const { data: bookings, error } = isAdmin
-    ? await supabase.from('bookings').select('*').order('created_at', { ascending: false })
-    : await supabase.from('bookings').select('*').or(`user_id.eq.${user.id},email.eq.${user.email}`).order('created_at', { ascending: false });
+  let bookings = [];
+  let error = null;
+  
+  if (supabase) {
+    const result = isAdmin
+      ? await supabase.from('bookings').select('*').order('created_at', { ascending: false })
+      : await supabase.from('bookings').select('*').or(`user_id.eq.${user.id},email.eq.${user.email}`).order('created_at', { ascending: false });
+    bookings = result.data;
+    error = result.error;
+  }
 
   const tableBody = document.getElementById('bookingsTableBody');
   if (error || !Array.isArray(bookings)) {
@@ -1009,14 +1169,81 @@ async function initDashboardPage(user) {
       ? 'cancelled'
       : loweredStatus.includes('pending')
         ? 'pending'
-        : 'successful';
-    return `<tr><td>${escapeHTML(booking.service)}</td><td>${escapeHTML(booking.date)}</td><td>${escapeHTML(booking.van_size)}</td><td><span class="admin-status ${statusClass}">${escapeHTML(status)}</span></td><td>${escapeHTML(booking.price || 'GBP 0')}</td></tr>`;
+        : loweredStatus.includes('paid')
+          ? 'paid'
+          : 'successful';
+    const isPaid = loweredStatus.includes('paid');
+    return `<tr>
+      <td>${escapeHTML(booking.service)}</td>
+      <td>${escapeHTML(booking.date)}</td>
+      <td>${escapeHTML(booking.van_size)}</td>
+      <td><span class="admin-status ${statusClass}">${escapeHTML(status)}</span></td>
+      <td>${escapeHTML(booking.price || 'GBP 0')}</td>
+      ${isAdmin ? `<td>
+        <button class="admin-btn-icon mark-paid-btn" data-id="${booking.id}" ${isPaid ? 'disabled' : ''} title="${isPaid ? 'Already paid' : 'Mark as paid'}">💰</button>
+        <button class="admin-btn-icon delete-booking-btn" data-id="${booking.id}" title="Delete booking">🗑️</button>
+      </td>` : ''}
+    </tr>`;
   }).join('');
 
   if (tableBody) {
     tableBody.innerHTML = bookings.length === 0
-      ? '<tr><td colspan="5" class="txt-dim">No bookings found yet.</td></tr>'
+      ? `<tr><td colspan="${isAdmin ? '6' : '5'}" class="txt-dim">No bookings found yet.</td></tr>`
       : isInvoicePage ? invoiceRows : bookingRows;
+  }
+
+  // Add event listeners for booking action buttons
+  if (isAdmin) {
+    tableBody?.querySelectorAll('.mark-paid-btn').forEach(btn => {
+      btn.addEventListener('click', () => markBookingAsPaid(btn.dataset.id));
+    });
+
+    tableBody?.querySelectorAll('.delete-booking-btn').forEach(btn => {
+      btn.addEventListener('click', () => deleteBooking(btn.dataset.id));
+    });
+
+    // Populate customers table
+    const customersTableBody = document.getElementById('customersTableBody');
+    if (customersTableBody && Array.isArray(bookings)) {
+      // Group bookings by customer email
+      const customerData = {};
+      bookings.forEach(booking => {
+        const email = booking.email;
+        if (!email) return;
+
+        if (!customerData[email]) {
+          customerData[email] = {
+            name: booking.name || 'Unknown',
+            email: email,
+            bookings: 0,
+            totalSpent: 0
+          };
+        }
+        customerData[email].bookings++;
+        customerData[email].totalSpent += parseMoney(booking.price);
+      });
+
+      const customerRows = Object.values(customerData).map(customer => `
+        <tr>
+          <td>${escapeHTML(customer.name)}</td>
+          <td>${escapeHTML(customer.email)}</td>
+          <td>${customer.bookings}</td>
+          <td>${formatMoney(customer.totalSpent)}</td>
+          <td>
+            <button class="admin-btn-icon delete-customer-btn" data-email="${customer.email}" title="Delete customer and all bookings">🗑️</button>
+          </td>
+        </tr>
+      `).join('');
+
+      customersTableBody.innerHTML = Object.keys(customerData).length === 0
+        ? '<tr><td colspan="5" class="txt-dim">No customers found yet.</td></tr>'
+        : customerRows;
+
+      // Add event listeners for customer delete buttons
+      customersTableBody.querySelectorAll('.delete-customer-btn').forEach(btn => {
+        btn.addEventListener('click', () => deleteCustomer(btn.dataset.email));
+      });
+    }
   }
 
   setText('dashboardBookingsCount', bookings.length);
@@ -1123,16 +1350,18 @@ async function initDashboardPage(user) {
   };
 
   const logAdminEmail = async (booking, type, email) => {
-    await supabase.from('admin_messages').insert([{
-      booking_id: booking?.id || null,
-      recipient_email: booking?.email || null,
-      message_type: type,
-      subject: email.subject,
-      body: email.body,
-      amount: email.amount,
-      due_date: email.dueDate,
-      created_by: user.email,
-    }]);
+    if (supabase) {
+      await supabase.from('admin_messages').insert([{
+        booking_id: booking?.id || null,
+        recipient_email: booking?.email || null,
+        message_type: type,
+        subject: email.subject,
+        body: email.body,
+        amount: email.amount,
+        due_date: email.dueDate,
+        created_by: user.email,
+      }]);
+    }
   };
 
   const openAdminEmail = async (booking, type = 'invoice') => {
