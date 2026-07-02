@@ -808,27 +808,31 @@ async function deleteCar(id) {
 
 async function loadCarsForFleetPage() {
   console.log('loadCarsForFleetPage called');
+  const fleetGrid = document.querySelector('.van-cards-grid');
+  const specsGrid = document.querySelector('.specs-comparison');
+
+  if (fleetGrid) {
+    renderFleetCards(FALLBACK_CARS, fleetGrid);
+  }
+
+  if (specsGrid) {
+    renderSpecsCards(FALLBACK_CARS, specsGrid);
+  }
+
   try {
     const cars = await loadCarsFromSupabase();
     console.log('Cars loaded:', cars);
-    
-    const fleetGrid = document.querySelector('.van-cards-grid');
-    const specsGrid = document.querySelector('.specs-comparison');
-    
-    console.log('Fleet grid found:', !!fleetGrid);
-    console.log('Specs grid found:', !!specsGrid);
-    
+
     if (fleetGrid) {
       console.log('Rendering fleet cards...');
       renderFleetCards(cars, fleetGrid);
     }
-    
+
     if (specsGrid) {
       console.log('Rendering specs cards...');
       renderSpecsCards(cars, specsGrid);
     }
-    
-    // Log whether we're using fallback data
+
     if (cars === FALLBACK_CARS) {
       console.log('Fleet page: Using fallback data (Supabase not configured)');
     } else {
@@ -836,9 +840,8 @@ async function loadCarsForFleetPage() {
     }
   } catch (error) {
     console.error('Error in loadCarsForFleetPage:', error);
-    const fleetGrid = document.querySelector('.van-cards-grid');
     if (fleetGrid) {
-      fleetGrid.innerHTML = '<p class="txt-dim">Error loading fleet. Please refresh the page.</p>';
+      renderFleetCards(FALLBACK_CARS, fleetGrid);
     }
   }
 }
