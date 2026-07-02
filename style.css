@@ -55,6 +55,31 @@ input, select, button, textarea { font-family: var(--font); }
 .reveal { opacity: 0; transform: translateY(28px); transition: opacity .65s ease, transform .65s ease; }
 .reveal.visible { opacity: 1; transform: none; }
 
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+.hero-eyebrow,
+.hero-text h1,
+.hero-text p,
+.hero-ctas,
+.sec-hdr,
+.btn,
+.van-card-image,
+.van-card-body h3,
+.van-card-body p {
+  animation: fade-up .6s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.hero-text h1 { animation-delay: .08s; }
+.hero-text p { animation-delay: .16s; }
+.hero-ctas { animation-delay: .24s; }
+.sec-hdr { animation-delay: .08s; }
+.van-card-image { animation-delay: .1s; }
+.van-card-body h3 { animation-delay: .16s; }
+.van-card-body p { animation-delay: .22s; }
+
 /* On mobile: disable JS reveal, use CSS entrance animations instead */
 @media (max-width: 880px) {
   .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
@@ -828,9 +853,31 @@ input, select, button, textarea { font-family: var(--font); }
 }
 .van-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
 .van-card-image {
-  width: 100%; height: 200px; background-size: cover; background-position: center;
+  width: 100%; height: 200px; position: relative; overflow: hidden;
   display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #6f4fd8 0%, #4a2a97 100%);
+  isolation: isolate;
+}
+.van-card-image img {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  opacity: 0; transition: opacity .35s ease;
+}
+.van-card-image.is-loaded img {
+  opacity: 1;
+}
+.van-card-image-fallback {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
   font-size: 3rem; color: white; text-shadow: 0 2px 8px rgba(0,0,0,.2);
+  transition: opacity .25s ease;
+}
+.van-card-image.is-loaded .van-card-image-fallback,
+.van-card-image.is-error .van-card-image-fallback {
+  opacity: 0;
+  pointer-events: none;
+}
+.van-card-image.is-loaded,
+.van-card-image.is-error {
+  background: var(--gray-50);
 }
 .van-featured { border-color: var(--purple); }
 .van-featured .van-card-image { box-shadow: inset 0 0 0 3px var(--purple); }

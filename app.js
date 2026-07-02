@@ -851,12 +851,6 @@ function renderFleetCards(cars, container) {
     return;
   }
 
-  const typeLabels = {
-    small: 'Small / Medium Van',
-    medium: 'Medium / Large Van',
-    xl: 'Large / XL Van'
-  };
-
   const typeBadgeClasses = {
     small: '',
     medium: 'van-badge-purple',
@@ -875,9 +869,27 @@ function renderFleetCards(cars, container) {
     xl: 'Maximum capacity for the biggest jobs. Full house moves, large furniture, zero compromises.'
   };
 
+  const fallbackIcons = {
+    small: '🚐',
+    medium: '🚛',
+    xl: '🚚'
+  };
+
   container.innerHTML = cars.map(car => `
     <div class="van-card reveal ${car.type === 'medium' ? 'van-featured' : ''}">
-      <div class="van-card-image" style="background-image: url('${car.image_url}'); background-size: cover; background-position: center;"></div>
+      <div class="van-card-image van-card-image-loading">
+        <div class="van-card-image-fallback">${fallbackIcons[car.type] || '🚐'}</div>
+        <img
+          src="${car.image_url || '/van-small.jpg'}"
+          alt="${car.model}"
+          loading="lazy"
+          decoding="async"
+          width="640"
+          height="400"
+          onload="this.parentElement.classList.add('is-loaded');"
+          onerror="this.parentElement.classList.add('is-error'); this.style.display='none';"
+        />
+      </div>
       <div class="van-card-body">
         <div class="van-name-row">
           <span class="van-badge-tag ${typeBadgeClasses[car.type]}">${badgeLabels[car.type]}</span>
