@@ -174,7 +174,7 @@ function revealCheck() {
     if (el.classList.contains('visible')) return;
     const rect = el.getBoundingClientRect();
     if (rect.top < window.innerHeight - 20) {
-      const siblings = [...el.parentElement.querySelectorAll('.reveal:not(.visible)')];
+      const siblings = [...(el.parentElement?.querySelectorAll('.reveal:not(.visible)') || [])];
       const idx = siblings.indexOf(el);
       el.style.transitionDelay = `${idx * 80}ms`;
       el.classList.add('visible');
@@ -182,18 +182,35 @@ function revealCheck() {
   });
 }
 
-const ro = new IntersectionObserver((entries) => {
+function setupRevealElements(root = document) {
+  const elements = root.querySelectorAll('.reveal');
+  elements.forEach(el => {
+    if (el.dataset.revealBound === 'true' || el.classList.contains('visible')) return;
+    el.dataset.revealBound = 'true';
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight - 20) {
+      const siblings = [...(el.parentElement?.querySelectorAll('.reveal:not(.visible)') || [])];
+      const idx = siblings.indexOf(el);
+      el.style.transitionDelay = `${idx * 80}ms`;
+      el.classList.add('visible');
+    } else {
+      revealObserver.observe(el);
+    }
+  });
+}
+
+const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      const siblings = [...entry.target.parentElement.querySelectorAll('.reveal:not(.visible)')];
+      const siblings = [...(entry.target.parentElement?.querySelectorAll('.reveal:not(.visible)') || [])];
       const idx = siblings.indexOf(entry.target);
       entry.target.style.transitionDelay = `${idx * 80}ms`;
       entry.target.classList.add('visible');
-      ro.unobserve(entry.target);
+      revealObserver.unobserve(entry.target);
     }
   });
 }, { threshold: 0, rootMargin: '0px 0px 0px 0px' });
-revealEls.forEach(el => ro.observe(el));
+setupRevealElements(document);
 
 // Scroll fallback (fixes iOS Safari overflow-x issue with IntersectionObserver)
 window.addEventListener('scroll', revealCheck, { passive: true });
@@ -910,6 +927,7 @@ function renderFleetCards(cars, container) {
       </div>
     </div>
   `).join('');
+  requestAnimationFrame(() => setupRevealElements(container));
 }
 
 function renderSpecsCards(cars, container) {
@@ -950,6 +968,7 @@ function renderSpecsCards(cars, container) {
       <a href="booking.html?van=${car.type}" class="btn btn-primary btn-sm">Book Now</a>
     </div>
   `).join('');
+  requestAnimationFrame(() => setupRevealElements(container));
 }
 
 window.addEventListener('load', async () => {
