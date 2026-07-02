@@ -349,7 +349,6 @@ bookingForm?.addEventListener('submit', async e => {
 
   bookingForm.style.display    = 'none';
   bookingConfirm.style.display = 'block';
-  bookingConfirm.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
 newBookingBtn?.addEventListener('click', () => {
