@@ -218,36 +218,12 @@ window.addEventListener('resize', revealCheck, { passive: true });
 // Run once on load to show elements already in view
 revealCheck();
 
-// ── BOOKING TABS (booking page) ──
-const bkTabs = document.querySelectorAll('.bk-tab');
-const helpersField = document.getElementById('helpersField');
+// ── BOOKING PAGE SETUP ──
 let activeService = 'van-hire';
-
-// Pre-select from URL param
 const urlParams = new URLSearchParams(window.location.search);
-if (urlParams.get('service') === 'man-van') activeService = 'man-van';
 if (urlParams.get('van')) {
   const vs = document.getElementById('vanSize');
   if (vs) vs.value = urlParams.get('van');
-}
-
-bkTabs.forEach(tab => {
-  if (tab.dataset.tab === activeService) tab.classList.add('active');
-  else tab.classList.remove('active');
-
-  tab.addEventListener('click', () => {
-    bkTabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    activeService = tab.dataset.tab;
-    if (helpersField) helpersField.style.display = activeService === 'man-van' ? 'flex' : 'none';
-    const sumSvc = document.getElementById('sum-service');
-    if (sumSvc) sumSvc.textContent = activeService === 'man-van' ? 'Man & Van' : 'Van Hire';
-    calcPrice();
-  });
-});
-if (activeService === 'man-van' && helpersField) {
-  helpersField.style.display = 'flex';
-  bkTabs.forEach(t => t.classList.toggle('active', t.dataset.tab === 'man-van'));
 }
 
 // ── FLEET PAGE BWB TABS ──
