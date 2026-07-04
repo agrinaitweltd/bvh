@@ -135,6 +135,14 @@
               <div class="pest-note">Includes VAT &amp; insurance. Final price confirmed on booking.</div>
             </div>
 
+            <div class="terms-acceptance" id="termsAcceptance">
+              <label class="terms-check">
+                <input type="checkbox" id="termsAccepted" required disabled />
+                <span>I have read and accept the <button type="button" class="terms-link-button" id="openTermsModal">Terms and Conditions</button>.</span>
+              </label>
+              <p id="termsHelp">Open the terms and scroll to the bottom before ticking this box.</p>
+            </div>
+
             <button type="submit" class="btn btn-primary bk-submit">Confirm Booking →</button>
           </form>
 
@@ -290,8 +298,57 @@
         </div>
       </div>
     </div>
-    <div class="footer-bottom"><div class="container footer-bottom-inner"><p>© 2026 Breezyee Vans Ltd. All rights reserved.</p><div class="footer-legal"><a href="#">Terms &amp; Conditions</a><a href="#">Privacy Policy</a><a href="#">Cookie Policy</a></div></div></div>
+    <div class="footer-bottom"><div class="container footer-bottom-inner"><p>© 2026 Breezyee Vans Ltd. All rights reserved.</p><div class="footer-legal"><a href="terms.html">Terms &amp; Conditions</a><a href="#">Privacy Policy</a><a href="#">Cookie Policy</a></div></div></div>
   </footer>
+
+  <div class="terms-modal" id="termsModal" aria-hidden="true">
+    <div class="terms-modal-panel" role="dialog" aria-modal="true" aria-labelledby="termsModalTitle">
+      <div class="terms-modal-head">
+        <div>
+          <span class="sec-tag">Rental Agreement</span>
+          <h3 id="termsModalTitle">Terms and Conditions</h3>
+        </div>
+        <button type="button" class="terms-modal-close" id="closeTermsModal" aria-label="Close terms modal">&times;</button>
+      </div>
+      <div class="terms-modal-body" id="termsModalBody" tabindex="0">
+        <p><strong>Please read these terms and conditions carefully before booking.</strong> By making a booking and signing the online contract you agree to be bound by these terms and conditions.</p>
+        <h4>1. Definitions</h4>
+        <p>"Breezyee", "we", "us" or "our" means Breezyee Vans Rental Service. "Hirer", "you" or "your" means the person who enters into this hire agreement. "Vehicle" means the van hired by you. "Rental Period" means the period from collection until return. "Authorised Driver" means any driver named on the online contract.</p>
+        <h4>2. Insurance</h4>
+        <p>Breezyee does not provide fleet insurance for the Vehicle during the Rental Period. You are solely responsible for ensuring that the Vehicle is adequately insured for the full Rental Period. You must provide proof of valid insurance before collection. We may refuse to release the Vehicle if satisfactory proof is not provided.</p>
+        <p>If you rely on "drive any car" insurance, you must provide policy wording or insurer confirmation that it covers hired vehicles. False or misleading insurance information may invalidate cover and make you personally liable for damage and third-party claims.</p>
+        <h4>3. Hirer Liability - Damage</h4>
+        <p>You are fully liable for any damage to the Vehicle during the Rental Period unless you can prove the damage was caused solely by us or by a third party where you were not at fault and your insurance covers the loss. Liability includes repairs, replacement, recovery, storage, loss of use, reduction in value, tyres, wheels, glass, mirrors, roof, underbody, interior, keys, wrong fuel, and cleaning costs.</p>
+        <h4>4. Fines, Penalties and Charges</h4>
+        <p>You are fully liable for all fines, penalties, charges, and infringements incurred during the Rental Period, including speeding, parking, congestion charges, road user charges, bus lane and traffic light contraventions, clamping, towing, release fees, and regulatory charges. Administration fees may apply where we must nominate you as the responsible driver.</p>
+        <h4>5. Authorised Drivers</h4>
+        <p>Only drivers named on the online contract may drive the Vehicle. You must ensure each Authorised Driver holds a valid full licence, meets age and licence history requirements, is not disqualified, and has no convictions that affect insurance cover.</p>
+        <h4>6. Rental Responsibilities</h4>
+        <p>You must comply with your insurance policy, not use the Vehicle illegally, not overload it, not use it for racing, not tow without permission, not transport hazardous materials, not drive outside the UK without consent, not smoke in the Vehicle, not allow animals without consent, maintain fluids and tyre pressures, and report accidents, damage, or breakdowns immediately.</p>
+        <h4>7. Accidents and Breakdowns</h4>
+        <p>If the Vehicle is involved in an accident, you must collect details of all parties and witnesses, not admit liability, take photographs, report to police if required, report to your insurer, notify us immediately, and complete any accident report form we provide. You must not authorise repairs without our written consent.</p>
+        <h4>8. Return of the Vehicle</h4>
+        <p>You must return the Vehicle to the agreed location on or before the agreed return date and time, with the same fuel level as at collection. You are liable for late return charges, fuel deficiency, and additional costs caused by late or failed return.</p>
+        <h4>9. Online Contract</h4>
+        <p>By signing the online contract, you confirm you have read, understood, and agree to these terms; accept responsibility for the Vehicle; accept liability for damage, fines, and penalties; have valid insurance; and have provided true and accurate information.</p>
+        <h4>10. Payment and Charges</h4>
+        <p>You agree to pay rental charges, any security deposit, insurance excess, repair or replacement costs, fines, penalties, administration fees, late return charges, cleaning charges, and any other costs arising from your use of the Vehicle. Amounts owed may be deducted from your deposit or payment card.</p>
+        <h4>11. Termination</h4>
+        <p>We may terminate this agreement and require immediate return of the Vehicle if you breach these terms, fail to provide insurance, allow an unauthorised driver, use the Vehicle illegally, fail to pay sums due, provide false information, or if we reasonably believe the Vehicle is at risk.</p>
+        <h4>12. Limitation of Liability</h4>
+        <p>Nothing limits liability for death or personal injury caused by negligence, fraud, fraudulent misrepresentation, or matters where exclusion would be unlawful. Subject to that, we are not liable for indirect or consequential losses and our total liability shall not exceed rental charges paid where legally permitted.</p>
+        <h4>13. General</h4>
+        <p>These terms do not affect your statutory consumer rights. They are governed by the laws of England and Wales, and the courts of England and Wales have exclusive jurisdiction. If any provision is invalid, the remaining provisions continue.</p>
+        <h4>14. Acknowledgement</h4>
+        <p>By signing the online contract and collecting the Vehicle, you acknowledge that you accept these terms, are responsible for arranging valid insurance, understand Breezyee does not provide fleet insurance, accept liability for damage, fines, penalties, and charges, and understand these terms are legally binding.</p>
+        <p><strong>Last updated:</strong> 4 July 2026.</p>
+      </div>
+      <div class="terms-modal-foot">
+        <span id="termsScrollStatus">Scroll to the bottom to enable acceptance.</span>
+        <button type="button" class="btn btn-primary" id="doneTermsModal" disabled>I've Read These Terms</button>
+      </div>
+    </div>
+  </div>
 
   <div class="cookie-banner" id="cookieBanner"><div class="cookie-inner"><div class="cookie-txt"><p>This website uses cookies to ensure you get the best experience on our website. Please let us know your preferences.</p><p>Please read our <a href="#">Cookie policy</a>.</p></div><div class="cookie-btns"><button class="btn btn-outline btn-sm" id="cookieManage">Manage</button><button class="btn btn-primary btn-sm" id="cookieAccept">Accept</button></div></div></div>
   <button class="chat-fab" id="chatBubble" aria-label="Call us"><svg viewBox="0 0 24 24" width="22" height="22" fill="none"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.01 2.18 2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="chat-dot"></span></button>

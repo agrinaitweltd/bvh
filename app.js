@@ -300,10 +300,56 @@ if (bd) { const t = new Date().toISOString().split('T')[0]; bd.min = t; bd.value
 const bookingForm    = document.getElementById('bookingForm');
 const bookingConfirm = document.getElementById('bookingConfirm');
 const newBookingBtn  = document.getElementById('newBookingBtn');
+const helpersField = document.getElementById('helpersField');
+const bkTabs = document.querySelectorAll('.bk-tab');
+const termsModal = document.getElementById('termsModal');
+const termsModalBody = document.getElementById('termsModalBody');
+const termsAccepted = document.getElementById('termsAccepted');
+const termsHelp = document.getElementById('termsHelp');
+const doneTermsModal = document.getElementById('doneTermsModal');
+const termsScrollStatus = document.getElementById('termsScrollStatus');
+
+function setTermsReady() {
+  if (termsAccepted) termsAccepted.disabled = false;
+  if (doneTermsModal) doneTermsModal.disabled = false;
+  if (termsHelp) termsHelp.textContent = 'You can now tick the box to accept the terms.';
+  if (termsScrollStatus) termsScrollStatus.textContent = 'Terms read. You can close this popup and tick acceptance.';
+}
+
+function closeTermsModal() {
+  if (!termsModal) return;
+  termsModal.classList.remove('open');
+  termsModal.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+document.getElementById('openTermsModal')?.addEventListener('click', () => {
+  if (!termsModal) return;
+  termsModal.classList.add('open');
+  termsModal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  termsModalBody?.focus();
+});
+
+document.getElementById('closeTermsModal')?.addEventListener('click', closeTermsModal);
+doneTermsModal?.addEventListener('click', closeTermsModal);
+termsModal?.addEventListener('click', e => {
+  if (e.target === termsModal) closeTermsModal();
+});
+
+termsModalBody?.addEventListener('scroll', () => {
+  const reachedBottom = termsModalBody.scrollTop + termsModalBody.clientHeight >= termsModalBody.scrollHeight - 8;
+  if (reachedBottom) setTermsReady();
+}, { passive: true });
 
 bookingForm?.addEventListener('submit', async e => {
   e.preventDefault();
   const btn = bookingForm.querySelector('.bk-submit');
+  if (!termsAccepted?.checked) {
+    alert('Please read and accept the Terms and Conditions before placing your booking.');
+    document.getElementById('termsAcceptance')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
   if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
 
   const van      = document.getElementById('vanSize')?.value;
@@ -350,6 +396,13 @@ newBookingBtn?.addEventListener('click', () => {
   bookingForm.reset();
   if (document.getElementById('estimatedPrice')) document.getElementById('estimatedPrice').textContent = '—';
   if (helpersField) helpersField.style.display = 'none';
+  if (termsAccepted) {
+    termsAccepted.checked = false;
+    termsAccepted.disabled = true;
+  }
+  if (doneTermsModal) doneTermsModal.disabled = true;
+  if (termsHelp) termsHelp.textContent = 'Open the terms and scroll to the bottom before ticking this box.';
+  if (termsScrollStatus) termsScrollStatus.textContent = 'Scroll to the bottom to enable acceptance.';
   activeService = 'van-hire';
   bkTabs.forEach(t => t.classList.toggle('active', t.dataset.tab === 'van-hire'));
   const btn = bookingForm.querySelector('.bk-submit');
