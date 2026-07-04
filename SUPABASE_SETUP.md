@@ -60,7 +60,7 @@ npm run dev
 Images are currently stored in the `public` folder and referenced with absolute paths:
 - `/van-small.jpg`
 - `/van-medium.jpg`
-- `/van-large.jpg`
+- `/van-large.png`
 
 When you add or edit cars in the admin panel:
 - You can specify these image URLs in the database

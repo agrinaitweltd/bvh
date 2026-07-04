@@ -433,7 +433,7 @@ const FALLBACK_CARS = [
     capacity: '18–20 m³',
     payload: 2000,
     description: 'Maximum capacity for the biggest jobs. Full house moves, large furniture, zero compromises.',
-    image_url: '/van-large.jpg',
+    image_url: '/van-large.png',
     is_active: true
   }
 ];
