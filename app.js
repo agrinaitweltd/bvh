@@ -267,7 +267,7 @@ function calcPrice() {
 
   if (sumVan)  sumVan.textContent  = vanLabels[van]     || 'Not selected';
   if (sumDur)  sumDur.textContent  = durLabels[duration] || 'Not selected';
-  if (sumSvc)  sumSvc.textContent  = activeService === 'man-van' ? 'Man & Van' : 'Van Hire';
+  if (sumSvc)  sumSvc.textContent  = 'Van Hire';
 
   if (!priceEl) return;
 
@@ -281,8 +281,8 @@ function calcPrice() {
   const isDays   = hrs >= 24;
   const r        = RATES[van];
   const vanCost  = isDays ? r.daily * (hrs / 24) : r.hourly * hrs;
-  const drCost   = activeService === 'man-van' ? 25 * hrs : 0;
-  const hlpCost  = activeService === 'man-van' ? (HELPER_RATES[helpers] || 0) * hrs : 0;
+  const drCost   = 0;
+  const hlpCost  = 0;
   const total    = `£${Math.ceil(vanCost + drCost + hlpCost).toLocaleString()}`;
   priceEl.textContent = total;
   if (sumTotal) sumTotal.textContent = total;
@@ -463,7 +463,7 @@ const FALLBACK_CARS = [
     price_daily: 100,
     capacity: '2–3 m³',
     payload: 750,
-    description: 'Best for light moves and deliveries. Compact, nimble, and easy to park in the city.',
+    description: 'Best for light loads and deliveries. Compact, nimble, and easy to park in the city.',
     image_url: '/van-small.jpg',
     is_active: true
   },
@@ -474,7 +474,7 @@ const FALLBACK_CARS = [
     price_daily: 200,
     capacity: '10–12 m³',
     payload: 1500,
-    description: 'Ideal for house moves and business relocations. Spacious, powerful, and built to perform.',
+    description: 'Ideal for bulky items and business transport. Spacious, powerful, and built to perform.',
     image_url: '/van-medium.jpg',
     is_active: true
   },
@@ -485,7 +485,7 @@ const FALLBACK_CARS = [
     price_daily: 350,
     capacity: '18–20 m³',
     payload: 2000,
-    description: 'Maximum capacity for the biggest jobs. Full house moves, large furniture, zero compromises.',
+    description: 'Maximum capacity for the biggest jobs. Large furniture, bulky loads, zero compromises.',
     image_url: '/van-large.png',
     is_active: true
   }
@@ -912,9 +912,9 @@ function renderFleetCards(cars, container) {
   };
 
   const descriptions = {
-    small: 'Best for light moves and deliveries. Compact, nimble, and easy to park in the city.',
-    medium: 'Ideal for house moves and business relocations. Spacious, powerful, and built to perform.',
-    xl: 'Maximum capacity for the biggest jobs. Full house moves, large furniture, zero compromises.'
+    small: 'Best for light loads and deliveries. Compact, nimble, and easy to park in the city.',
+    medium: 'Ideal for bulky items and business transport. Spacious, powerful, and built to perform.',
+    xl: 'Maximum capacity for the biggest jobs. Large furniture, bulky loads, zero compromises.'
   };
 
   const fallbackIcons = {
@@ -1366,7 +1366,7 @@ async function initDashboardPage(user) {
     .slice()
     .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
   setText('userNextService', nextBooking?.service || 'No upcoming booking');
-  setText('userNextDate', nextBooking?.date || 'Book your next move when ready');
+  setText('userNextDate', nextBooking?.date || 'Book your next van when ready');
   setText('userNextVan', nextBooking?.van_size || 'Van size pending');
   setText('userTotalSpend', formatMoney(totalRevenue));
   setText('userEmail', user.email || '--');

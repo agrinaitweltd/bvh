@@ -1,7 +1,7 @@
 {
   "name": "breezyee-vans",
   "version": "1.0.0",
-  "description": "Breezyee Vans — Moving Made Effortless.",
+  "description": "Breezyee Vans — Self-Drive Van Hire.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

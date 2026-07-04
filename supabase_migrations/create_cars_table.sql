@@ -26,9 +26,9 @@ CREATE POLICY "Allow admin full access" ON cars
 
 -- Insert initial fleet data
 INSERT INTO cars (model, type, price_daily, capacity, payload, description, image_url, is_active) VALUES
-  ('Citroen Berlingo', 'small', 100.00, '2–3 m³', 750, 'Best for light moves and deliveries. Compact, nimble, and easy to park in the city.', '/van-small.jpg', true),
-  ('Mercedes Sprinter', 'medium', 200.00, '10–12 m³', 1500, 'Ideal for house moves and business relocations. Spacious, powerful, and built to perform.', '/van-medium.jpg', true),
-  ('Iveco Daily Luton', 'xl', 350.00, '18–20 m³', 2000, 'Maximum capacity for the biggest jobs. Full house moves, large furniture, zero compromises.', '/van-large.png', true);
+  ('Citroen Berlingo', 'small', 100.00, '2–3 m³', 750, 'Best for light loads and deliveries. Compact, nimble, and easy to park in the city.', '/van-small.jpg', true),
+  ('Mercedes Sprinter', 'medium', 200.00, '10–12 m³', 1500, 'Ideal for bulky items and business transport. Spacious, powerful, and built to perform.', '/van-medium.jpg', true),
+  ('Iveco Daily Luton', 'xl', 350.00, '18–20 m³', 2000, 'Maximum capacity for the biggest jobs. Large furniture, bulky loads, zero compromises.', '/van-large.png', true);
 
 -- Create index for faster queries
 CREATE INDEX IF NOT EXISTS idx_cars_type ON cars(type);
