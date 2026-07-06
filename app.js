@@ -159,18 +159,18 @@ async function updateDriverVerificationStatus(verificationId, bookingId, recipie
 
 async function deleteDriverVerificationDocuments(verificationId) {
   if (!supabase || !verificationId) return;
-  if (!confirm('Delete the uploaded licence and proof of address documents for this verification?')) return;
+  if (!confirm('Delete the uploaded driving licence documents for this verification?')) return;
 
   try {
     const { data, error } = await supabase
       .from('driver_verifications')
-      .select('licence_front_file, licence_back_file, proof_of_address_file')
+      .select('licence_front_file, licence_back_file')
       .eq('verification_id', verificationId)
       .single();
 
     if (error) throw error;
 
-    const files = [data.licence_front_file, data.licence_back_file, data.proof_of_address_file].filter(Boolean);
+    const files = [data.licence_front_file, data.licence_back_file].filter(Boolean);
     if (files.length) {
       const { error: storageError } = await supabase.storage.from(DRIVER_DOC_BUCKET).remove(files);
       if (storageError) throw storageError;
@@ -181,7 +181,6 @@ async function deleteDriverVerificationDocuments(verificationId) {
       .update({
         licence_front_file: null,
         licence_back_file: null,
-        proof_of_address_file: null,
       })
       .eq('verification_id', verificationId);
 
@@ -533,7 +532,6 @@ bookingForm?.addEventListener('submit', async e => {
 
     const licenceFrontPath = await uploadDriverDocument('licenceFrontFile', userId || 'guest', bookingId, 'licence-front');
     const licenceBackPath = await uploadDriverDocument('licenceBackFile', userId || 'guest', bookingId, 'licence-back');
-    const proofOfAddressPath = await uploadDriverDocument('proofOfAddressFile', userId || 'guest', bookingId, 'proof-of-address');
 
     if (supabase) {
       const { data: verification, error: verificationError } = await supabase.from('driver_verifications').insert([{
@@ -545,7 +543,6 @@ bookingForm?.addEventListener('submit', async e => {
         dvla_check_code: dvlaCheckCode,
         licence_front_file: licenceFrontPath,
         licence_back_file: licenceBackPath,
-        proof_of_address_file: proofOfAddressPath,
         verification_status: 'PENDING',
       }]).select('verification_id').single();
 
@@ -1594,7 +1591,7 @@ async function initDashboardPage(user) {
   setText('driverVerificationStatus', verificationStatusLabel(latestVerification));
   setText('driverVerificationUpdated', latestVerification?.updated_at ? new Date(latestVerification.updated_at).toLocaleString() : '--');
   setText('driverVerificationDvlaCode', latestVerification?.dvla_check_code ? 'Submitted' : 'Not submitted');
-  setText('driverVerificationDocuments', latestVerification ? 'Licence front, licence back, proof of address' : 'No documents uploaded');
+  setText('driverVerificationDocuments', latestVerification ? 'Licence front and licence back' : 'No documents uploaded');
   const driverVerificationBadge = document.getElementById('driverVerificationBadge');
   if (driverVerificationBadge) {
     driverVerificationBadge.className = `admin-status ${verificationStatusClass(latestVerification)}`;
@@ -1636,7 +1633,6 @@ async function initDashboardPage(user) {
           <div class="driver-document-actions">
             <button type="button" data-doc-path="${escapeHTML(item.licence_front_file || '')}">Licence Front</button>
             <button type="button" data-doc-path="${escapeHTML(item.licence_back_file || '')}">Licence Back</button>
-            <button type="button" data-doc-path="${escapeHTML(item.proof_of_address_file || '')}">Proof of Address</button>
           </div>
           <div class="driver-admin-actions">
             <a href="https://www.gov.uk/check-driving-information" target="_blank" rel="noopener">Open DVLA Verification</a>

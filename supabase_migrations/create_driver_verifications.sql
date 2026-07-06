@@ -11,7 +11,6 @@ CREATE TABLE IF NOT EXISTS driver_verifications (
   dvla_check_code TEXT NOT NULL,
   licence_front_file TEXT,
   licence_back_file TEXT,
-  proof_of_address_file TEXT,
   verification_status TEXT NOT NULL DEFAULT 'PENDING'
     CHECK (verification_status IN ('PENDING', 'APPROVED', 'REJECTED')),
   checked_by_admin UUID REFERENCES auth.users(id),
@@ -98,6 +97,23 @@ CREATE INDEX IF NOT EXISTS idx_driver_verifications_user_id ON driver_verificati
 CREATE INDEX IF NOT EXISTS idx_driver_verifications_booking_id ON driver_verifications(booking_id);
 CREATE INDEX IF NOT EXISTS idx_driver_verifications_status ON driver_verifications(verification_status);
 CREATE INDEX IF NOT EXISTS idx_driver_verification_notifications_verification_id ON driver_verification_notifications(verification_id);
+
+ALTER TABLE driver_verifications
+  DROP COLUMN IF EXISTS proof_of_address_file;
+
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM pg_publication WHERE pubname = 'supabase_realtime')
+    AND NOT EXISTS (
+      SELECT 1
+      FROM pg_publication_tables
+      WHERE pubname = 'supabase_realtime'
+        AND schemaname = 'public'
+        AND tablename = 'driver_verifications'
+    ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE driver_verifications;
+  END IF;
+END $$;
 
 CREATE OR REPLACE FUNCTION update_driver_verifications_updated_at()
 RETURNS TRIGGER AS $$
