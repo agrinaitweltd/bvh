@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Driver Checks - Breezyee Vans</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body id="dashboardPage" class="admin-console-page admin-driver-checks-page">
+  <div class="admin-console-shell">
+    <aside class="admin-console-sidebar">
+      <a href="index.html" class="admin-console-brand">
+        <span class="admin-console-brand-mark">BV</span>
+        <strong>Breezyee</strong>
+      </a>
+      <div class="admin-owner-card">
+        <span>Admin account</span>
+        <strong class="admin-owner-name">Mr Olushola Fadipe</strong>
+        <small id="dashboardSyncStatus">Connecting to Supabase</small>
+      </div>
+      <nav class="admin-console-menu">
+        <span>Main Menu</span>
+        <a href="dashboard.html"><b>DB</b>Dashboard</a>
+        <a href="admin-driver-checks.html" class="active"><b>DV</b>Driver Checks</a>
+        <a href="admin-analytics.html"><b>AN</b>Analytics <small>20</small></a>
+        <a href="admin-transactions.html"><b>TR</b>Transactions</a>
+        <a href="admin-invoices.html"><b>IN</b>Invoices</a>
+      </nav>
+      <nav class="admin-console-menu">
+        <span>General</span>
+        <a href="admin-settings.html"><b>ST</b>Settings</a>
+        <a href="admin-settings.html#help"><b>HP</b>Help Desk</a>
+        <a href="#" id="signOutLink"><b>LO</b>Log out</a>
+      </nav>
+    </aside>
+
+    <main class="admin-console-main">
+      <header class="admin-console-topbar">
+        <button class="admin-collapse" type="button" aria-label="Collapse sidebar">K</button>
+        <label class="admin-search">
+          <span>Search</span>
+          <input type="search" placeholder="Search driver checks" />
+          <kbd>Ctrl K</kbd>
+        </label>
+        <div class="admin-console-actions">
+          <span class="admin-live-pill" id="dashboardLastSync">Syncing...</span>
+          <div class="admin-console-avatar" id="headerAvatar">A</div>
+        </div>
+      </header>
+
+      <section class="admin-console-hero driver-checks-hero">
+        <div>
+          <h1>Driver Checks</h1>
+          <p>Review driving licence details, DVLA check codes, and secure customer documents before vehicle release.</p>
+        </div>
+        <div class="admin-hero-actions">
+          <a class="admin-export-button" href="https://www.gov.uk/check-driving-information" target="_blank" rel="noopener">Open DVLA Verification</a>
+        </div>
+      </section>
+
+      <section class="admin-kpi-grid driver-check-kpis">
+        <article class="admin-kpi-card">
+          <div class="admin-kpi-top"><span class="admin-kpi-icon">PN</span></div>
+          <h2>Pending Verification</h2>
+          <strong id="driverChecksPendingCount">0</strong>
+          <p>Documents waiting for admin review.</p>
+        </article>
+        <article class="admin-kpi-card">
+          <div class="admin-kpi-top"><span class="admin-kpi-icon">AP</span></div>
+          <h2>Approved Drivers</h2>
+          <strong id="driverChecksApprovedCount">0</strong>
+          <p>Drivers cleared for booking confirmation.</p>
+        </article>
+        <article class="admin-kpi-card">
+          <div class="admin-kpi-top"><span class="admin-kpi-icon">RJ</span></div>
+          <h2>Rejected Drivers</h2>
+          <strong id="driverChecksRejectedCount">0</strong>
+          <p>Checks requiring customer support.</p>
+        </article>
+      </section>
+
+      <section class="admin-panel driver-checks-panel">
+        <div class="admin-panel-header">
+          <h2>Pending Driver Verification</h2>
+          <span>Secure documents open with short-lived admin links.</span>
+        </div>
+        <div id="driverChecksList" class="driver-check-list">
+          <p class="txt-dim">Loading driver checks...</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

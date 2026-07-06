@@ -17,6 +17,7 @@ export default defineConfig({
         adminInvoices: resolve(__dirname, 'admin-invoices.html'),
         adminSettings: resolve(__dirname, 'admin-settings.html'),
         adminCars: resolve(__dirname, 'admin-cars.html'),
+        adminDriverChecks: resolve(__dirname, 'admin-driver-checks.html'),
       },
     },
   },

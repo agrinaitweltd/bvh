@@ -1305,6 +1305,28 @@ input, select, button, textarea { font-family: var(--font); }
   color: var(--purple); border-bottom: 2px solid var(--purple-bg);
   padding-bottom: 8px; margin: 24px 0 16px; display: block;
 }
+.driver-info-box {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+  padding: 18px;
+  border: 1px solid #d8c9f7;
+  border-radius: 12px;
+  background: #fbf8ff;
+  color: var(--text-mid);
+}
+.driver-info-box strong {
+  color: var(--text);
+  font-size: .98rem;
+}
+.driver-info-box p {
+  max-width: 760px;
+  font-size: .9rem;
+  line-height: 1.65;
+}
+.driver-info-box .btn {
+  width: fit-content;
+}
 .pest-inner { display: flex; align-items: baseline; gap: 12px; }
 @media (max-width: 960px) {
   .booking-layout { grid-template-columns: 1fr; }
@@ -3530,6 +3552,109 @@ body.is-ready .hero-stats { animation-delay: .4s; }
   color: var(--console-ink);
 }
 
+.driver-check-kpis {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+.driver-checks-panel {
+  margin-top: 16px;
+}
+.driver-check-list {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+}
+.driver-check-card {
+  display: grid;
+  gap: 16px;
+  border-radius: 16px;
+  border: 1px solid #e3e9e4;
+  background: #fbfbfa;
+  padding: 18px;
+}
+.driver-check-card-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+}
+.driver-check-card-head h3 {
+  color: var(--console-ink);
+  font-size: 1.12rem;
+  margin: 8px 0 2px;
+}
+.driver-check-card-head p,
+.driver-check-grid span {
+  color: var(--console-muted);
+  font-size: .78rem;
+}
+.driver-check-card-head > strong {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #e4f5ec;
+  color: var(--console-green-dark);
+  padding: 7px 10px;
+  font-size: .72rem;
+}
+.driver-check-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+.driver-check-grid div {
+  min-width: 0;
+  border-radius: 12px;
+  background: #fff;
+  border: 1px solid #eeeeec;
+  padding: 12px;
+}
+.driver-check-grid strong {
+  display: block;
+  color: var(--console-ink);
+  font-size: .86rem;
+  overflow-wrap: anywhere;
+  margin-top: 4px;
+}
+.driver-document-actions,
+.driver-admin-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.driver-document-actions button,
+.driver-admin-actions button,
+.driver-admin-actions a {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 14px;
+  background: #11161d;
+  color: #fff;
+  font-family: var(--font);
+  font-size: .78rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+.driver-document-actions button {
+  background: #eef3ef;
+  color: var(--console-ink);
+}
+.driver-admin-actions .approve-driver-btn {
+  background: var(--console-green-dark);
+}
+.driver-admin-actions .reject-driver-btn {
+  background: #c33d37;
+}
+.driver-admin-actions .delete-driver-docs-btn {
+  background: #f2eee9;
+  color: #7a342f;
+}
+.driver-verification-panel .admin-status {
+  white-space: nowrap;
+}
+
 @media (max-width: 1080px) {
   .admin-console-page .admin-kpi-grid,
   .admin-console-page .admin-console-grid,
@@ -3538,6 +3663,10 @@ body.is-ready .hero-stats { animation-delay: .4s; }
   }
   .admin-command-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .driver-check-kpis,
+  .driver-check-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
   }
   .admin-console-page .admin-table-panel {
     grid-column: auto;
@@ -3558,6 +3687,18 @@ body.is-ready .hero-stats { animation-delay: .4s; }
   }
   .admin-command-grid {
     grid-template-columns: 1fr;
+  }
+  .driver-check-kpis,
+  .driver-check-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .driver-check-card-head {
+    flex-direction: column;
+  }
+  .driver-admin-actions button,
+  .driver-admin-actions a,
+  .driver-document-actions button {
+    width: 100%;
   }
 }
 

@@ -5,6 +5,7 @@ import { supabase, ADMIN_EMAIL } from './supabase.js';
 
 let currentUser = null;
 let bookingsRealtimeChannel = null;
+let driverVerificationsRealtimeChannel = null;
 const ADMIN_OWNER_NAME = 'Mr Olushola Fadipe';
 const authListener = supabase ? supabase.auth.onAuthStateChange((_event, session) => {
   currentUser = session?.user ?? null;
@@ -106,6 +107,91 @@ async function deleteCustomer(customerEmail) {
   } catch (error) {
     console.error('Error deleting customer:', error);
     alert('Failed to delete customer data. Please try again.');
+  }
+}
+
+async function updateDriverVerificationStatus(verificationId, bookingId, recipientEmail, status) {
+  if (!supabase || !verificationId) return;
+  const isRejected = status === 'REJECTED';
+  const rejectionReason = isRejected ? prompt('Why is this verification being rejected?') : null;
+  if (isRejected && rejectionReason === null) return;
+
+  try {
+    const user = await refreshAuthState();
+    const { error } = await supabase
+      .from('driver_verifications')
+      .update({
+        verification_status: status,
+        checked_by_admin: user?.id || null,
+        checked_date: new Date().toISOString(),
+        rejection_reason: rejectionReason,
+      })
+      .eq('verification_id', verificationId);
+
+    if (error) throw error;
+
+    if (bookingId) {
+      await supabase
+        .from('bookings')
+        .update({ status: status === 'APPROVED' ? 'Confirmed' : 'Driver Verification Rejected' })
+        .eq('id', bookingId);
+    }
+
+    await queueDriverVerificationEmail({
+      verificationId,
+      bookingId,
+      recipientEmail,
+      notificationType: status.toLowerCase(),
+      subject: status === 'APPROVED'
+        ? 'Your driving licence has been approved.'
+        : 'Your verification requires attention.',
+      message: status === 'APPROVED'
+        ? 'Your driving licence has been approved. Your booking can now be confirmed for vehicle release.'
+        : `Your verification requires attention.${rejectionReason ? ` Reason: ${rejectionReason}` : ''}`,
+    });
+
+    await initDashboardPage(user);
+  } catch (error) {
+    console.error('Error updating driver verification:', error);
+    alert('Unable to update this driver verification.');
+  }
+}
+
+async function deleteDriverVerificationDocuments(verificationId) {
+  if (!supabase || !verificationId) return;
+  if (!confirm('Delete the uploaded licence and proof of address documents for this verification?')) return;
+
+  try {
+    const { data, error } = await supabase
+      .from('driver_verifications')
+      .select('licence_front_file, licence_back_file, proof_of_address_file')
+      .eq('verification_id', verificationId)
+      .single();
+
+    if (error) throw error;
+
+    const files = [data.licence_front_file, data.licence_back_file, data.proof_of_address_file].filter(Boolean);
+    if (files.length) {
+      const { error: storageError } = await supabase.storage.from(DRIVER_DOC_BUCKET).remove(files);
+      if (storageError) throw storageError;
+    }
+
+    const { error: updateError } = await supabase
+      .from('driver_verifications')
+      .update({
+        licence_front_file: null,
+        licence_back_file: null,
+        proof_of_address_file: null,
+      })
+      .eq('verification_id', verificationId);
+
+    if (updateError) throw updateError;
+
+    const user = await refreshAuthState();
+    await initDashboardPage(user);
+  } catch (error) {
+    console.error('Error deleting driver documents:', error);
+    alert('Unable to delete these secure documents.');
   }
 }
 
@@ -323,6 +409,47 @@ function closeTermsModal() {
   document.body.style.overflow = '';
 }
 
+const DRIVER_DOC_BUCKET = 'driver-verification-documents';
+
+function sanitizeFileName(name = 'document') {
+  return String(name)
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 80) || 'document';
+}
+
+async function uploadDriverDocument(fileInputId, userId, bookingId, label) {
+  const file = document.getElementById(fileInputId)?.files?.[0];
+  if (!file) throw new Error(`Please upload ${label}.`);
+  if (!supabase) return `${label}: ${file.name}`;
+
+  const ext = file.name.includes('.') ? file.name.split('.').pop() : 'bin';
+  const path = `${userId}/${bookingId}/${label}-${Date.now()}.${sanitizeFileName(ext)}`;
+  const { error } = await supabase.storage
+    .from(DRIVER_DOC_BUCKET)
+    .upload(path, file, {
+      cacheControl: '3600',
+      contentType: file.type || 'application/octet-stream',
+      upsert: false,
+    });
+
+  if (error) throw error;
+  return path;
+}
+
+async function queueDriverVerificationEmail({ verificationId, bookingId, recipientEmail, subject, message, notificationType }) {
+  if (!supabase || !recipientEmail) return;
+  await supabase.from('driver_verification_notifications').insert([{
+    verification_id: verificationId || null,
+    booking_id: bookingId || null,
+    recipient_email: recipientEmail,
+    notification_type: notificationType,
+    subject,
+    message,
+  }]);
+}
+
 document.getElementById('openTermsModal')?.addEventListener('click', () => {
   if (!termsModal) return;
   termsModal.classList.add('open');
@@ -364,30 +491,84 @@ bookingForm?.addEventListener('submit', async e => {
   const phone    = document.getElementById('custPhone')?.value;
   const price    = document.getElementById('estimatedPrice')?.textContent || '—';
   const userId   = currentUser?.id || null;
+  const driverFullName = document.getElementById('driverFullName')?.value;
+  const driverDateOfBirth = document.getElementById('driverDateOfBirth')?.value;
+  const driverLicenceNumber = document.getElementById('driverLicenceNumber')?.value;
+  const dvlaCheckCode = document.getElementById('dvlaCheckCode')?.value;
 
-  await new Promise(resolve => setTimeout(resolve, 800));
-
-  if (supabase) {
-    await supabase.from('bookings').insert([{
-      user_id: userId,
-      service: activeService,
-      van_size: van,
-      pickup,
-      dropoff,
-      date: bookDate,
-      time: bookTime,
-      duration,
-      helpers,
-      name,
-      email,
-      phone,
-      price,
-      status: 'Pending',
-    }]);
+  if (supabase && !userId) {
+    alert('Please sign in before submitting driver verification documents.');
+    window.location.href = 'login.html';
+    if (btn) { btn.disabled = false; btn.textContent = 'Confirm Booking'; }
+    return;
   }
 
-  bookingForm.style.display    = 'none';
-  bookingConfirm.style.display = 'block';
+  try {
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    let bookingId = `local-${Date.now()}`;
+    let verificationId = null;
+
+    if (supabase) {
+      const { data: booking, error: bookingError } = await supabase.from('bookings').insert([{
+        user_id: userId,
+        service: activeService,
+        van_size: van,
+        pickup,
+        dropoff,
+        date: bookDate,
+        time: bookTime,
+        duration,
+        helpers,
+        name,
+        email,
+        phone,
+        price,
+        status: 'Driver Verification Pending',
+      }]).select('id').single();
+
+      if (bookingError) throw bookingError;
+      bookingId = booking.id;
+    }
+
+    const licenceFrontPath = await uploadDriverDocument('licenceFrontFile', userId || 'guest', bookingId, 'licence-front');
+    const licenceBackPath = await uploadDriverDocument('licenceBackFile', userId || 'guest', bookingId, 'licence-back');
+    const proofOfAddressPath = await uploadDriverDocument('proofOfAddressFile', userId || 'guest', bookingId, 'proof-of-address');
+
+    if (supabase) {
+      const { data: verification, error: verificationError } = await supabase.from('driver_verifications').insert([{
+        user_id: userId,
+        booking_id: bookingId,
+        full_name: driverFullName,
+        date_of_birth: driverDateOfBirth,
+        driving_licence_number: driverLicenceNumber,
+        dvla_check_code: dvlaCheckCode,
+        licence_front_file: licenceFrontPath,
+        licence_back_file: licenceBackPath,
+        proof_of_address_file: proofOfAddressPath,
+        verification_status: 'PENDING',
+      }]).select('verification_id').single();
+
+      if (verificationError) throw verificationError;
+      verificationId = verification.verification_id;
+
+      await queueDriverVerificationEmail({
+        verificationId,
+        bookingId,
+        recipientEmail: email,
+        notificationType: 'submitted',
+        subject: 'Your driver verification has been received.',
+        message: 'Your driver verification has been received. Breezye Van Hires will review your licence documents before vehicle release.',
+      });
+    }
+
+    bookingForm.style.display = 'none';
+    bookingConfirm.style.display = 'block';
+  } catch (error) {
+    console.error('Error submitting booking verification:', error);
+    alert(error.message || 'Unable to submit your driver verification. Please check your details and try again.');
+    if (btn) { btn.disabled = false; btn.textContent = 'Confirm Booking'; }
+  }
 });
 
 newBookingBtn?.addEventListener('click', () => {
@@ -1136,6 +1317,10 @@ function initBookingPage(user) {
   if (custNameEl) {
     custNameEl.value = user.user_metadata?.full_name || '';
   }
+  const driverNameEl = document.getElementById('driverFullName');
+  if (driverNameEl && !driverNameEl.value) {
+    driverNameEl.value = user.user_metadata?.full_name || '';
+  }
 }
 
 async function initDashboardPage(user) {
@@ -1150,6 +1335,7 @@ async function initDashboardPage(user) {
   const isUserDashboard = dashboardPage.classList.contains('user-dashboard-page');
   const isAdminDashboard = dashboardPage.classList.contains('admin-console-page');
   const isInvoicePage = dashboardPage.classList.contains('admin-invoices-page');
+  const isDriverChecksPage = dashboardPage.classList.contains('admin-driver-checks-page');
   if (isAdminDashboard && !isAdmin && window.location.pathname.endsWith('dashboard.html')) {
     window.location.href = 'user-dashboard.html';
     return;
@@ -1201,6 +1387,7 @@ async function initDashboardPage(user) {
   };
 
   let bookings = [];
+  let verifications = [];
   let error = null;
   
   if (supabase) {
@@ -1209,6 +1396,13 @@ async function initDashboardPage(user) {
       : await supabase.from('bookings').select('*').or(`user_id.eq.${user.id},email.eq.${user.email}`).order('created_at', { ascending: false });
     bookings = result.data;
     error = result.error;
+
+    const verificationResult = isAdmin
+      ? await supabase.from('driver_verifications').select('*').order('created_at', { ascending: false })
+      : await supabase.from('driver_verifications').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+    if (!verificationResult.error && Array.isArray(verificationResult.data)) {
+      verifications = verificationResult.data;
+    }
   }
 
   const tableBody = document.getElementById('bookingsTableBody');
@@ -1219,19 +1413,41 @@ async function initDashboardPage(user) {
     return;
   }
 
+  const verificationsByBooking = new Map(verifications.map(item => [item.booking_id, item]));
+  const verificationStatusLabel = verification => {
+    const status = verification?.verification_status || 'PENDING';
+    if (status === 'APPROVED') return '🟢 Approved';
+    if (status === 'REJECTED') return '🔴 Rejected';
+    return '🟡 Pending Review';
+  };
+  const verificationStatusClass = verification => {
+    const status = verification?.verification_status || 'PENDING';
+    if (status === 'APPROVED') return 'paid';
+    if (status === 'REJECTED') return 'cancelled';
+    return 'pending';
+  };
+  const driverReleaseMessage = verification => {
+    const status = verification?.verification_status || 'PENDING';
+    if (status === 'APPROVED') return 'Your driving licence has been verified.';
+    if (status === 'REJECTED') return 'Your licence verification was unsuccessful. Please contact support.';
+    return 'Your driving documents are being reviewed.';
+  };
+
   const invoiceRows = bookings.slice(0, 10).map((booking, index) => {
     const customer = booking.name || booking.email || 'Customer';
     return `<tr><td>${escapeHTML(customer)}</td><td>${escapeHTML(booking.email)}</td><td>${escapeHTML(booking.service)}</td><td>${escapeHTML(booking.price || 'GBP 0')}</td><td><button class="admin-email-action" type="button" data-email-action="invoice" data-booking-index="${index}">Invoice</button><button class="admin-email-action ghost" type="button" data-email-action="reminder" data-booking-index="${index}">Reminder</button></td></tr>`;
   }).join('');
 
   const bookingRows = bookings.slice(0, 10).map(booking => {
-    const status = booking.status || 'Pending';
+    const verification = verificationsByBooking.get(booking.id);
+    const status = isUserDashboard && verification ? driverReleaseMessage(verification) : booking.status || 'Pending';
     const loweredStatus = status.toLowerCase();
     const statusClass = loweredStatus.includes('cancel')
+      || loweredStatus.includes('unsuccessful')
       ? 'cancelled'
-      : loweredStatus.includes('pending')
+      : loweredStatus.includes('pending') || loweredStatus.includes('review')
         ? 'pending'
-        : loweredStatus.includes('paid')
+        : loweredStatus.includes('paid') || loweredStatus.includes('verified')
           ? 'paid'
           : 'successful';
     const isPaid = loweredStatus.includes('paid');
@@ -1374,6 +1590,88 @@ async function initDashboardPage(user) {
   setText('userPhone', user.user_metadata?.phone || 'Not added');
   setText('userPostcode', user.user_metadata?.postcode || 'Not added');
 
+  const latestVerification = verifications[0];
+  setText('driverVerificationStatus', verificationStatusLabel(latestVerification));
+  setText('driverVerificationUpdated', latestVerification?.updated_at ? new Date(latestVerification.updated_at).toLocaleString() : '--');
+  setText('driverVerificationDvlaCode', latestVerification?.dvla_check_code ? 'Submitted' : 'Not submitted');
+  setText('driverVerificationDocuments', latestVerification ? 'Licence front, licence back, proof of address' : 'No documents uploaded');
+  const driverVerificationBadge = document.getElementById('driverVerificationBadge');
+  if (driverVerificationBadge) {
+    driverVerificationBadge.className = `admin-status ${verificationStatusClass(latestVerification)}`;
+    driverVerificationBadge.textContent = verificationStatusLabel(latestVerification);
+  }
+  setText('driverVerificationMessage', latestVerification
+    ? driverReleaseMessage(latestVerification)
+    : 'Submit your driver verification with your next booking.');
+
+  if (isAdmin && isDriverChecksPage) {
+    const pending = verifications.filter(item => item.verification_status === 'PENDING');
+    const approved = verifications.filter(item => item.verification_status === 'APPROVED');
+    const rejected = verifications.filter(item => item.verification_status === 'REJECTED');
+    setText('driverChecksPendingCount', pending.length);
+    setText('driverChecksApprovedCount', approved.length);
+    setText('driverChecksRejectedCount', rejected.length);
+
+    const bookingById = new Map(bookings.map(booking => [booking.id, booking]));
+    const pendingList = document.getElementById('driverChecksList');
+    if (pendingList) {
+      pendingList.innerHTML = pending.length ? pending.map(item => {
+        const booking = bookingById.get(item.booking_id) || {};
+        const bookingReference = item.booking_id ? String(item.booking_id).slice(0, 8).toUpperCase() : 'Pending';
+        return `<article class="driver-check-card">
+          <div class="driver-check-card-head">
+            <div>
+              <span class="admin-status pending">🟡 Pending Review</span>
+              <h3>${escapeHTML(item.full_name || booking.name || 'Customer')}</h3>
+              <p>${escapeHTML(booking.email || 'No email on booking')}</p>
+            </div>
+            <strong>${escapeHTML(bookingReference)}</strong>
+          </div>
+          <div class="driver-check-grid">
+            <div><span>Vehicle</span><strong>${escapeHTML(booking.van_size || '--')}</strong></div>
+            <div><span>Collection Date</span><strong>${escapeHTML(booking.date || '--')}</strong></div>
+            <div><span>DVLA Code</span><strong>${escapeHTML(item.dvla_check_code || '--')}</strong></div>
+            <div><span>Licence Details</span><strong>${escapeHTML(item.driving_licence_number || '--')}</strong></div>
+          </div>
+          <div class="driver-document-actions">
+            <button type="button" data-doc-path="${escapeHTML(item.licence_front_file || '')}">Licence Front</button>
+            <button type="button" data-doc-path="${escapeHTML(item.licence_back_file || '')}">Licence Back</button>
+            <button type="button" data-doc-path="${escapeHTML(item.proof_of_address_file || '')}">Proof of Address</button>
+          </div>
+          <div class="driver-admin-actions">
+            <a href="https://www.gov.uk/check-driving-information" target="_blank" rel="noopener">Open DVLA Verification</a>
+            <button type="button" class="approve-driver-btn" data-verification-id="${item.verification_id}" data-booking-id="${item.booking_id}" data-email="${escapeHTML(booking.email || '')}">Approve Driver</button>
+            <button type="button" class="reject-driver-btn" data-verification-id="${item.verification_id}" data-booking-id="${item.booking_id}" data-email="${escapeHTML(booking.email || '')}">Reject Driver</button>
+            <button type="button" class="delete-driver-docs-btn" data-verification-id="${item.verification_id}">Delete Documents</button>
+          </div>
+        </article>`;
+      }).join('') : '<p class="txt-dim">No pending driver checks right now.</p>';
+
+      pendingList.querySelectorAll('[data-doc-path]').forEach(button => {
+        button.addEventListener('click', async () => {
+          const path = button.dataset.docPath;
+          if (!path || !supabase) return;
+          const { data, error: signedUrlError } = await supabase.storage.from(DRIVER_DOC_BUCKET).createSignedUrl(path, 300);
+          if (signedUrlError) {
+            alert('Unable to open this secure document.');
+            return;
+          }
+          window.open(data.signedUrl, '_blank', 'noopener');
+        });
+      });
+
+      pendingList.querySelectorAll('.approve-driver-btn').forEach(button => {
+        button.addEventListener('click', () => updateDriverVerificationStatus(button.dataset.verificationId, button.dataset.bookingId, button.dataset.email, 'APPROVED'));
+      });
+      pendingList.querySelectorAll('.reject-driver-btn').forEach(button => {
+        button.addEventListener('click', () => updateDriverVerificationStatus(button.dataset.verificationId, button.dataset.bookingId, button.dataset.email, 'REJECTED'));
+      });
+      pendingList.querySelectorAll('.delete-driver-docs-btn').forEach(button => {
+        button.addEventListener('click', () => deleteDriverVerificationDocuments(button.dataset.verificationId));
+      });
+    }
+  }
+
   const composeAdminEmail = (booking, type = 'invoice') => {
     const customer = booking?.name || 'Customer';
     const service = booking?.service || 'your Breezyee Vans booking';
@@ -1504,7 +1802,7 @@ async function initDashboardPage(user) {
     bar.classList.toggle('active', index === now.getMonth());
   });
 
-  if (!bookingsRealtimeChannel) {
+  if (supabase && !bookingsRealtimeChannel) {
     bookingsRealtimeChannel = supabase
       .channel('admin-bookings-sync')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => {
@@ -1513,5 +1811,13 @@ async function initDashboardPage(user) {
       .subscribe(status => {
         if (status === 'SUBSCRIBED') setText('dashboardSyncStatus', 'Live Supabase sync on');
       });
+  }
+  if (supabase && !driverVerificationsRealtimeChannel) {
+    driverVerificationsRealtimeChannel = supabase
+      .channel('driver-verifications-sync')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'driver_verifications' }, () => {
+        initDashboardPage(user);
+      })
+      .subscribe();
   }
 }

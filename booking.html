@@ -126,6 +126,43 @@
               </div>
             </div>
 
+            <div class="bk-section-label">Driver Verification</div>
+            <div class="driver-info-box">
+              <strong>Licence check required</strong>
+              <p>To hire a vehicle with Breezye Van Hires, we need to verify your driving licence. Please generate a DVLA check code using the official GOV.UK service and enter it below.</p>
+              <a class="btn btn-outline btn-sm" href="https://www.gov.uk/view-driving-licence" target="_blank" rel="noopener">Get DVLA Check Code</a>
+            </div>
+            <div class="bk-grid">
+              <div class="bk-field bk-field-full">
+                <label>Full Legal Name</label>
+                <input type="text" id="driverFullName" placeholder="As shown on your driving licence" required />
+              </div>
+              <div class="bk-field">
+                <label>Date of Birth</label>
+                <input type="date" id="driverDateOfBirth" required />
+              </div>
+              <div class="bk-field">
+                <label>Driving Licence Number</label>
+                <input type="text" id="driverLicenceNumber" placeholder="16 character licence number" autocomplete="off" required />
+              </div>
+              <div class="bk-field bk-field-full">
+                <label>DVLA Check Code</label>
+                <input type="text" id="dvlaCheckCode" placeholder="Enter your DVLA check code" autocomplete="off" required />
+              </div>
+              <div class="bk-field">
+                <label>Driving Licence Front</label>
+                <input type="file" id="licenceFrontFile" accept="image/*,.pdf" required />
+              </div>
+              <div class="bk-field">
+                <label>Driving Licence Back</label>
+                <input type="file" id="licenceBackFile" accept="image/*,.pdf" required />
+              </div>
+              <div class="bk-field bk-field-full">
+                <label>Proof of Address</label>
+                <input type="file" id="proofOfAddressFile" accept="image/*,.pdf" required />
+              </div>
+            </div>
+
             <!-- Price estimate -->
             <div class="price-est-bar" id="priceEstimate">
               <div class="pest-inner">
@@ -151,7 +188,7 @@
               <svg viewBox="0 0 48 48" fill="none" width="52" height="52"><circle cx="24" cy="24" r="22" fill="#5b22b0"/><path d="M14 24l8 8 12-14" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </div>
             <h3>Booking Received!</h3>
-            <p>Thank you! We've received your request and will confirm within <strong>30 minutes</strong>. Check your email for details.</p>
+            <p>Thank you! Your booking request and driver verification have been received. Your driving documents are being reviewed before vehicle release.</p>
             <button class="btn btn-outline" id="newBookingBtn">Make Another Booking</button>
           </div>
         </div>
